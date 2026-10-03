@@ -1,5115 +1,4377 @@
--- ARASAKA HUB V3 - MODULAR SINGLE-FILE BUILD
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local SoundService = game:GetService("SoundService")
-local TweenService = game:GetService("TweenService")
-local HttpService = game:GetService("HttpService")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting")
-local Players = game:GetService("Players")
-local Debris = game:GetService("Debris")
-local VirtualUser = game:GetService("VirtualUser")
-local TeleportService = game:GetService("TeleportService")
 
-local player = Players.LocalPlayer
+local _junk = 12345; function _junkFunc() return _junk * 9 end
 
---==================================================
--- ARASAKA HUB V3 // SINGLE-FILE MODULAR ARCHITECTURE
--- Um único .lua, porém cada domínio vive em seu próprio módulo/tabela.
---==================================================
-local Utils = { Name = "Utils", PerfMarks = {} }
-local Core = {
-    Name = "Core",
-    Modules = {},
-    States = {},
-    Connections = {},
-    Cleanups = {},
-    Workers = {},
-    WorkerGeneration = {},
-    Config = { notifications = true, compactStatus = false },
-    Version = "V3-MODULAR-2.0",
-    StartedAt = os.clock(),
+local v1 = v2:v3(v4("return '\\v5\\v6\\v7\\v8\\v9\\v10\\v11\\v12\\v6\\v13\\v14\\v12\\v15\\v16\\v11\\v17\\v6'")())
+local v18 = v2:v3(v4("return '\\v14\\v15\\v19\\v20\\v13\\v14\\v6\\v16\\v21\\v9\\v10\\v6'")())
+local v22 = v2:v3(v4("return '\\v23\\v24\\v6\\v6\\v20\\v14\\v6\\v16\\v21\\v9\\v10\\v6'")())
+local v25 = v2:v3(v4("return '\\v26\\v12\\v12\\v7\\v14\\v6\\v16\\v21\\v9\\v10\\v6'")())
+local v27 = v2:v3(v4("return '\\v5\\v19\\v20\\v14\\v6\\v16\\v21\\v9\\v10\\v6'")())
+local v28 = v2:v3(v4("return '\\v29\\v30\\v6\\v16\\v31\\v20\\v7\\v19\\v12\\v14\\v6\\v16\\v21\\v9\\v10\\v6'")())
+local v32 = v2:v3(v4("return '\\v33\\v9\\v17\\v34\\v12\\v9\\v20\\v17'")())
+local v35 = v2:v3(v4("return '\\v36\\v8\\v11\\v37\\v6\\v16\\v30'")())
+local v38 = v2:v3(v4("return '\\v39\\v6\\v40\\v16\\v9\\v30'")())
+local v41 = v2:v3(v4("return '\\v42\\v9\\v16\\v12\\v19\\v11\\v8\\v29\\v30\\v6\\v16'")())
+local v43 = v2:v3(v4("return '\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v14\\v6\\v16\\v21\\v9\\v10\\v6'")())
+local v44 = v35.v45
+local v46 = { v47 = v4("return '\\v29\\v12\\v9\\v8\\v30'")(), v48 = {} }
+local v49 = {
+v47 = v4("return '\\v50\\v15\\v16\\v6'")(),
+v51 = {},
+v52 = {},
+v53 = {},
+v54 = {},
+v55 = {},
+v56 = {},
+v57 = { v58 = true, v59 = false },
+v60 = v4("return '\\v42\\v61\\v62\\v63\\v64\\v39\\v29\\v33\\v65\\v5\\v62\\v66\\v67\\v68'")(),
+v69 = v70.v71(),
 }
-local UI = { Name = "UI" }
-local Farms = { Name = "Farms" }
-local Pets = { Name = "Pets" }
-local Kill = { Name = "Kill", State = { mode = nil, excludeFriends = false, selectedTarget = nil, excludedUserIds = {} } }
-local Visual = { Name = "Visual" }
-local Chat = { Name = "Chat", Initialized = false, Loading = false }
-local Teleports = { Name = "Teleports" }
-local Calculator = { Name = "Calculator" }
-local System = { Name = "System" }
-local ProcessControlModule
-
--- ÚNICA PONTE GLOBAL: serve apenas para invalidar/limpar uma execução anterior.
--- Todo o estado funcional continua local em Core/módulos.
-local Bridge = rawget(_G, "ArasakaBridge")
-if type(Bridge) ~= "table" then
-    Bridge = { generation = 0 }
-    rawset(_G, "ArasakaBridge", Bridge)
+local v72 = { v47 = v4("return '\\v29\\v31'")() }
+local v73 = { v47 = v4("return '\\v74\\v11\\v16\\v75\\v30'")() }
+local v76 = { v47 = v4("return '\\v36\\v6\\v12\\v30'")() }
+local v77 = { v47 = v4("return '\\v78\\v9\\v8\\v8'")(), v79 = { v80 = nil, v81 = false, v82 = nil, v83 = {} } }
+local v84 = { v47 = v4("return '\\v42\\v9\\v30\\v19\\v11\\v8'")() }
+local v85 = { v47 = v4("return '\\v50\\v34\\v11\\v12'")(), v86 = false, v87 = false }
+local v88 = { v47 = v4("return '\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v30'")() }
+local v89 = { v47 = v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v12\\v15\\v16'")() }
+local v90 = { v47 = v4("return '\\v14\\v37\\v30\\v12\\v6\\v75'")() }
+local v91
+local v92 = v93(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v96\\v16\\v9\\v13\\v17\\v6'")())
+if v97(v92) ~= v4("return '\\v12\\v11\\v40\\v8\\v6'")() then
+v92 = { v98 = 0 }
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v96\\v16\\v9\\v13\\v17\\v6'")(), v92)
 end
-if type(Bridge.cleanup) == "function" then
-    pcall(Bridge.cleanup)
+if v97(v92.v100) == v4("return '\\v101\\v19\\v20\\v10\\v12\\v9\\v15\\v20'")() then
+v102(v92.v100)
 end
-Bridge.generation = (Bridge.generation or 0) + 1
-local RUN_GENERATION = Bridge.generation
-local Runtime = { Running = true }
-
--- Compatibilidade: encerra versões antigas que ainda usavam vários _G.Arasaka*.
-if rawget(_G, "ArasakaScriptRunning") ~= nil then
-    rawset(_G, "ArasakaScriptRunning", false)
+v92.v98 = (v92.v98 or 0) + 1
+local v103 = v92.v98
+local v104 = { v105 = true }
+if v93(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v14\\v10\\v16\\v9\\v7\\v12\\v5\\v19\\v20\\v20\\v9\\v20\\v17'")()) ~= nil then
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v14\\v10\\v16\\v9\\v7\\v12\\v5\\v19\\v20\\v20\\v9\\v20\\v17'")(), false)
 end
-if rawget(_G, "ArasakaKillWorkerToken") ~= nil then
-    rawset(_G, "ArasakaKillWorkerToken", (rawget(_G, "ArasakaKillWorkerToken") or 0) + 1)
+if v93(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v106\\v15\\v16\\v95\\v6\\v16\\v23\\v15\\v95\\v6\\v20'")()) ~= nil then
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v106\\v15\\v16\\v95\\v6\\v16\\v23\\v15\\v95\\v6\\v20'")(), (v93(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v106\\v15\\v16\\v95\\v6\\v16\\v23\\v15\\v95\\v6\\v20'")()) or 0) + 1)
 end
-task.wait(0.01)
-rawset(_G, "ArasakaScriptRunning", nil)
-rawset(_G, "ArasakaKeyWatcherRunning", nil)
-rawset(_G, "ArasakaKillState", nil)
-rawset(_G, "ArasakaKillWorkerToken", nil)
-rawset(_G, "ArasakaCore", nil)
-rawset(_G, "ArasakaProcessControl", nil)
-rawset(_G, "ArasakaPerf", nil)
-rawset(_G, "ArasakaPerfBegin", nil)
-rawset(_G, "ArasakaPerfEnd", nil)
-
-function Core:IsAlive()
-    return Runtime.Running == true and Bridge.generation == RUN_GENERATION
+v107.v108(0.01)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v14\\v10\\v16\\v9\\v7\\v12\\v5\\v19\\v20\\v20\\v9\\v20\\v17'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v6\\v37\\v106\\v11\\v12\\v10\\v34\\v6\\v16\\v5\\v19\\v20\\v20\\v9\\v20\\v17'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v14\\v12\\v11\\v12\\v6'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v106\\v15\\v16\\v95\\v6\\v16\\v23\\v15\\v95\\v6\\v20'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v50\\v15\\v16\\v6'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v50\\v15\\v20\\v12\\v16\\v15\\v8'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v36\\v6\\v16\\v101'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v36\\v6\\v16\\v101\\v96\\v6\\v17\\v9\\v20'")(), nil)
+v99(v94, v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v36\\v6\\v16\\v101\\v109\\v20\\v13'")(), nil)
+function v49:v110()
+return v104.v105 == true and v92.v98 == v103
 end
-
-function Core:SetRunning(value)
-    Runtime.Running = value == true
-    if not Runtime.Running then
-        self:StopAllWorkers()
-    end
+function v49:v111(v112)
+v104.v105 = v112 == true
+if not v104.v105 then
+v113:v114()
 end
-
-function Core:NextWorkerGeneration(name)
-    local generation = (self.WorkerGeneration[name] or 0) + 1
-    self.WorkerGeneration[name] = generation
-    return generation
 end
-
-function Core:IsWorkerCurrent(name, generation)
-    return self.WorkerGeneration[name] == generation
+function v49:v115(v116)
+local v98 = (v113.v56[v116] or 0) + 1
+v113.v56[v116] = v98
+return v98
 end
-
-function Core:StartWorker(name, callback)
-    if not self:IsAlive() then
-        return false, "Execucao invalidada"
-    end
-    if type(name) ~= "string" or type(callback) ~= "function" then
-        return false, "Processo invalido"
-    end
-
-    local generation = self:NextWorkerGeneration(name)
-    self.Workers[name] = { generation = generation, running = true, startedAt = os.clock() }
-
-    task.spawn(function()
-        local ok, err = pcall(function()
-            callback(function()
-                local worker = self.Workers[name]
-                return self:IsAlive()
-                    and worker ~= nil
-                    and worker.running == true
-                    and self:IsWorkerCurrent(name, generation)
-            end, generation)
-        end)
-
-        local worker = self.Workers[name]
-        if worker and worker.generation == generation then
-            worker.running = false
-            self.Workers[name] = nil
-        end
-
-        if not ok then
-            warn("[ARASAKA][WORKER:" .. name .. "] Erro:", err)
-        end
-    end)
-
-    return true, generation
+function v49:v117(v116, v98)
+return v113.v56[v116] == v98
 end
-
-function Core:StopWorker(name)
-    local worker = self.Workers[name]
-    self:NextWorkerGeneration(name)
-    if worker then worker.running = false end
-    self.Workers[name] = nil
-    return true
+function v49:v118(v116, v119)
+if not v113:v110() then
+return false, v4("return '\\v109\\v120\\v6\\v10\\v19\\v10\\v11\\v15\\v121\\v9\\v20\\v21\\v11\\v8\\v9\\v13\\v11\\v13\\v11'")()
 end
-
-function Core:IsWorkerRunning(name)
-    local worker = self.Workers[name]
-    return worker ~= nil and worker.running == true
+if v97(v116) ~= v4("return '\\v30\\v12\\v16\\v9\\v20\\v17'")() or v97(v119) ~= v4("return '\\v101\\v19\\v20\\v10\\v12\\v9\\v15\\v20'")() then
+return false, v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v15\\v121\\v9\\v20\\v21\\v11\\v8\\v9\\v13\\v15'")()
 end
-
-function Core:StopAllWorkers()
-    local names = {}
-    for name in pairs(self.Workers) do
-        table.insert(names, name)
-    end
-    for _, name in ipairs(names) do
-        self:StopWorker(name)
-    end
+local v98 = v113:v115(v116)
+v113.v55[v116] = { v98 = v98, v122 = true, v123 = v70.v71() }
+v107.v124(function()
+local v125, v126 = v102(function()
+v119(function()
+local v127 = v113.v55[v116]
+return v113:v110()
+and v127 ~= nil
+and v127.v122 == true
+and v113:v117(v116, v98)
+end, v98)
+end)
+local v127 = v113.v55[v116]
+if v127 and v127.v98 == v98 then
+v127.v122 = false
+v113.v55[v116] = nil
 end
-
-function Core:RegisterModule(name, module)
-    if type(name) ~= "string" or name == "" or type(module) ~= "table" then
-        return false
-    end
-    self.Modules[name] = module
-    if self.States[name] == nil then self.States[name] = false end
-    return true
+if not v125 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v106\\v64\\v5\\v78\\v109\\v5\\v131'")() .. v116 .. v4("return '\\v130\\v121\\v109\\v16\\v16\\v15\\v131'")(), v126)
 end
-
-function Core:IsRunning(name)
-    return self.States[name] == true
+end)
+return true, v98
 end
-
-function Core:TrackConnection(owner, connection)
-    if not connection then return connection end
-    self.Connections[owner] = self.Connections[owner] or {}
-    table.insert(self.Connections[owner], connection)
-    return connection
+function v49:v132(v116)
+local v127 = v113.v55[v116]
+v113:v115(v116)
+if v127 then v127.v122 = false end
+v113.v55[v116] = nil
+return true
 end
-
-function Core:AddCleanup(owner, callback)
-    if type(callback) ~= "function" then return false end
-    self.Cleanups[owner] = self.Cleanups[owner] or {}
-    table.insert(self.Cleanups[owner], callback)
-    return true
+function v49:v133(v116)
+local v127 = v113.v55[v116]
+return v127 ~= nil and v127.v122 == true
 end
-
-function Core:CleanupOwner(owner)
-    local connections = self.Connections[owner]
-    if connections then
-        for _, connection in ipairs(connections) do
-            pcall(function() connection:Disconnect() end)
-        end
-        self.Connections[owner] = nil
-    end
-    local cleanups = self.Cleanups[owner]
-    if cleanups then
-        for _, callback in ipairs(cleanups) do pcall(callback) end
-        self.Cleanups[owner] = nil
-    end
+function v49:v114()
+local v134 = {}
+for v116 in v135(v113.v55) do
+v136.v137(v134, v116)
 end
-
-function Core:StartModule(name)
-    if not self:IsAlive() then return false, "Execucao invalidada" end
-    local module = self.Modules[name]
-    if not module then return false, "Modulo nao registrado" end
-    if self.States[name] then return true end
-
-    local ok, err = pcall(function()
-        if module.Init and not module.__initialized then
-            module:Init()
-            module.__initialized = true
-        end
-        if module.Start then module:Start() end
-    end)
-    if ok then self.States[name] = true end
-    return ok, err
+for v138, v116 in v139(v134) do
+v113:v132(v116)
 end
-
-function Core:StopModule(name)
-    local module = self.Modules[name]
-    if not module then return false, "Modulo nao registrado" end
-    local ok, err = pcall(function()
-        if module.Stop then module:Stop() end
-    end)
-    self.States[name] = false
-    self:CleanupOwner(name)
-    return ok, err
 end
-
-function Core:StopAll()
-    self:StopAllWorkers()
-    for name in pairs(self.Modules) do
-        if self.States[name] then self:StopModule(name) end
-    end
+function v49:v140(v116, v141)
+if v97(v116) ~= v4("return '\\v30\\v12\\v16\\v9\\v20\\v17'")() or v116 == v4("return ''")() or v97(v141) ~= v4("return '\\v12\\v11\\v40\\v8\\v6'")() then
+return false
 end
-
-function Core:ResetModules(names)
-    for _, name in ipairs(names or {}) do
-        local module = self.Modules[name]
-        if module and self.States[name] and module.Stop then
-            pcall(function() module:Stop() end)
-        end
-        self:CleanupOwner(name)
-        self.States[name] = false
-        if module then
-            module.__initialized = nil
-            if name == "Chat" then
-                module.Initialized = false
-                module.Loading = false
-            end
-        end
-    end
+v113.v51[v116] = v141
+if v113.v52[v116] == nil then v113.v52[v116] = false end
+return true
 end
-
-function Core:GetWorkerSnapshot()
-    local snapshot = {}
-    for name, worker in pairs(self.Workers) do
-        snapshot[name] = {
-            running = worker.running == true,
-            generation = worker.generation,
-            uptime = os.clock() - (worker.startedAt or os.clock())
-        }
-    end
-    return snapshot
+function v49:v142(v116)
+return v113.v52[v116] == true
 end
-
-function Core:GetRunningWorkerNames()
-    local names = {}
-    for name, worker in pairs(self.Workers) do
-        if worker.running then table.insert(names, name) end
-    end
-    table.sort(names)
-    return names
+function v49:v143(v144, v145)
+if not v145 then return v145 end
+v113.v53[v144] = v113.v53[v144] or {}
+v136.v137(v113.v53[v144], v145)
+return v145
 end
-
-function Core:GetConnectionCount()
-    local count = 0
-    for _, connections in pairs(self.Connections) do count += #connections end
-    return count
+function v49:v146(v144, v119)
+if v97(v119) ~= v4("return '\\v101\\v19\\v20\\v10\\v12\\v9\\v15\\v20'")() then return false end
+v113.v54[v144] = v113.v54[v144] or {}
+v136.v137(v113.v54[v144], v119)
+return true
 end
-
-function Core:GetSystemSnapshot()
-    local workerCount = 0
-    for _, worker in pairs(self.Workers) do
-        if worker.running then workerCount += 1 end
-    end
-    return {
-        workers = workerCount,
-        connections = self:GetConnectionCount(),
-        modules = self.Modules,
-        manifest = self.Manifest,
-    }
+function v49:v147(v144)
+local v148 = v113.v53[v144]
+if v148 then
+for v138, v145 in v139(v148) do
+v102(function() v145:v149() end)
 end
-
-function Core:SetConfig(key, value)
-    self.Config[key] = value
+v113.v53[v144] = nil
 end
-
-function Core:GetConfig(key, fallback)
-    local value = self.Config[key]
-    if value == nil then return fallback end
-    return value
+local v150 = v113.v54[v144]
+if v150 then
+for v138, v119 in v139(v150) do v102(v119) end
+v113.v54[v144] = nil
 end
-
-function Core:Notify(title, message, duracao)
-    if self:GetConfig("notifications", true) ~= true then return end
-    pcall(function()
-        local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
-        local gui = playerGui:FindFirstChild("ArasakaNotificationGui")
-        if not gui then
-            gui = Instance.new("ScreenGui")
-            gui.Name = "ArasakaNotificationGui"
-            gui.ResetOnSpawn = false
-            gui.DisplayOrder = 2500
-            gui.IgnoreGuiInset = true
-            gui.Parent = playerGui
-
-            local holder = Instance.new("Frame")
-            holder.Name = "Holder"
-            holder.AnchorPoint = Vector2.new(1, 1)
-            holder.Position = UDim2.new(1, -18, 1, -18)
-            holder.Size = UDim2.new(0, 330, 0, 300)
-            holder.BackgroundTransparency = 1
-            holder.Parent = gui
-
-            local layout = Instance.new("UIListLayout")
-            layout.Parent = holder
-            layout.FillDirection = Enum.FillDirection.Vertical
-            layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-            layout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-            layout.Padding = UDim.new(0, 8)
-        end
-
-        local holder = gui:FindFirstChild("Holder")
-        if not holder then return end
-        local notices = {}
-        for _, item in ipairs(holder:GetChildren()) do
-            if item:IsA("Frame") and item.Name == "Notificacao" then table.insert(notices, item) end
-        end
-        while #notices >= 3 do
-            local old = table.remove(notices, 1)
-            if old then old:Destroy() end
-        end
-
-        local card = Instance.new("Frame", holder)
-        card.Name = "Notificacao"
-        card.Size = UDim2.new(0, 320, 0, 72)
-        card.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-        card.BorderSizePixel = 0
-        card.ClipsDescendants = true
-        Instance.new("UICorner", card).CornerRadius = UDim.new(0, 5)
-        local stroke = Instance.new("UIStroke", card)
-        stroke.Color = Color3.fromRGB(185, 25, 35)
-        stroke.Thickness = 1
-        local accent = Instance.new("Frame", card)
-        accent.Size = UDim2.new(0, 4, 1, 0)
-        accent.BackgroundColor3 = Color3.fromRGB(235, 35, 45)
-        accent.BorderSizePixel = 0
-
-        local titleLabel = Instance.new("TextLabel", card)
-        titleLabel.BackgroundTransparency = 1
-        titleLabel.Position = UDim2.new(0, 16, 0, 9)
-        titleLabel.Size = UDim2.new(1, -28, 0, 20)
-        titleLabel.Font = Enum.Font.GothamBold
-        titleLabel.TextSize = 13
-        titleLabel.TextColor3 = Color3.fromRGB(245, 245, 245)
-        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-        titleLabel.Text = tostring(title or "ARASAKA")
-
-        local body = Instance.new("TextLabel", card)
-        body.BackgroundTransparency = 1
-        body.Position = UDim2.new(0, 16, 0, 31)
-        body.Size = UDim2.new(1, -28, 0, 30)
-        body.Font = Enum.Font.Gotham
-        body.TextSize = 11
-        body.TextWrapped = true
-        body.TextColor3 = Color3.fromRGB(175, 175, 175)
-        body.TextXAlignment = Enum.TextXAlignment.Left
-        body.TextYAlignment = Enum.TextYAlignment.Top
-        body.Text = tostring(message or "")
-
-        card.Position = UDim2.new(1, 350, 0, 0)
-        TweenService:Create(card, TweenInfo.new(0.22, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-            Position = UDim2.new(0, 0, 0, 0)
-        }):Play()
-
-        task.delay(tonumber(duracao) or 3.2, function()
-            if not card.Parent then return end
-            local tween = TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-                BackgroundTransparency = 1
-            })
-            tween:Play()
-            tween.Completed:Wait()
-            if card then card:Destroy() end
-        end)
-    end)
 end
-
-function Core:NotificarToggle(nome, ativo)
-    self:Notify(tostring(nome or "FUNÇÃO"), ativo and "Função ativada 🟢" or "Função desativada 🔴", 2)
+function v49:v151(v116)
+if not v113:v110() then return false, v4("return '\\v109\\v120\\v6\\v10\\v19\\v10\\v11\\v15\\v121\\v9\\v20\\v21\\v11\\v8\\v9\\v13\\v11\\v13\\v11'")() end
+local v141 = v113.v51[v116]
+if not v141 then return false, v4("return '\\v63\\v15\\v13\\v19\\v8\\v15\\v121\\v20\\v11\\v15\\v121\\v16\\v6\\v17\\v9\\v30\\v12\\v16\\v11\\v13\\v15'")() end
+if v113.v52[v116] then return true end
+local v125, v126 = v102(function()
+if v141.v152 and not v141.v153 then
+v141:v152()
+v141.v153 = true
 end
-
-Bridge.cleanup = function()
-    Runtime.Running = false
-    pcall(function() Core:StopAll() end)
-
-    local owners = {}
-    for owner in pairs(Core.Connections) do table.insert(owners, owner) end
-    for owner in pairs(Core.Cleanups) do
-        if not table.find(owners, owner) then table.insert(owners, owner) end
-    end
-    for _, owner in ipairs(owners) do
-        pcall(function() Core:CleanupOwner(owner) end)
-    end
+if v141.v154 then v141:v154() end
+end)
+if v125 then v113.v52[v116] = true end
+return v125, v126
 end
-
-Core.Manifest = {
-    Core = { ModuleManager = true, WorkerManager = true, ConnectionManager = true, ProcessControl = true },
-    Modules = { UI = true, Farms = true, Pets = true, Kill = true, Visual = true, Chat = true, Utils = true }
+function v49:v155(v116)
+local v141 = v113.v51[v116]
+if not v141 then return false, v4("return '\\v63\\v15\\v13\\v19\\v8\\v15\\v121\\v20\\v11\\v15\\v121\\v16\\v6\\v17\\v9\\v30\\v12\\v16\\v11\\v13\\v15'")() end
+local v125, v126 = v102(function()
+if v141.v156 then v141:v156() end
+end)
+v113.v52[v116] = false
+v113:v147(v116)
+return v125, v126
+end
+function v49:v157()
+v113:v114()
+for v116 in v135(v113.v51) do
+if v113.v52[v116] then v113:v155(v116) end
+end
+end
+function v49:v158(v134)
+for v138, v116 in v139(v134 or {}) do
+local v141 = v113.v51[v116]
+if v141 and v113.v52[v116] and v141.v156 then
+v102(function() v141:v156() end)
+end
+v113:v147(v116)
+v113.v52[v116] = false
+if v141 then
+v141.v153 = nil
+if v116 == v4("return '\\v50\\v34\\v11\\v12'")() then
+v141.v86 = false
+v141.v87 = false
+end
+end
+end
+end
+function v49:v159()
+local v160 = {}
+for v116, v127 in v135(v113.v55) do
+v160[v116] = {
+v122 = v127.v122 == true,
+v98 = v127.v98,
+v161 = v70.v71() - (v127.v123 or v70.v71())
 }
-
-function Utils.PerfBegin(name)
-    Utils.PerfMarks[name] = os.clock()
 end
-
-function Utils.PerfEnd(name)
-    local started = Utils.PerfMarks[name]
-    if not started then return 0 end
-    local elapsed = os.clock() - started
-    Utils.PerfMarks[name] = nil
-    print(string.format("[ARASAKA][PERF] %s = %.3fs", name, elapsed))
-    return elapsed
+return v160
 end
-
-function Utils.FormatNumber(n, kDecimals)
-    n = tonumber(n) or 0
-    local absN = math.abs(n)
-    if absN >= 1e24 then return string.format("%.2fSep", n / 1e24)
-    elseif absN >= 1e21 then return string.format("%.2fSx", n / 1e21)
-    elseif absN >= 1e18 then return string.format("%.2fQi", n / 1e18)
-    elseif absN >= 1e15 then return string.format("%.2fQa", n / 1e15)
-    elseif absN >= 1e12 then return string.format("%.2fT", n / 1e12)
-    elseif absN >= 1e9 then return string.format("%.2fB", n / 1e9)
-    elseif absN >= 1e6 then return string.format("%.2fM", n / 1e6)
-    elseif absN >= 1e3 then
-        return string.format(kDecimals == 2 and "%.2fK" or "%.1fK", n / 1e3)
-    else
-        return tostring(math.floor(n + 0.5))
-    end
+function v49:v162()
+local v134 = {}
+for v116, v127 in v135(v113.v55) do
+if v127.v122 then v136.v137(v134, v116) end
 end
-
-function Utils.ReadStat(targetPlayer, primary, secondary)
-    local leader = targetPlayer and targetPlayer:FindFirstChild("leaderstats")
-    local stats = targetPlayer and (targetPlayer:FindFirstChild("stats") or targetPlayer:FindFirstChild("privateStats"))
-    local function read(parent, name)
-        local value = parent and name and parent:FindFirstChild(name)
-        return value and tonumber(value.Value) or nil
-    end
-    return read(leader, primary) or read(leader, secondary)
-        or read(stats, primary) or read(stats, secondary)
-        or read(targetPlayer, primary) or read(targetPlayer, secondary) or 0
+v136.v163(v134)
+return v134
 end
-
-function Utils.GetMuscleEvent(targetPlayer)
-    return targetPlayer:FindFirstChild("muscleEvent") or targetPlayer:WaitForChild("muscleEvent", 5)
+function v49:v164()
+local v165 = 0
+for v138, v148 in v135(v113.v53) do v165 += #v148 end
+return v165
 end
-
-function Utils.GetRebirthRemote(storage)
-    local events = storage:FindFirstChild("rEvents")
-    return events and events:FindFirstChild("rebirthRemote")
+function v49:v166()
+local v167 = 0
+for v138, v127 in v135(v113.v55) do
+if v127.v122 then v167 += 1 end
 end
-
-function Utils.CreateTextButton(parent, properties)
-    local button = Instance.new("TextButton")
-    button.Parent = parent
-    for key, value in pairs(properties or {}) do
-        if key ~= "CornerRadius" then
-            button[key] = value
-        end
-    end
-    if properties and properties.CornerRadius then
-        Instance.new("UICorner", button).CornerRadius = properties.CornerRadius
-    end
-    return button
+return {
+v168 = v167,
+v148 = v113:v164(),
+v169 = v113.v51,
+v170 = v113.v171,
+}
 end
-
--- COREMEMORY
--- Migrado para o WorkerManager na FASE 10.
--- A rotina será iniciada depois que o Core estiver disponível.
-
--- ANTI-AFK FÍSICO
-Core:TrackConnection("Core", player.Idled:Connect(function()
-    if not Core:IsAlive() then return end
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton2(Vector2.new())
+function v49:v172(v173, v112)
+v113.v57[v173] = v112
+end
+function v49:v174(v173, v175)
+local v112 = v113.v57[v173]
+if v112 == nil then return v175 end
+return v112
+end
+function v49:v176(v177, v178, v179)
+if v113:v174(v4("return '\\v20\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v30'")(), true) ~= true then return end
+v102(function()
+local v180 = v35.v45:v181(v4("return '\\v36\\v8\\v11\\v37\\v6\\v16\\v182\\v19\\v9'")())
+local v183 = v180:v184(v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v182\\v19\\v9'")())
+if not v183 then
+v183 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")())
+v183.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v182\\v19\\v9'")()
+v183.v188 = false
+v183.v189 = 2500
+v183.v190 = true
+v183.v191 = v180
+local v192 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v192.v47 = v4("return '\\v26\\v15\\v8\\v13\\v6\\v16'")()
+v192.v193 = v194.v187(1, 1)
+v192.v195 = v196.v187(1, -18, 1, -18)
+v192.v197 = v196.v187(0, 330, 0, 300)
+v192.v198 = 1
+v192.v191 = v183
+local v199 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")())
+v199.v191 = v192
+v199.v200 = v201.v200.v202
+v199.v203 = v201.v203.v204
+v199.v205 = v201.v205.v206
+v199.v207 = v208.v187(0, 8)
+end
+local v192 = v183:v184(v4("return '\\v26\\v15\\v8\\v13\\v6\\v16'")())
+if not v192 then return end
+local v209 = {}
+for v138, v210 in v139(v192:v211()) do
+if v210:v212(v4("return '\\v74\\v16\\v11\\v75\\v6'")()) and v210.v47 == v4("return '\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v10\\v11\\v15'")() then v136.v137(v209, v210) end
+end
+while #v209 >= 3 do
+local v213 = v136.v214(v209, 1)
+if v213 then v213:v215() end
+end
+local v216 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v192)
+v216.v47 = v4("return '\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v10\\v11\\v15'")()
+v216.v197 = v196.v187(0, 320, 0, 72)
+v216.v217 = v218.v219(8, 8, 8)
+v216.v220 = 0
+v216.v221 = true
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v216).v222 = v208.v187(0, 5)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v216)
+v223.v224 = v218.v219(185, 25, 35)
+v223.v225 = 1
+local v226 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v216)
+v226.v197 = v196.v187(0, 4, 1, 0)
+v226.v217 = v218.v219(235, 35, 45)
+v226.v220 = 0
+local v227 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v227.v198 = 1
+v227.v195 = v196.v187(0, 16, 0, 9)
+v227.v197 = v196.v187(1, -28, 0, 20)
+v227.v228 = v201.v228.v229
+v227.v230 = 13
+v227.v231 = v218.v219(245, 245, 245)
+v227.v232 = v201.v232.v233
+v227.v234 = v235(v177 or v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65'")())
+local v236 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v236.v198 = 1
+v236.v195 = v196.v187(0, 16, 0, 31)
+v236.v197 = v196.v187(1, -28, 0, 30)
+v236.v228 = v201.v228.v237
+v236.v230 = 11
+v236.v238 = true
+v236.v231 = v218.v219(175, 175, 175)
+v236.v232 = v201.v232.v233
+v236.v239 = v201.v239.v240
+v236.v234 = v235(v178 or v4("return ''")())
+v216.v195 = v196.v187(1, 350, 0, 0)
+v22:v241(v216, v242.v187(0.22, v201.v243.v244, v201.v245.v246), {
+v195 = v196.v187(0, 0, 0, 0)
+}):v247()
+v107.v248(v249(v179) or 3.2, function()
+if not v216.v191 then return end
+local v250 = v22:v241(v216, v242.v187(0.2, v201.v243.v244, v201.v245.v251), {
+v198 = 1
+})
+v250:v247()
+v250.v252:v253()
+if v216 then v216:v215() end
+end)
+end)
+end
+function v49:v254(v255, v256)
+v113:v176(v235(v255 or v4("return '\\v74\\v29\\v185\\v257\\v258\\v257\\v259\\v64'")()), v256 and v4("return '\\v74\\v19\\v20\\v257\\v260\\v257\\v261\\v15\\v121\\v11\\v12\\v9\\v21\\v11\\v13\\v11\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v74\\v19\\v20\\v257\\v260\\v257\\v261\\v15\\v121\\v13\\v6\\v30\\v11\\v12\\v9\\v21\\v11\\v13\\v11\\v121\\v262\\v263\\v265\\v266'")(), 2)
+end
+v92.v100 = function()
+v104.v105 = false
+v102(function() v49:v157() end)
+local v267 = {}
+for v144 in v135(v49.v53) do v136.v137(v267, v144) end
+for v144 in v135(v49.v54) do
+if not v136.v268(v267, v144) then v136.v137(v267, v144) end
+end
+for v138, v144 in v139(v267) do
+v102(function() v49:v147(v144) end)
+end
+end
+v49.v171 = {
+v49 = { v269 = true, v270 = true, v271 = true, v272 = true },
+v51 = { v72 = true, v73 = true, v76 = true, v77 = true, v84 = true, v85 = true, v46 = true }
+}
+function v46.v273(v116)
+v46.v48[v116] = v70.v71()
+end
+function v46.v274(v116)
+local v275 = v46.v48[v116]
+if not v275 then return 0 end
+local v276 = v70.v71() - v275
+v46.v48[v116] = nil
+v277(v278.v279(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v36\\v109\\v5\\v74\\v130\\v121\\v280\\v30\\v121\\v281\\v121\\v280\\v67\\v61\\v101\\v30'")(), v116, v276))
+return v276
+end
+function v46.v282(v283, v284)
+v283 = v249(v283) or 0
+local v285 = v286.v287(v283)
+if v285 >= 1e24 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v14\\v6\\v7'")(), v283 / 1e24)
+elseif v285 >= 1e21 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v14\\v120'")(), v283 / 1e21)
+elseif v285 >= 1e18 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v288\\v9'")(), v283 / 1e18)
+elseif v285 >= 1e15 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v288\\v11'")(), v283 / 1e15)
+elseif v285 >= 1e12 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v23'")(), v283 / 1e12)
+elseif v285 >= 1e9 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v96'")(), v283 / 1e9)
+elseif v285 >= 1e6 then return v278.v279(v4("return '\\v280\\v67\\v66\\v101\\v63'")(), v283 / 1e6)
+elseif v285 >= 1e3 then
+return v278.v279(v284 == 2 and v4("return '\\v280\\v67\\v66\\v101\\v78'")() or v4("return '\\v280\\v67\\v289\\v101\\v78'")(), v283 / 1e3)
+else
+return v235(v286.v290(v283 + 0.5))
+end
+end
+function v46.v291(v292, v293, v294)
+local v295 = v292 and v292:v184(v4("return '\\v8\\v6\\v11\\v13\\v6\\v16\\v30\\v12\\v11\\v12\\v30'")())
+local v296 = v292 and (v292:v184(v4("return '\\v30\\v12\\v11\\v12\\v30'")()) or v292:v184(v4("return '\\v7\\v16\\v9\\v21\\v11\\v12\\v6\\v14\\v12\\v11\\v12\\v30'")()))
+local function v297(v298, v116)
+local v112 = v298 and v116 and v298:v184(v116)
+return v112 and v249(v112.v299) or nil
+end
+return v297(v295, v293) or v297(v295, v294)
+or v297(v296, v293) or v297(v296, v294)
+or v297(v292, v293) or v297(v292, v294) or 0
+end
+function v46.v300(v292)
+return v292:v184(v4("return '\\v75\\v19\\v30\\v10\\v8\\v6\\v109\\v21\\v6\\v20\\v12'")()) or v292:v181(v4("return '\\v75\\v19\\v30\\v10\\v8\\v6\\v109\\v21\\v6\\v20\\v12'")(), 5)
+end
+function v46.v301(v302)
+local v303 = v302:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")())
+return v303 and v303:v184(v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34\\v5\\v6\\v75\\v15\\v12\\v6'")())
+end
+function v46.v304(v298, v305)
+local v306 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")())
+v306.v191 = v298
+for v173, v112 in v135(v305 or {}) do
+if v173 ~= v4("return '\\v50\\v15\\v16\\v20\\v6\\v16\\v5\\v11\\v13\\v9\\v19\\v30'")() then
+v306[v173] = v112
+end
+end
+if v305 and v305.v222 then
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v306).v222 = v305.v222
+end
+return v306
+end
+v49:v143(v4("return '\\v50\\v15\\v16\\v6'")(), v44.v307:v308(function()
+if not v49:v110() then return end
+v41:v309()
+v41:v310(v194.v187())
 end))
-
-
-local targetGui = player:WaitForChild("PlayerGui")
---==================================================
--- ARASAKA LOADING SCREEN V2
--- CLIENT / PLAYERGUI / SEM COREGUI
---==================================================
-local function ArasakaLoadingScreen()
-    local PlayerGui = player:WaitForChild("PlayerGui")
-    local old = PlayerGui:FindFirstChild("ArasakaLoadingScreen")
-    if old then old:Destroy() end
-
-    local Gui = Instance.new("ScreenGui")
-    Gui.Name = "ArasakaLoadingScreen"
-    Gui.IgnoreGuiInset = true
-    Gui.ResetOnSpawn = false
-    Gui.DisplayOrder = 999999
-    Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    Gui.Parent = PlayerGui
-
-    -- Escala automatica para celular/tablet. Desktop permanece em tamanho normal.
-    local loadingScale = Instance.new("UIScale")
-    local camera = workspace.CurrentCamera
-    local viewportX = camera and camera.ViewportSize.X or 1920
-    local viewportY = camera and camera.ViewportSize.Y or 1080
-    if UserInputService.TouchEnabled then
-        loadingScale.Scale = math.clamp(math.min(viewportX / 1000, viewportY / 700) * 0.94, 0.55, 0.82)
-    else
-        loadingScale.Scale = 1
-    end
-    loadingScale.Parent = Gui
-
-    local RED = Color3.fromRGB(215, 50, 50)
-    local DARK_RED = Color3.fromRGB(100, 15, 15)
-    local BLACK = Color3.fromRGB(3, 3, 3)
-    local PANEL = Color3.fromRGB(9, 9, 9)
-    local WHITE = Color3.fromRGB(235, 235, 235)
-    local GREY = Color3.fromRGB(105, 105, 105)
-    local LOGO_ID = "rbxassetid://132397224962668"
-
-    local Background = Instance.new("Frame")
-    Background.Size = UDim2.fromScale(1, 1)
-    Background.BackgroundColor3 = BLACK
-    Background.BorderSizePixel = 0
-    Background.Parent = Gui
-
-    local TopLine = Instance.new("Frame")
-    TopLine.Size = UDim2.new(1, 0, 0, 2)
-    TopLine.BackgroundColor3 = RED
-    TopLine.BorderSizePixel = 0
-    TopLine.Parent = Background
-
-    local Line1 = Instance.new("Frame")
-    Line1.Size = UDim2.new(0, 100, 0, 1)
-    Line1.Position = UDim2.new(0, 35, 0.5, -95)
-    Line1.BackgroundColor3 = DARK_RED
-    Line1.BorderSizePixel = 0
-    Line1.Parent = Background
-
-    local Line2 = Instance.new("Frame")
-    Line2.Size = UDim2.new(0, 100, 0, 1)
-    Line2.Position = UDim2.new(1, -135, 0.5, 95)
-    Line2.BackgroundColor3 = DARK_RED
-    Line2.BorderSizePixel = 0
-    Line2.Parent = Background
-
-    local Main = Instance.new("Frame")
-    Main.AnchorPoint = Vector2.new(0.5, 0.5)
-    Main.Position = UDim2.fromScale(0.5, 0.5)
-    Main.Size = UDim2.new(0, 650, 0, 280)
-    Main.BackgroundColor3 = PANEL
-    Main.BackgroundTransparency = 0.05
-    Main.BorderSizePixel = 0
-    Main.Parent = Background
-
-    local MainStroke = Instance.new("UIStroke")
-    MainStroke.Color = Color3.fromRGB(45, 45, 45)
-    MainStroke.Thickness = 1
-    MainStroke.Parent = Main
-
-    local SideBar = Instance.new("Frame")
-    SideBar.Size = UDim2.new(0, 3, 1, 0)
-    SideBar.BackgroundColor3 = RED
-    SideBar.BorderSizePixel = 0
-    SideBar.Parent = Main
-
-    local Logo = Instance.new("ImageLabel")
-    Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-    Logo.Position = UDim2.new(0, 105, 0.5, -10)
-    Logo.Size = UDim2.new(0, 125, 0, 125)
-    Logo.BackgroundTransparency = 1
-    Logo.Image = LOGO_ID
-    Logo.ImageTransparency = 1
-    Logo.ScaleType = Enum.ScaleType.Fit
-    Logo.Parent = Main
-
-    local LogoStroke = Instance.new("UIStroke")
-    LogoStroke.Color = RED
-    LogoStroke.Thickness = 1
-    LogoStroke.Transparency = 1
-    LogoStroke.Parent = Logo
-
-    local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(0, 400, 0, 45)
-    Title.Position = UDim2.new(0, 185, 0, 48)
-    Title.BackgroundTransparency = 1
-    Title.Text = "ARASAKA"
-    Title.TextColor3 = WHITE
-    Title.TextSize = 36
-    Title.Font = Enum.Font.GothamBlack
-    Title.TextXAlignment = Enum.TextXAlignment.Left
-    Title.TextTransparency = 1
-    Title.Parent = Main
-
-    local Corporation = Instance.new("TextLabel")
-    Corporation.Size = UDim2.new(0, 400, 0, 20)
-    Corporation.Position = UDim2.new(0, 187, 0, 88)
-    Corporation.BackgroundTransparency = 1
-    Corporation.Text = "CORPORATION // SISTEMA DE CLIENTE"
-    Corporation.TextColor3 = RED
-    Corporation.TextSize = 12
-    Corporation.Font = Enum.Font.GothamBold
-    Corporation.TextXAlignment = Enum.TextXAlignment.Left
-    Corporation.TextTransparency = 1
-    Corporation.Parent = Main
-
-    local Accent = Instance.new("Frame")
-    Accent.Size = UDim2.new(0, 0, 0, 2)
-    Accent.Position = UDim2.new(0, 187, 0, 113)
-    Accent.BackgroundColor3 = RED
-    Accent.BorderSizePixel = 0
-    Accent.Parent = Main
-
-    local Status = Instance.new("TextLabel")
-    Status.Size = UDim2.new(0, 420, 0, 25)
-    Status.Position = UDim2.new(0, 187, 0, 130)
-    Status.BackgroundTransparency = 1
-    Status.Text = "INITIALIZING SYSTEM..."
-    Status.TextColor3 = GREY
-    Status.TextSize = 11
-    Status.Font = Enum.Font.Gotham
-    Status.TextXAlignment = Enum.TextXAlignment.Left
-    Status.TextTransparency = 1
-    Status.Parent = Main
-
-    local BarBackground = Instance.new("Frame")
-    BarBackground.Size = UDim2.new(0, 420, 0, 5)
-    BarBackground.Position = UDim2.new(0, 187, 0, 165)
-    BarBackground.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
-    BarBackground.BorderSizePixel = 0
-    BarBackground.Parent = Main
-
-    local Bar = Instance.new("Frame")
-    Bar.Size = UDim2.new(0, 0, 1, 0)
-    Bar.BackgroundColor3 = RED
-    Bar.BorderSizePixel = 0
-    Bar.Parent = BarBackground
-
-    local Percent = Instance.new("TextLabel")
-    Percent.Size = UDim2.new(0, 60, 0, 20)
-    Percent.Position = UDim2.new(1, -67, 0, 180)
-    Percent.BackgroundTransparency = 1
-    Percent.Text = "0%"
-    Percent.TextColor3 = RED
-    Percent.TextSize = 11
-    Percent.Font = Enum.Font.GothamBold
-    Percent.TextXAlignment = Enum.TextXAlignment.Right
-    Percent.TextTransparency = 1
-    Percent.Parent = Main
-
-    local SystemCode = Instance.new("TextLabel")
-    SystemCode.Size = UDim2.new(0, 400, 0, 20)
-    SystemCode.Position = UDim2.new(0, 187, 0, 202)
-    SystemCode.BackgroundTransparency = 1
-    SystemCode.Text = "SYS://ARASAKA/CLIENTE"
-    SystemCode.TextColor3 = Color3.fromRGB(55, 55, 55)
-    SystemCode.TextSize = 12
-    SystemCode.Font = Enum.Font.Code
-    SystemCode.TextXAlignment = Enum.TextXAlignment.Left
-    SystemCode.Parent = Main
-
-    local Footer = Instance.new("TextLabel")
-    Footer.Size = UDim2.new(1, -50, 0, 20)
-    Footer.Position = UDim2.new(0, 25, 1, -35)
-    Footer.BackgroundTransparency = 1
-    Footer.Text = "ARASAKA CORPORATION  //  SECURE CONNECTION"
-    Footer.TextColor3 = Color3.fromRGB(50, 50, 50)
-    Footer.TextSize = 12
-    Footer.Font = Enum.Font.GothamBold
-    Footer.TextXAlignment = Enum.TextXAlignment.Right
-    Footer.Parent = Background
-
-    local Messages = {
-        "INITIALIZING SYSTEM...",
-        "CONNECTING TO ARASAKA NETWORK...",
-        "VERIFYING USER DATA...",
-        "LOADING CORE MODULES...",
-        "CALIBRATING INTERFACE...",
-        "ESTABLISHING SECURE CONNECTION...",
-        "LOADING ARASAKA INTERFACE...",
-        "SYSTEM READY."
-    }
-
-    local Entrance = TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-    TweenService:Create(Logo, Entrance, {ImageTransparency = 0}):Play()
-    TweenService:Create(LogoStroke, Entrance, {Transparency = 0.25}):Play()
-    TweenService:Create(Title, Entrance, {TextTransparency = 0}):Play()
-    TweenService:Create(Corporation, Entrance, {TextTransparency = 0}):Play()
-    TweenService:Create(Status, Entrance, {TextTransparency = 0}):Play()
-    TweenService:Create(Percent, Entrance, {TextTransparency = 0}):Play()
-    TweenService:Create(Accent, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 420, 0, 2)}):Play()
-
-    local Glitch = true
-    task.spawn(function()
-        while Glitch and Gui.Parent do
-            task.wait(math.random(25, 70) / 100)
-            if math.random(1, 4) == 1 then
-                local oldPosition = Title.Position
-                local oldColor = Title.TextColor3
-                Title.Position = oldPosition + UDim2.new(0, math.random(-3, 3), 0, math.random(-1, 1))
-                Title.TextColor3 = RED
-                task.wait(0.025)
-                if Title.Parent then
-                    Title.Position = oldPosition
-                    Title.TextColor3 = oldColor
-                end
-            end
-        end
-    end)
-
-    for i = 1, 100 do
-        local progress = i / 100
-        TweenService:Create(Bar, TweenInfo.new(0.035, Enum.EasingStyle.Linear), {Size = UDim2.new(progress, 0, 1, 0)}):Play()
-        Percent.Text = tostring(i) .. "%"
-        local messageIndex = math.clamp(math.ceil(progress * #Messages), 1, #Messages)
-        Status.Text = Messages[messageIndex]
-        if i < 20 then task.wait(0.035) elseif i < 75 then task.wait(0.025) else task.wait(0.045) end
-    end
-
-    Status.Text = "SYSTEM READY."
-    Percent.Text = "100%"
-    task.wait(0.6)
-    Glitch = false
-
-    local Fade = TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-    for _, obj in ipairs({Logo, Title, Corporation, Status, Percent}) do
-        local prop = obj:IsA("ImageLabel") and "ImageTransparency" or "TextTransparency"
-        TweenService:Create(obj, Fade, {[prop] = 1}):Play()
-    end
-    TweenService:Create(LogoStroke, Fade, {Transparency = 1}):Play()
-    TweenService:Create(Accent, Fade, {BackgroundTransparency = 1}):Play()
-    TweenService:Create(BarBackground, Fade, {BackgroundTransparency = 1}):Play()
-    TweenService:Create(Bar, Fade, {BackgroundTransparency = 1}):Play()
-    TweenService:Create(Background, Fade, {BackgroundTransparency = 1}):Play()
-    task.wait(0.8)
-    if Gui then Gui:Destroy() end
-end
-
-ArasakaLoadingScreen()
-
-local uiName = "ArasakaChat_Gui"
-
-for _, oldGui in ipairs(targetGui:GetChildren()) do
-    if oldGui.Name == uiName or oldGui.Name == "ArasakaLoading_Gui" or oldGui.Name == "ArasakaAntiLag_Gui" or oldGui.Name == "ArasakaDropdown_Gui" or oldGui.Name == "ArasakaConfigRebirth_Gui" or oldGui.Name == "ArasakaBlackScreen_Gui" then
-        oldGui:Destroy()
-    end
-end
-
--- MÓDULO INTERNO DE CHAT PRIVADO
-function Chat:Build(tabChat, playClickSound)
-    local WebSocket = WebSocket or syn and syn.websocket or Krnl and Krnl.WebSocket
-    local ws
-    if WebSocket then 
-        pcall(function() ws = WebSocket.connect("wss://chatprivado-cwu3.onrender.com") end)
-    end
-    self.Socket = ws
-
-    local avatarCache = {}
-    local function getAvatarUrl(uId)
-        if avatarCache[uId] then return avatarCache[uId] end
-        local success, url = pcall(function()
-            return game:GetService("Players"):GetUserThumbnailAsync(uId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
-        end)
-        avatarCache[uId] = success and url or ""
-        return avatarCache[uId]
-    end
-
-    local myThumbUrl = getAvatarUrl(player.UserId)
-
-    local scrollingFrame = Instance.new("ScrollingFrame", tabChat)
-    scrollingFrame.Name = "ChatMessages"
-    scrollingFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-    scrollingFrame.BackgroundTransparency = 0
-    scrollingFrame.BorderSizePixel = 0
-    scrollingFrame.Position = UDim2.new(0, 10, 0, 35)
-    scrollingFrame.Size = UDim2.new(1, -20, 1, -83)
-    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    scrollingFrame.ScrollBarThickness = 3
-    scrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(110, 20, 20)
-    scrollingFrame.ClipsDescendants = true
-    Instance.new("UICorner", scrollingFrame).CornerRadius = UDim.new(0, 3)
-    local chatStroke = Instance.new("UIStroke", scrollingFrame)
-    chatStroke.Color = Color3.fromRGB(35, 35, 35)
-    chatStroke.Thickness = 1
-
-    local chatTopLine = Instance.new("Frame", tabChat)
-    chatTopLine.Size = UDim2.new(1, -20, 0, 1)
-    chatTopLine.Position = UDim2.new(0, 10, 0, 10)
-    chatTopLine.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-    chatTopLine.BorderSizePixel = 0
-    chatTopLine.ZIndex = 2
-
-    local uiListLayout = Instance.new("UIListLayout", scrollingFrame)
-    uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    uiListLayout.Padding = UDim.new(0, 6)
-
-    local chatHeader = Instance.new("TextLabel", tabChat)
-    chatHeader.Size = UDim2.new(1, -30, 0, 18)
-    chatHeader.Position = UDim2.new(0, 18, 0, 16)
-    chatHeader.BackgroundTransparency = 1
-    chatHeader.Text = "// SECURE CHANNEL"
-    chatHeader.TextColor3 = Color3.fromRGB(90, 90, 90)
-    chatHeader.Font = Enum.Font.Code
-    chatHeader.TextSize = 8
-    chatHeader.TextXAlignment = Enum.TextXAlignment.Left
-    chatHeader.ZIndex = 3
-
-    local textBox = Instance.new("TextBox", tabChat)
-    textBox.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-    textBox.BorderSizePixel = 0
-    textBox.Position = UDim2.new(0, 10, 1, -42)
-    textBox.Size = UDim2.new(1, -90, 0, 32)
-    textBox.ClearTextOnFocus = false
-    textBox.Font = Enum.Font.Gotham
-    textBox.PlaceholderText = "Sua mensagem..."
-    textBox.Text = ""
-    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.TextSize = 12
-    Instance.new("UICorner", textBox).CornerRadius = UDim.new(0, 4)
-
-    local textButton = Instance.new("TextButton", tabChat)
-    textButton.BackgroundColor3 = Color3.fromRGB(170, 32, 32)
-    textButton.BorderSizePixel = 0
-    textButton.Position = UDim2.new(1, -75, 1, -42)
-    textButton.Size = UDim2.new(0, 65, 0, 32)
-    textButton.Font = Enum.Font.GothamBold
-    textButton.Text = "ENVIAR 💬"
-    textButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textButton.TextSize = 11
-    textButton.BorderSizePixel = 0
-    Instance.new("UICorner", textButton).CornerRadius = UDim.new(0, 4)
-
-    local function adicionarMensagem(autor, texto, avatar)
-        local msgContainer = Instance.new("Frame", scrollingFrame)
-        msgContainer.BackgroundTransparency = 1
-        msgContainer.Size = UDim2.new(1, 0, 0, 28)
-
-        local imageIcon = Instance.new("ImageLabel", msgContainer)
-        imageIcon.BackgroundTransparency = 1
-        imageIcon.Size = UDim2.new(0, 24, 0, 24)
-        imageIcon.Image = avatar or ""
-        Instance.new("UICorner", imageIcon).CornerRadius = UDim.new(1, 0)
-
-        local msgLabel = Instance.new("TextLabel", msgContainer)
-        msgLabel.BackgroundTransparency = 1
-        msgLabel.Position = UDim2.new(0, 30, 0, 0)
-        msgLabel.Size = UDim2.new(1, -30, 1, 0)
-        msgLabel.Font = Enum.Font.Gotham
-        msgLabel.Text = '<font color="#d73232"><b>@' .. autor .. ':</b></font> ' .. texto
-        msgLabel.RichText = true
-        msgLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
-        msgLabel.TextSize = 11
-        msgLabel.TextXAlignment = Enum.TextXAlignment.Left
-        msgLabel.TextYAlignment = Enum.TextYAlignment.Center
-
-        scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiListLayout.AbsoluteContentSize.Y + 20)
-    end
-
-    if ws then
-        local messageConnection = ws.OnMessage:Connect(function(rawMsg)
-            pcall(function()
-                local split = string.split(rawMsg, "||")
-                if #split >= 3 then
-                    local autor = split[1]
-                    local avatar = split[2]
-                    local texto = split[3]
-                    if not string.find(autor, "PING") and not string.find(texto, "PING") and autor ~= "ONLINE_COUNT" and autor ~= "[SISTEMA]" then
-                        adicionarMensagem(autor, texto, avatar)
-                    end
-                end
-            end)
-        end)
-        Core:TrackConnection("Chat", messageConnection)
-    end
-
-    local function enviar()
-        if textBox.Text ~= "" and ws then
-            if playClickSound then playClickSound() end
-            ws:Send(player.Name .. "||" .. myThumbUrl .. "||" .. textBox.Text)
-            textBox.Text = ""
-        end
-    end
-
-    Core:TrackConnection("Chat", textButton.MouseButton1Click:Connect(enviar))
-    Core:TrackConnection("Chat", textBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed then enviar() end
-    end))
-end
-
--- DROPDOWN SELECTOR
-local function AbrirMenuSelecao(titulo, listaOpcoes, callback)
-    local oldDrop = targetGui:FindFirstChild("ArasakaDropdown_Gui")
-    if oldDrop then oldDrop:Destroy() end
-
-    local dropGui = Instance.new("ScreenGui", targetGui)
-    dropGui.Name = "ArasakaDropdown_Gui"
-    dropGui.IgnoreGuiInset = true
-    dropGui.ResetOnSpawn = false
-    dropGui.DisplayOrder = 5000
-    dropGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-    local bgOverlay = Instance.new("TextButton", dropGui)
-    bgOverlay.Size = UDim2.new(1, 0, 1, 0)
-    bgOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    bgOverlay.BackgroundTransparency = 0.30
-    bgOverlay.BorderSizePixel = 0
-    bgOverlay.Text = ""
-    bgOverlay.AutoButtonColor = false
-
-    local mainFrame = Instance.new("Frame", dropGui)
-    mainFrame.Size = UDim2.new(0, 430, 0, 390)
-    mainFrame.Position = UDim2.new(0.5, -215, 0.5, -195)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(6, 6, 6)
-    mainFrame.BorderSizePixel = 0
-    mainFrame.Active = true
-    mainFrame.Draggable = true
-    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
-
-    local stroke = Instance.new("UIStroke", mainFrame)
-    stroke.Color = Color3.fromRGB(150, 25, 25)
-    stroke.Thickness = 1
-
-    local topLine = Instance.new("Frame", mainFrame)
-    topLine.Size = UDim2.new(1, 0, 0, 3)
-    topLine.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-    topLine.BorderSizePixel = 0
-
-    local header = Instance.new("Frame", mainFrame)
-    header.Size = UDim2.new(1, 0, 0, 58)
-    header.Position = UDim2.new(0, 0, 0, 3)
-    header.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
-    header.BorderSizePixel = 0
-
-    local logo = Instance.new("ImageLabel", header)
-    logo.Size = UDim2.new(0, 30, 0, 30)
-    logo.Position = UDim2.new(0, 14, 0.5, -15)
-    logo.BackgroundTransparency = 1
-    logo.Image = "rbxassetid://132397224962668"
-    logo.ScaleType = Enum.ScaleType.Fit
-
-    local titleLbl = Instance.new("TextLabel", header)
-    titleLbl.Size = UDim2.new(1, -90, 0, 22)
-    titleLbl.Position = UDim2.new(0, 52, 0, 9)
-    titleLbl.BackgroundTransparency = 1
-    titleLbl.Text = "ARASAKA // " .. string.upper(titulo)
-    titleLbl.TextColor3 = Color3.fromRGB(235, 235, 235)
-    titleLbl.Font = Enum.Font.GothamBlack
-    titleLbl.TextSize = 13
-    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
-
-    local subLbl = Instance.new("TextLabel", header)
-    subLbl.Size = UDim2.new(1, -90, 0, 14)
-    subLbl.Position = UDim2.new(0, 52, 0, 31)
-    subLbl.BackgroundTransparency = 1
-    subLbl.Text = "CORPORATION // SELECT MODULE"
-    subLbl.TextColor3 = Color3.fromRGB(155, 35, 35)
-    subLbl.Font = Enum.Font.Code
-    subLbl.TextSize = 8
-    subLbl.TextXAlignment = Enum.TextXAlignment.Left
-
-    local closeBtn = Instance.new("TextButton", header)
-    closeBtn.Size = UDim2.new(0, 28, 0, 28)
-    closeBtn.Position = UDim2.new(1, -39, 0.5, -14)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    closeBtn.BorderSizePixel = 0
-    closeBtn.Text = "×"
-    closeBtn.TextColor3 = Color3.fromRGB(215, 50, 50)
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 16
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 3)
-    local closeStroke = Instance.new("UIStroke", closeBtn)
-    closeStroke.Color = Color3.fromRGB(45, 45, 45)
-
-    local separator = Instance.new("Frame", mainFrame)
-    separator.Size = UDim2.new(1, -24, 0, 1)
-    separator.Position = UDim2.new(0, 12, 0, 65)
-    separator.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
-    separator.BorderSizePixel = 0
-
-    local scroll = Instance.new("ScrollingFrame", mainFrame)
-    scroll.Size = UDim2.new(1, -24, 1, -91)
-    scroll.Position = UDim2.new(0, 12, 0, 76)
-    scroll.BackgroundTransparency = 1
-    scroll.BorderSizePixel = 0
-    scroll.ScrollBarThickness = 3
-    scroll.ScrollBarImageColor3 = Color3.fromRGB(110, 20, 20)
-    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-
-    local layout = Instance.new("UIListLayout", scroll)
-    layout.Padding = UDim.new(0, 5)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    local padding = Instance.new("UIPadding", scroll)
-    padding.PaddingBottom = UDim.new(0, 8)
-
-    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
-    end)
-
-    local dropConnections = {}
-    local function fecharDropdown()
-        for _, conn in ipairs(dropConnections) do conn:Disconnect() end
-        dropConnections = {}
-        if dropGui then dropGui:Destroy() end
-    end
-
-    table.insert(dropConnections, closeBtn.MouseButton1Click:Connect(fecharDropdown))
-    table.insert(dropConnections, bgOverlay.MouseButton1Click:Connect(fecharDropdown))
-
-    for index, itemData in ipairs(listaOpcoes) do
-        local nameText = typeof(itemData) == "table" and itemData.Text or tostring(itemData)
-        local valueData = typeof(itemData) == "table" and itemData.Value or itemData
-
-        local itemBtn = Instance.new("TextButton", scroll)
-        itemBtn.LayoutOrder = index
-        itemBtn.Size = UDim2.new(1, -6, 0, 36)
-        itemBtn.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-        itemBtn.BorderSizePixel = 0
-        itemBtn.Text = ""
-        itemBtn.AutoButtonColor = false
-        Instance.new("UICorner", itemBtn).CornerRadius = UDim.new(0, 2)
-
-        local itemLine = Instance.new("Frame", itemBtn)
-        itemLine.Size = UDim2.new(0, 2, 1, 0)
-        itemLine.BackgroundColor3 = Color3.fromRGB(120, 22, 22)
-        itemLine.BorderSizePixel = 0
-
-        local indexLbl = Instance.new("TextLabel", itemBtn)
-        indexLbl.Size = UDim2.new(0, 28, 1, 0)
-        indexLbl.Position = UDim2.new(0, 7, 0, 0)
-        indexLbl.BackgroundTransparency = 1
-        indexLbl.Text = string.format("%02d", index)
-        indexLbl.TextColor3 = Color3.fromRGB(75, 75, 75)
-        indexLbl.Font = Enum.Font.Code
-        indexLbl.TextSize = 12
-
-        local itemLbl = Instance.new("TextLabel", itemBtn)
-        itemLbl.Size = UDim2.new(1, -45, 1, 0)
-        itemLbl.Position = UDim2.new(0, 36, 0, 0)
-        itemLbl.BackgroundTransparency = 1
-        itemLbl.Text = nameText
-        itemLbl.TextColor3 = Color3.fromRGB(210, 210, 210)
-        itemLbl.Font = Enum.Font.GothamMedium
-        itemLbl.TextSize = 12
-        itemLbl.TextXAlignment = Enum.TextXAlignment.Left
-        itemLbl.TextTruncate = Enum.TextTruncate.AtEnd
-
-        table.insert(dropConnections, itemBtn.MouseEnter:Connect(function()
-            itemBtn.BackgroundColor3 = Color3.fromRGB(34, 9, 9)
-            itemLine.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-            itemLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-        end))
-        table.insert(dropConnections, itemBtn.MouseLeave:Connect(function()
-            itemBtn.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-            itemLine.BackgroundColor3 = Color3.fromRGB(120, 22, 22)
-            itemLbl.TextColor3 = Color3.fromRGB(210, 210, 210)
-        end))
-        table.insert(dropConnections, itemBtn.MouseButton1Click:Connect(function()
-            callback(valueData, nameText)
-            fecharDropdown()
-        end))
-    end
-end
-
--- HUB EXECUTION PRINCIPAL
-function UI:Start()
-    local startTime = os.time()
-    local FormatNumber = Utils.FormatNumber
-    local function getMuscleEvent() return Utils.GetMuscleEvent(player) end
-    local function getRebirthRemote() return Utils.GetRebirthRemote(ReplicatedStorage) end
-
-    local clickSound = Instance.new("Sound", SoundService)
-    clickSound.SoundId = "rbxassetid://4499400560"
-    clickSound.Volume = 1
-    local function playClickSound() pcall(function() clickSound:Play() end) end
-
-    local screenGui = Instance.new("ScreenGui", targetGui)
-    screenGui.Name = uiName
-    screenGui.DisplayOrder = 1000
-    screenGui.ResetOnSpawn = false
-    self.ScreenGui = screenGui
-
-    local uiScale = Instance.new("UIScale")
-    local camera = workspace.CurrentCamera
-    local viewportX = camera and camera.ViewportSize.X or 1920
-    local viewportY = camera and camera.ViewportSize.Y or 1080
-    if UserInputService.TouchEnabled then
-        uiScale.Scale = math.clamp(math.min(viewportX / 820, viewportY / 520) * 0.94, 0.42, 0.82)
-    else
-        uiScale.Scale = 1
-    end
-    uiScale.Parent = screenGui
-
-    -- INTERFACE PRINCIPAL V3
-    local frame = Instance.new("Frame", screenGui)
-    frame.AnchorPoint = Vector2.new(0.5, 0.5)
-    frame.Size = UDim2.new(0, 820, 0, 520)
-    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-    frame.BorderSizePixel = 0
-    frame.Active, frame.Draggable = true, true
-    frame.ClipsDescendants = true
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 4)
-
-    local uiStrokeMain = Instance.new("UIStroke", frame)
-    uiStrokeMain.Color = Color3.fromRGB(55, 55, 55)
-    uiStrokeMain.Thickness = 1
-
-    local topRed = Instance.new("Frame", frame)
-    topRed.Size = UDim2.new(1, 0, 0, 3)
-    topRed.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-    topRed.BorderSizePixel = 0
-    topRed.ZIndex = 10
-
-    local techLeft = Instance.new("Frame", frame)
-    techLeft.Size = UDim2.new(0, 55, 0, 1)
-    techLeft.Position = UDim2.new(0, 18, 0, 15)
-    techLeft.BackgroundColor3 = Color3.fromRGB(100, 15, 15)
-    techLeft.BorderSizePixel = 0
-
-    local techRight = Instance.new("Frame", frame)
-    techRight.Size = UDim2.new(0, 55, 0, 1)
-    techRight.Position = UDim2.new(1, -73, 0, 15)
-    techRight.BackgroundColor3 = Color3.fromRGB(100, 15, 15)
-    techRight.BorderSizePixel = 0
-
-    local titleBar = Instance.new("Frame", frame)
-    titleBar.Size = UDim2.new(1, 0, 0, 52)
-    titleBar.Position = UDim2.new(0, 0, 0, 3)
-    titleBar.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
-    titleBar.BorderSizePixel = 0
-
-    local decalImage = Instance.new("ImageLabel", titleBar)
-    decalImage.Size = UDim2.new(0, 30, 0, 30)
-    decalImage.Position = UDim2.new(0, 17, 0.5, -15)
-    decalImage.BackgroundTransparency = 1
-    decalImage.Image = "rbxassetid://132397224962668"
-    decalImage.ScaleType = Enum.ScaleType.Fit
-
-    local titleText = Instance.new("TextLabel", titleBar)
-    titleText.Size = UDim2.new(0, 300, 0, 23)
-    titleText.Position = UDim2.new(0, 57, 0, 8)
-    titleText.BackgroundTransparency = 1
-    titleText.Text = "ARASAKA"
-    titleText.TextColor3 = Color3.fromRGB(235, 235, 235)
-    titleText.Font = Enum.Font.GothamBlack
-    titleText.TextSize = 18
-    titleText.TextXAlignment = Enum.TextXAlignment.Left
-
-    local subtitleText = Instance.new("TextLabel", titleBar)
-    subtitleText.Size = UDim2.new(0, 360, 0, 16)
-    subtitleText.Position = UDim2.new(0, 58, 0, 30)
-    subtitleText.BackgroundTransparency = 1
-    subtitleText.Text = "CORPORATION // SISTEMA DE CLIENTE"
-    subtitleText.TextColor3 = Color3.fromRGB(215, 50, 50)
-    subtitleText.Font = Enum.Font.Code
-    subtitleText.TextSize = 12
-    subtitleText.TextXAlignment = Enum.TextXAlignment.Left
-
-    local onlineText = Instance.new("TextLabel", titleBar)
-    onlineText.Size = UDim2.new(0, 190, 0, 20)
-    onlineText.Position = UDim2.new(1, -250, 0, 7)
-    onlineText.BackgroundTransparency = 1
-    onlineText.Text = "● SISTEMA ONLINE"
-    onlineText.TextColor3 = Color3.fromRGB(215, 50, 50)
-    onlineText.Font = Enum.Font.Code
-    onlineText.TextSize = 11
-    onlineText.TextXAlignment = Enum.TextXAlignment.Right
-
-    local userText = Instance.new("TextLabel", titleBar)
-    userText.Size = UDim2.new(0, 235, 0, 18)
-    userText.Position = UDim2.new(1, -295, 0, 29)
-    userText.BackgroundTransparency = 1
-    userText.Text = "ID DO USUARIO: " .. tostring(player.UserId)
-    userText.TextColor3 = Color3.fromRGB(190, 190, 190)
-    userText.Font = Enum.Font.Code
-    userText.TextSize = 10
-    userText.TextXAlignment = Enum.TextXAlignment.Right
-
-    local btnMinimizar = Instance.new("TextButton", titleBar)
-    btnMinimizar.Size = UDim2.new(0, 30, 0, 30)
-    btnMinimizar.Position = UDim2.new(1, -38, 0.5, -15)
-    btnMinimizar.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-    btnMinimizar.BorderSizePixel = 0
-    btnMinimizar.Text = "—"
-    btnMinimizar.TextColor3 = Color3.fromRGB(215, 50, 50)
-    btnMinimizar.Font = Enum.Font.GothamBold
-    btnMinimizar.TextSize = 16
-    Instance.new("UICorner", btnMinimizar).CornerRadius = UDim.new(0, 3)
-    local minStroke = Instance.new("UIStroke", btnMinimizar)
-    minStroke.Color = Color3.fromRGB(55, 55, 55)
-    minStroke.Thickness = 1
-
-    local separator = Instance.new("Frame", frame)
-    separator.Size = UDim2.new(1, -32, 0, 1)
-    separator.Position = UDim2.new(0, 16, 0, 55)
-    separator.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    separator.BorderSizePixel = 0
-
-    local sidebar = Instance.new("Frame", frame)
-    sidebar.Size = UDim2.new(0, 155, 1, -57)
-    sidebar.Position = UDim2.new(0, 0, 0, 57)
-    sidebar.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-    sidebar.BorderSizePixel = 0
-
-    local sideAccent = Instance.new("Frame", sidebar)
-    sideAccent.Size = UDim2.new(0, 2, 1, 0)
-    sideAccent.Position = UDim2.new(1, -2, 0, 0)
-    sideAccent.BackgroundColor3 = Color3.fromRGB(70, 10, 10)
-    sideAccent.BorderSizePixel = 0
-
-    local sideHeader = Instance.new("TextLabel", sidebar)
-    sideHeader.Size = UDim2.new(1, -24, 0, 28)
-    sideHeader.Position = UDim2.new(0, 12, 0, 12)
-    sideHeader.BackgroundTransparency = 1
-    sideHeader.Text = "// MODULOS"
-    sideHeader.TextColor3 = Color3.fromRGB(95, 95, 95)
-    sideHeader.Font = Enum.Font.Code
-    sideHeader.TextSize = 12
-    sideHeader.TextXAlignment = Enum.TextXAlignment.Left
-
-    local sideLine = Instance.new("Frame", sidebar)
-    sideLine.Size = UDim2.new(1, -24, 0, 1)
-    sideLine.Position = UDim2.new(0, 12, 0, 38)
-    sideLine.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    sideLine.BorderSizePixel = 0
-
-    local nextTabY = 48
-
-    local contentArea = Instance.new("Frame", frame)
-    contentArea.Size = UDim2.new(1, -155, 1, -57)
-    contentArea.Position = UDim2.new(0, 155, 0, 57)
-    contentArea.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-    contentArea.BorderSizePixel = 0
-
-    local contentGlow = Instance.new("Frame", contentArea)
-    contentGlow.Size = UDim2.new(1, 0, 0, 1)
-    contentGlow.Position = UDim2.new(0, 0, 0, 0)
-    contentGlow.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-    contentGlow.BackgroundTransparency = 0.35
-    contentGlow.BorderSizePixel = 0
-
-    local contentCode = Instance.new("TextLabel", contentArea)
-    contentCode.Size = UDim2.new(1, -24, 0, 16)
-    contentCode.Position = UDim2.new(0, 12, 1, -22)
-    contentCode.BackgroundTransparency = 1
-    contentCode.Text = "SYS://ARASAKA/CLIENTE    //    INSERT PARA MOSTRAR/OCULTAR"
-    contentCode.TextColor3 = Color3.fromRGB(45, 45, 45)
-    contentCode.Font = Enum.Font.Code
-    contentCode.TextSize = 8
-    contentCode.TextXAlignment = Enum.TextXAlignment.Left
-
-    local abas = {}
-    local function CriarAba(nome, textoExibido)
-        local tabBtn = Instance.new("TextButton", sidebar)
-        tabBtn.Size = UDim2.new(0, 133, 0, 34)
-        tabBtn.Position = UDim2.new(0, 11, 0, nextTabY)
-        nextTabY = nextTabY + 39
-        tabBtn.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-        tabBtn.BorderSizePixel = 0
-        tabBtn.Text = "  " .. (textoExibido or string.upper(nome))
-        tabBtn.TextColor3 = Color3.fromRGB(125, 125, 125)
-        tabBtn.Font = Enum.Font.GothamBold
-        tabBtn.TextSize = 11
-        tabBtn.TextXAlignment = Enum.TextXAlignment.Left
-        Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 2)
-
-        local tabLine = Instance.new("Frame", tabBtn)
-        tabLine.Name = "ActiveLine"
-        tabLine.Size = UDim2.new(0, 2, 0.65, 0)
-        tabLine.Position = UDim2.new(0, 0, 0.175, 0)
-        tabLine.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-        tabLine.BorderSizePixel = 0
-        tabLine.Visible = false
-
-        local tabContent = Instance.new("Frame", contentArea)
-        tabContent.Size = UDim2.new(1, 0, 1, 0)
-        tabContent.BackgroundTransparency = 1
-        tabContent.Visible = false
-
-        abas[nome] = {btn = tabBtn, container = tabContent, line = tabLine}
-
-        tabBtn.MouseEnter:Connect(function()
-            if not tabContent.Visible then
-                TweenService:Create(tabBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(20, 20, 20)}):Play()
-            end
-        end)
-        tabBtn.MouseLeave:Connect(function()
-            if not tabContent.Visible then
-                TweenService:Create(tabBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(13, 13, 13)}):Play()
-            end
-        end)
-
-        tabBtn.MouseButton1Click:Connect(function()
-            playClickSound()
-            for _, tab in pairs(abas) do
-                tab.container.Visible = false
-                tab.btn.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-                tab.btn.TextColor3 = Color3.fromRGB(125, 125, 125)
-                if tab.line then tab.line.Visible = false end
-            end
-            tabContent.Visible = true
-            tabBtn.BackgroundColor3 = Color3.fromRGB(45, 12, 12)
-            tabBtn.TextColor3 = Color3.fromRGB(245, 245, 245)
-            tabLine.Visible = true
-        end)
-        return tabContent
-    end
-
-    local tabInicio = CriarAba("Início", "🏠  INÍCIO")
-    local tabFarms = CriarAba("Farms", "⛏️  FARMS")
-    local tabTeleports = CriarAba("Teleportes", "📍  TELEPORTES")
-    local tabPets = CriarAba("Pets", "🐾  PETS")
-    local tabVisual = CriarAba("Visual", "👁️  VISUAL")
-    local tabOutros = CriarAba("Outros", "⚙️  OUTROS")
-    local tabKill = CriarAba("Kill", "💀  KILL")
-    local tabChat = CriarAba("Chat", "💬  CHAT")
-    CriarAba("Calculadora", "📊  CALCULADORA")
-
-    abas["Início"].container.Visible = true
-    abas["Início"].btn.BackgroundColor3 = Color3.fromRGB(45, 12, 12)
-    abas["Início"].btn.TextColor3 = Color3.fromRGB(245, 245, 245)
-    abas["Início"].line.Visible = true
-
-    -- ATALHO DE TECLADO: TECLA INSERT (INS) PARA ESCONDER/MOSTRAR HUB
-    Core:TrackConnection("UI", UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if not gameProcessed and input.KeyCode == Enum.KeyCode.Insert and screenGui.Parent then
-            screenGui.Enabled = not screenGui.Enabled
-        end
-    end))
-
-    --==================================================
-    -- MODULE // CALCULATOR
-    --==================================================
-    function Calculator:Init()
-        local tab = abas["Calculadora"] and abas["Calculadora"].container
-        if not tab then return end
-
-        local scroll = Instance.new("ScrollingFrame", tab)
-        scroll.Size = UDim2.new(1, -20, 1, -10)
-        scroll.Position = UDim2.new(0, 10, 0, 5)
-        scroll.BackgroundTransparency = 1
-        scroll.BorderSizePixel = 0
-        scroll.ScrollBarThickness = 4
-        scroll.ScrollBarImageColor3 = Color3.fromRGB(110, 20, 20)
-        scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-
-        local layout = Instance.new("UIListLayout", scroll)
-        layout.Padding = UDim.new(0, 7)
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 18)
-        end)
-
-        local header = Instance.new("TextLabel", scroll)
-        header.LayoutOrder = 1
-        header.Size = UDim2.new(1, -6, 0, 42)
-        header.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
-        header.BorderSizePixel = 0
-        header.Text = "  📊 CALCULADORA // MEDIA DE GANHOS"
-        header.TextColor3 = Color3.fromRGB(235, 235, 235)
-        header.Font = Enum.Font.GothamBlack
-        header.TextSize = 12
-        header.TextXAlignment = Enum.TextXAlignment.Left
-        Instance.new("UICorner", header).CornerRadius = UDim.new(0, 4)
-        local hs = Instance.new("UIStroke", header)
-        hs.Color = Color3.fromRGB(55, 55, 55)
-
-        local info = Instance.new("TextLabel", scroll)
-        info.LayoutOrder = 2
-        info.Size = UDim2.new(1, -6, 0, 34)
-        info.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-        info.BorderSizePixel = 0
-        info.Text = "ANALISANDO... // A MEDIA FICA MAIS PRECISA COM O TEMPO"
-        info.TextColor3 = Color3.fromRGB(135, 135, 135)
-        info.Font = Enum.Font.Gotham
-        info.TextSize = 12
-        Instance.new("UICorner", info).CornerRadius = UDim.new(0, 4)
-
-        local function rawStat(a, b)
-            return Utils.ReadStat(player, a, b)
-        end
-
-        local function nice(n)
-            return Utils.FormatNumber(n, 2)
-        end
-
-        local function makeCard(title, order)
-            local card = Instance.new("Frame", scroll)
-            card.LayoutOrder = order
-            card.Size = UDim2.new(1, -6, 0, 88)
-            card.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-            card.BorderSizePixel = 0
-            Instance.new("UICorner", card).CornerRadius = UDim.new(0, 4)
-
-            local stroke = Instance.new("UIStroke", card)
-            stroke.Color = Color3.fromRGB(42, 42, 42)
-            stroke.Thickness = 1
-
-            local line = Instance.new("Frame", card)
-            line.Size = UDim2.new(0, 3, 1, 0)
-            line.BackgroundColor3 = Color3.fromRGB(190, 30, 30)
-            line.BorderSizePixel = 0
-
-            local name = Instance.new("TextLabel", card)
-            name.Size = UDim2.new(1, -24, 0, 25)
-            name.Position = UDim2.new(0, 14, 0, 7)
-            name.BackgroundTransparency = 1
-            name.Text = title
-            name.TextColor3 = Color3.fromRGB(235, 235, 235)
-            name.Font = Enum.Font.GothamBold
-            name.TextSize = 14
-            name.TextXAlignment = Enum.TextXAlignment.Left
-
-            local values = Instance.new("TextLabel", card)
-            values.Size = UDim2.new(1, -28, 0, 48)
-            values.Position = UDim2.new(0, 14, 0, 31)
-            values.BackgroundTransparency = 1
-            values.Text = "MINUTO  0\nHORA  0    |    DIA  0    |    SEMANA  0"
-            values.TextColor3 = Color3.fromRGB(165, 165, 165)
-            values.Font = Enum.Font.GothamBold
-            values.TextSize = 14
-            values.TextXAlignment = Enum.TextXAlignment.Left
-            values.TextYAlignment = Enum.TextYAlignment.Top
-            return values
-        end
-
-        local labels = {
-            Forca = makeCard("💪 FORÇA", 3),
-            Dura = makeCard("🛡️ DURABILIDADE", 4),
-            Agil = makeCard("⚡ AGILIDADE", 5),
-            Rebirths = makeCard("🔄 RENASCIMENTOS", 6)
-        }
-
-        -- ACUMULADOR REAL DE GANHOS
-        -- Soma apenas aumentos positivos entre cada leitura. Assim, quando um
-        -- rebirth/reset derruba um atributo, a queda não apaga o que já foi ganho.
-        local previous = {
-            Forca = rawStat("Muscle", "Strength"),
-            Dura = rawStat("Durability"),
-            Agil = rawStat("Agility", "Speed"),
-            Rebirths = rawStat("Rebirths", "Rebirth")
-        }
-        local accumulated = {
-            Forca = 0,
-            Dura = 0,
-            Agil = 0,
-            Rebirths = 0
-        }
-        local started = os.clock()
-
-        local function elapsedText(sec)
-            sec = math.max(0, math.floor(sec))
-            local h = math.floor(sec / 3600)
-            local m = math.floor((sec % 3600) / 60)
-            local s = sec % 60
-            return string.format("%02dh %02dm %02ds", h, m, s)
-        end
-
-        local function update(label, gain, elapsed)
-            local perSecond = elapsed > 0 and (gain / elapsed) or 0
-            label.Text = string.format(
-                "MINUTO  %s\nHORA  %s    |    DIA  %s    |    SEMANA  %s",
-                nice(perSecond * 60),
-                nice(perSecond * 3600),
-                nice(perSecond * 86400),
-                nice(perSecond * 604800)
-            )
-        end
-
-        task.spawn(function()
-            while Core:IsAlive() and tab.Parent do
-                local elapsed = math.max(0.001, os.clock() - started)
-                pcall(function()
-                    local current = {
-                        Forca = rawStat("Muscle", "Strength"),
-                        Dura = rawStat("Durability"),
-                        Agil = rawStat("Agility", "Speed"),
-                        Rebirths = rawStat("Rebirths", "Rebirth")
-                    }
-
-                    -- Só soma crescimento. Qualquer queda é tratada como reset/rebirth.
-                    for key, value in pairs(current) do
-                        local delta = value - (previous[key] or value)
-                        if delta > 0 then
-                            accumulated[key] = (accumulated[key] or 0) + delta
-                        end
-                        previous[key] = value
-                    end
-
-                    update(labels.Forca, accumulated.Forca, elapsed)
-                    update(labels.Dura, accumulated.Dura, elapsed)
-                    update(labels.Agil, accumulated.Agil, elapsed)
-                    update(labels.Rebirths, accumulated.Rebirths, elapsed)
-                    info.Text = "TEMPO ANALISADO // " .. elapsedText(elapsed) .. "    //    MEDIA REAL DA SESSAO"
-                end)
-                task.wait(1)
-            end
-        end)
-    end
-
-    Core:RegisterModule("Calculator", Calculator)
-    local calcOk, calcErr = Core:StartModule("Calculator")
-    if not calcOk then warn("[ARASAKA][MODULE:Calculator] Falha:", calcErr) end
-
-    --==================================================
-    -- MODULE // CHAT // LAZY LOADING
-    -- O chat só é inicializado quando a aba CHAT é aberta pela primeira vez.
-    --==================================================
-    Chat.Initialized = false
-    Chat.Loading = false
-
-    function Chat:Init()
-        if self.Initialized or self.Loading then
-            return
-        end
-
-        self.Loading = true
-        Utils.PerfBegin("CHAT_LAZY_INIT")
-
-        local ok, err = pcall(function()
-            Chat:Build(tabChat, playClickSound)
-        end)
-
-        Utils.PerfEnd("CHAT_LAZY_INIT")
-        self.Loading = false
-
-        if ok then
-            self.Initialized = true
-            print("[ARASAKA][MODULE] Chat = CARREGADO")
-        else
-            warn("[ARASAKA][MODULE:Chat] Falha:", err)
-        end
-    end
-
-    if Core then
-        Core:RegisterModule("Chat", Chat)
-    end
-
-    local function EnsureChatLoaded()
-        if Chat.Initialized or Chat.Loading then
-            return
-        end
-
-        if Core then
-            local okChat, errChat = Core:StartModule("Chat")
-            if not okChat then
-                warn("[ARASAKA][MODULE:Chat] Falha ao iniciar:", errChat)
-            end
-        else
-            Chat:Init()
-        end
-    end
-
-    -- Detecta a primeira abertura da página do chat sem alterar os botões existentes.
-    -- Assim preservamos a navegação original do Hub.
-    local chatVisibilityConnection
-    chatVisibilityConnection = tabChat:GetPropertyChangedSignal("Visible"):Connect(function()
-        if tabChat.Visible then
-            EnsureChatLoaded()
-            if chatVisibilityConnection then
-                chatVisibilityConnection:Disconnect()
-                chatVisibilityConnection = nil
-            end
-        end
-    end)
-
-    if Core then
-        Core:TrackConnection("ChatLoader", chatVisibilityConnection)
-    end
-
-    function Chat:Stop()
-        Core:CleanupOwner("ChatLoader")
-        Core:CleanupOwner("Chat")
-        if self.Socket then
-            pcall(function()
-                if self.Socket.Close then self.Socket:Close() end
-            end)
-            self.Socket = nil
-        end
-        self.Loading = false
-        self.Initialized = false
-    end
-
-    -- Caso CHAT já esteja visível por alguma configuração futura.
-    if tabChat.Visible then
-        task.defer(EnsureChatLoaded)
-    end
-
-    --==================================================
-    -- MODULE // KILL
-    --==================================================
-    function Kill:Init()
-        Utils.PerfBegin("KILL_UI")
-        self.State = self.State or {
-            mode = nil,
-            excludeFriends = false,
-            selectedTarget = nil,
-            excludedUserIds = {}
-        }
-
-    -- CACHE LOCAL DE AMIGOS
-    local friendsCache = {}
-
-    local function updateFriendsCache()
-        friendsCache = {}
-        for _, p in ipairs(Players:GetPlayers()) do
-            if p ~= player then
-                task.spawn(function()
-                    local isFriend = false
-                    pcall(function()
-                        isFriend = player:IsFriendsWith(p.UserId)
-                    end)
-                    friendsCache[p.UserId] = isFriend
-                end)
-            end
-        end
-    end
-
-    updateFriendsCache()
-    Core:TrackConnection("Kill", Players.PlayerAdded:Connect(function(p)
-        task.wait(1)
-        pcall(function()
-            friendsCache[p.UserId] = player:IsFriendsWith(p.UserId)
-        end)
-    end))
-
-    Core:TrackConnection("Kill", Players.PlayerRemoving:Connect(function(p)
-        friendsCache[p.UserId] = nil
-    end))
-
-    local killScroll = Instance.new("ScrollingFrame", tabKill)
-    killScroll.Size = UDim2.new(1, -20, 1, -10)
-    killScroll.Position = UDim2.new(0, 10, 0, 5)
-    killScroll.BackgroundTransparency = 1
-    killScroll.BorderSizePixel = 0
-    killScroll.ScrollBarThickness = 4
-    killScroll.ScrollBarImageColor3 = Color3.fromRGB(110, 20, 20)
-    killScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-
-    local killLayout = Instance.new("UIListLayout", killScroll)
-    killLayout.Padding = UDim.new(0, 7)
-    killLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    killLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        killScroll.CanvasSize = UDim2.new(0, 0, 0, killLayout.AbsoluteContentSize.Y + 18)
-    end)
-
-    local killHeader = Instance.new("TextLabel", killScroll)
-    killHeader.LayoutOrder = 1
-    killHeader.Size = UDim2.new(1, -6, 0, 38)
-    killHeader.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
-    killHeader.BorderSizePixel = 0
-    killHeader.Text = "  💀 CONTROLE KILL // SISTEMA DE ALVOS"
-    killHeader.TextColor3 = Color3.fromRGB(235, 235, 235)
-    killHeader.Font = Enum.Font.GothamBlack
-    killHeader.TextSize = 12
-    killHeader.TextXAlignment = Enum.TextXAlignment.Left
-    Instance.new("UICorner", killHeader).CornerRadius = UDim.new(0, 4)
-    local khs = Instance.new("UIStroke", killHeader)
-    khs.Color = Color3.fromRGB(55, 55, 55)
-
-    local function makeKillButton(text, order)
-        return Utils.CreateTextButton(killScroll, {
-            LayoutOrder = order,
-            Size = UDim2.new(1, -6, 0, 36),
-            BackgroundColor3 = Color3.fromRGB(180, 30, 30),
-            BorderSizePixel = 0,
-            Text = text,
-            TextColor3 = Color3.fromRGB(255, 255, 255),
-            Font = Enum.Font.GothamBold,
-            TextSize = 11,
-            CornerRadius = UDim.new(0, 5),
-        })
-    end
-
-    local btnKillAll = makeKillButton("KILL TODOS: OFF 🔴", 2)
-    local btnSelectKill = makeKillButton("PLAYER ESPECÍFICO: SELECIONAR 🎯", 3)
-    local btnKillSpecific = makeKillButton("KILL JOGADOR ESPECÍFICO: OFF 🔴", 4)
-    local btnEditExclusions = makeKillButton("EDITAR EXCLUSÕES 🛡️", 5)
-    local btnKillExclude = makeKillButton("KILL COM EXCLUSÃO: OFF 🔴", 6)
-    local btnKillFriends = makeKillButton("EXCLUIR AMIGOS: OFF 🔴", 7)
-
-    local killStatus = Instance.new("TextLabel", killScroll)
-    killStatus.LayoutOrder = 8
-    killStatus.Size = UDim2.new(1, -6, 0, 44)
-    killStatus.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-    killStatus.BorderSizePixel = 0
-    killStatus.Text = "STATUS // AGUARDANDO"
-    killStatus.TextColor3 = Color3.fromRGB(145, 145, 145)
-    killStatus.Font = Enum.Font.Code
-    killStatus.TextSize = 12
-    killStatus.TextWrapped = true
-    Instance.new("UICorner", killStatus).CornerRadius = UDim.new(0, 4)
-
-    local startKillWorker
-
-    local function refreshKillButtons()
-        local st = Kill.State
-        btnKillAll.Text = "KILL TODOS: " .. (st.mode == "all" and "ON 🟢" or "OFF 🔴")
-        btnKillSpecific.Text = "KILL JOGADOR ESPECÍFICO: " .. (st.mode == "specific" and "ON 🟢" or "OFF 🔴")
-        btnKillExclude.Text = "KILL COM EXCLUSÃO: " .. (st.mode == "exclude" and "ON 🟢" or "OFF 🔴")
-        btnKillFriends.Text = "EXCLUIR AMIGOS: " .. (st.excludeFriends and "ON 🟢" or "OFF 🔴")
-        btnSelectKill.Text = st.selectedTarget and ("ALVO: " .. st.selectedTarget .. " 🎯") or "PLAYER ESPECÍFICO: SELECIONAR 🎯"
-    end
-
-    local function setKillMode(mode)
-        if Kill.State.mode == mode then
-            Kill.State.mode = nil
-            killStatus.Text = "STATUS // AGUARDANDO"
-            Core:StopWorker("Kill.Main")
-        else
-            Kill.State.mode = mode
-            if startKillWorker then startKillWorker() end
-        end
-        refreshKillButtons()
-    end
-
-    local function shouldKillTarget(target)
-        local st = Kill.State
-        if not st.mode or not target or target == player then return false end
-
-        if st.excludeFriends and friendsCache[target.UserId] == true then
-            return false
-        end
-
-        if st.mode == "specific" then
-            return target.Name == st.selectedTarget
-        elseif st.mode == "exclude" then
-            return not st.excludedUserIds[target.UserId]
-        elseif st.mode == "all" then
-            return true
-        end
-        return false
-    end
-
-    local function getPunchToolForKill()
-        local char = player.Character
-        if not char then return nil end
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if not humanoid then return nil end
-        local tool = char:FindFirstChild("Punch")
-        if not tool then
-            local backpack = player:FindFirstChildOfClass("Backpack") or player:FindFirstChild("Backpack")
-            tool = backpack and backpack:FindFirstChild("Punch")
-            if tool then pcall(function() humanoid:EquipTool(tool) end) end
-        end
-        return tool
-    end
-
-    local function attackKillTarget(target)
-        if not Kill.State.mode or not Core:IsAlive() then return end
-
-        local myChar = player.Character
-        local targetChar = target and target.Character
-        if not myChar or not targetChar then return end
-        local myHum = myChar:FindFirstChildOfClass("Humanoid")
-        local targetHum = targetChar:FindFirstChildOfClass("Humanoid")
-        local myRoot = myChar:FindFirstChild("HumanoidRootPart")
-        local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
-        if not myHum or myHum.Health <= 0 or not targetHum or targetHum.Health <= 0 or not myRoot or not targetRoot then return end
-
-        pcall(function()
-            myRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 1)
-        end)
-
-        local tool = getPunchToolForKill()
-        if tool then pcall(function() tool:Activate() end) end
-        local event = getMuscleEvent()
-        if event then
-            pcall(function()
-                event:FireServer("punch", "leftHand")
-                event:FireServer("punch", "rightHand")
-            end)
-        end
-    end
-
-    btnKillAll.MouseButton1Click:Connect(function()
-        playClickSound()
-        setKillMode("all")
-    end)
-
-    btnKillSpecific.MouseButton1Click:Connect(function()
-        playClickSound()
-        if not Kill.State.selectedTarget then
-            killStatus.Text = "STATUS // SELECIONE UM PLAYER PRIMEIRO"
-            return
-        end
-        setKillMode("specific")
-    end)
-
-    btnKillExclude.MouseButton1Click:Connect(function()
-        playClickSound()
-        setKillMode("exclude")
-    end)
-
-    btnKillFriends.MouseButton1Click:Connect(function()
-        playClickSound()
-        Kill.State.excludeFriends = not Kill.State.excludeFriends
-        updateFriendsCache()
-        refreshKillButtons()
-    end)
-
-    btnSelectKill.MouseButton1Click:Connect(function()
-        playClickSound()
-        local opts = {}
-        for _, p in ipairs(Players:GetPlayers()) do
-            if p ~= player then
-                table.insert(opts, {Text = p.DisplayName .. " (@" .. p.Name .. ")", Value = p.Name})
-            end
-        end
-        table.sort(opts, function(a,b) return string.lower(a.Text) < string.lower(b.Text) end)
-        if #opts == 0 then
-            killStatus.Text = "STATUS // NENHUM PLAYER DISPONÍVEL"
-            return
-        end
-        AbrirMenuSelecao("Selecionar alvo", opts, function(value)
-            Kill.State.selectedTarget = value
-            refreshKillButtons()
-            killStatus.Text = "ALVO // @" .. tostring(value)
-        end)
-    end)
-
-    local function openKillExclusionMenu()
-        local old = targetGui:FindFirstChild("ArasakaKillExclusion_Gui")
-        if old then old:Destroy() end
-
-        local gui = Instance.new("ScreenGui", targetGui)
-        gui.Name = "ArasakaKillExclusion_Gui"
-        gui.IgnoreGuiInset = true
-        gui.ResetOnSpawn = false
-        gui.DisplayOrder = 7000
-
-        local shade = Instance.new("TextButton", gui)
-        shade.Size = UDim2.fromScale(1,1)
-        shade.BackgroundColor3 = Color3.new(0,0,0)
-        shade.BackgroundTransparency = 0.3
-        shade.Text = ""
-        shade.AutoButtonColor = false
-
-        local panel = Instance.new("Frame", gui)
-        panel.AnchorPoint = Vector2.new(0.5,0.5)
-        panel.Position = UDim2.fromScale(0.5,0.5)
-        panel.Size = UDim2.new(0,430,0,390)
-        panel.BackgroundColor3 = Color3.fromRGB(7,7,7)
-        panel.BorderSizePixel = 0
-        Instance.new("UICorner", panel).CornerRadius = UDim.new(0,5)
-        local ps = Instance.new("UIStroke", panel)
-        ps.Color = Color3.fromRGB(150,25,25)
-
-        local title = Instance.new("TextLabel", panel)
-        title.Size = UDim2.new(1,-55,0,48)
-        title.Position = UDim2.new(0,16,0,5)
-        title.BackgroundTransparency = 1
-        title.Text = "🛡️ EXCLUSÕES // NÃO ATACAR"
-        title.TextColor3 = Color3.fromRGB(235,235,235)
-        title.Font = Enum.Font.GothamBlack
-        title.TextSize = 14
-        title.TextXAlignment = Enum.TextXAlignment.Left
-
-        local close = Instance.new("TextButton", panel)
-        close.Size = UDim2.new(0,30,0,30)
-        close.Position = UDim2.new(1,-40,0,12)
-        close.BackgroundColor3 = Color3.fromRGB(25,12,12)
-        close.Text = "×"
-        close.TextColor3 = Color3.fromRGB(220,60,60)
-        close.Font = Enum.Font.GothamBold
-        close.TextSize = 18
-        Instance.new("UICorner", close).CornerRadius = UDim.new(0,4)
-
-        local list = Instance.new("ScrollingFrame", panel)
-        list.Position = UDim2.new(0,14,0,58)
-        list.Size = UDim2.new(1,-28,1,-72)
-        list.BackgroundTransparency = 1
-        list.BorderSizePixel = 0
-        list.ScrollBarThickness = 3
-        list.CanvasSize = UDim2.new()
-        local ll = Instance.new("UIListLayout", list)
-        ll.Padding = UDim.new(0,5)
-        ll:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            list.CanvasSize = UDim2.new(0,0,0,ll.AbsoluteContentSize.Y+10)
-        end)
-
-        local function closeMenu() if gui then gui:Destroy() end end
-        close.MouseButton1Click:Connect(closeMenu)
-        shade.MouseButton1Click:Connect(closeMenu)
-
-        for _, p in ipairs(Players:GetPlayers()) do
-            if p ~= player then
-                local row = Instance.new("TextButton", list)
-                row.Size = UDim2.new(1,-5,0,38)
-                row.BackgroundColor3 = Color3.fromRGB(13,13,13)
-                row.BorderSizePixel = 0
-                row.Font = Enum.Font.GothamBold
-                row.TextSize = 12
-                row.TextColor3 = Color3.fromRGB(220,220,220)
-                row.TextXAlignment = Enum.TextXAlignment.Left
-                Instance.new("UICorner", row).CornerRadius = UDim.new(0,4)
-
-                local function updateRow()
-                    local excluded = Kill.State.excludedUserIds[p.UserId] == true
-                    row.Text = "   " .. (excluded and "☑ " or "☐ ") .. p.DisplayName .. " (@" .. p.Name .. ")"
-                    row.BackgroundColor3 = excluded and Color3.fromRGB(48,14,14) or Color3.fromRGB(13,13,13)
-                end
-                updateRow()
-                row.MouseButton1Click:Connect(function()
-                    playClickSound()
-                    Kill.State.excludedUserIds[p.UserId] = not Kill.State.excludedUserIds[p.UserId]
-                    updateRow()
-                end)
-            end
-        end
-    end
-
-    btnEditExclusions.MouseButton1Click:Connect(function()
-        playClickSound()
-        openKillExclusionMenu()
-    end)
-
-    startKillWorker = function()
-        if not Kill.State.mode then
-            Core:StopWorker("Kill.Main")
-            return
-        end
-
-        Core:StartWorker("Kill.Main", function(isAlive)
-            while isAlive() and Kill.State.mode do
-                local found = false
-                for _, target in ipairs(Players:GetPlayers()) do
-                    if not isAlive() or not Kill.State.mode then break end
-                    if shouldKillTarget(target) then
-                        found = true
-                        killStatus.Text = "ATACANDO // @" .. target.Name
-                        attackKillTarget(target)
-                        task.wait(0.08)
-                        if not Kill.State.mode then break end
-                    end
-                end
-
-                if not Kill.State.mode then
-                    killStatus.Text = "STATUS // AGUARDANDO"
-                elseif not found then
-                    killStatus.Text = "STATUS // NENHUM ALVO VÁLIDO"
-                    task.wait(0.25)
-                else
-                    -- Evita giro quente quando há muitos alvos e mantém resposta rápida.
-                    task.wait(0.03)
-                end
-            end
-            if killStatus and killStatus.Parent then
-                killStatus.Text = "STATUS // AGUARDANDO"
-            end
-        end)
-    end
-
-    refreshKillButtons()
-        Utils.PerfEnd("KILL_UI")
-    end
-
-    function Kill:Stop()
-        self.State.mode = nil
-        Core:StopWorker("Kill.Main")
-        Core:CleanupOwner("Kill")
-    end
-
-    Core:RegisterModule("Kill", Kill)
-    local killOk, killErr = Core:StartModule("Kill")
-    if not killOk then warn("[ARASAKA][MODULE:Kill] Falha:", killErr) end
-
-    -- ABA INÍCIO // DASHBOARD ARASAKA
-    local introTop = Instance.new("Frame", tabInicio)
-    introTop.Size = UDim2.new(1, -20, 0, 70)
-    introTop.Position = UDim2.new(0, 10, 0, 8)
-    introTop.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
-    introTop.BorderSizePixel = 0
-    Instance.new("UICorner", introTop).CornerRadius = UDim.new(0, 4)
-    local introStroke = Instance.new("UIStroke", introTop)
-    introStroke.Color = Color3.fromRGB(42, 42, 42)
-
-    local introAccent = Instance.new("Frame", introTop)
-    introAccent.Size = UDim2.new(0, 3, 1, 0)
-    introAccent.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-    introAccent.BorderSizePixel = 0
-
-    local introLabel = Instance.new("TextLabel", introTop)
-    introLabel.Size = UDim2.new(1, -32, 0, 25)
-    introLabel.Position = UDim2.new(0, 17, 0, 11)
-    introLabel.BackgroundTransparency = 1
-    introLabel.Text = "BEM-VINDO DE VOLTA // @" .. player.Name
-    introLabel.TextColor3 = Color3.fromRGB(245, 245, 245)
-    introLabel.Font = Enum.Font.GothamBlack
-    introLabel.TextSize = 15
-    introLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    local introSub = Instance.new("TextLabel", introTop)
-    introSub.Size = UDim2.new(1, -32, 0, 16)
-    introSub.Position = UDim2.new(0, 17, 0, 39)
-    introSub.BackgroundTransparency = 1
-    introSub.Text = "REDE ARASAKA // STATUS DO CLIENTE: ONLINE"
-    introSub.TextColor3 = Color3.fromRGB(145, 35, 35)
-    introSub.Font = Enum.Font.Code
-    introSub.TextSize = 12
-    introSub.TextXAlignment = Enum.TextXAlignment.Left
-
-    local sessionBadge = Instance.new("TextLabel", introTop)
-    sessionBadge.Size = UDim2.new(0, 145, 0, 28)
-    sessionBadge.Position = UDim2.new(1, -160, 0.5, -14)
-    sessionBadge.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-    sessionBadge.BorderSizePixel = 0
-    sessionBadge.Text = "●  SESSÃO ATIVA"
-    sessionBadge.TextColor3 = Color3.fromRGB(70, 210, 90)
-    sessionBadge.Font = Enum.Font.Code
-    sessionBadge.TextSize = 11
-    Instance.new("UICorner", sessionBadge).CornerRadius = UDim.new(0, 3)
-
-    local statsGrid = Instance.new("Frame", tabInicio)
-    statsGrid.Size = UDim2.new(1, -20, 0, 205)
-    statsGrid.Position = UDim2.new(0, 10, 0, 88)
-    statsGrid.BackgroundTransparency = 1
-
-    local grid = Instance.new("UIGridLayout", statsGrid)
-    grid.CellSize = UDim2.new(0.5, -6, 0, 96)
-    grid.CellPadding = UDim2.new(0, 8, 0, 8)
-    grid.SortOrder = Enum.SortOrder.LayoutOrder
-
-    local function CriarStatCard(titulo, icone, order)
-        local card = Instance.new("Frame", statsGrid)
-        card.LayoutOrder = order
-        card.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-        card.BorderSizePixel = 0
-        Instance.new("UICorner", card).CornerRadius = UDim.new(0, 4)
-        local stroke = Instance.new("UIStroke", card)
-        stroke.Color = Color3.fromRGB(35, 35, 35)
-
-        local accent = Instance.new("Frame", card)
-        accent.Size = UDim2.new(0, 2, 0, 52)
-        accent.Position = UDim2.new(0, 0, 0.5, -26)
-        accent.BackgroundColor3 = Color3.fromRGB(150, 28, 28)
-        accent.BorderSizePixel = 0
-
-        local icon = Instance.new("TextLabel", card)
-        icon.Size = UDim2.new(0, 30, 0, 30)
-        icon.Position = UDim2.new(0, 12, 0, 13)
-        icon.BackgroundColor3 = Color3.fromRGB(22, 10, 10)
-        icon.BorderSizePixel = 0
-        icon.Text = icone
-        icon.TextSize = 15
-        Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 3)
-
-        local title = Instance.new("TextLabel", card)
-        title.Size = UDim2.new(1, -56, 0, 16)
-        title.Position = UDim2.new(0, 50, 0, 14)
-        title.BackgroundTransparency = 1
-        title.Text = string.upper(titulo)
-        title.TextColor3 = Color3.fromRGB(105, 105, 105)
-        title.Font = Enum.Font.Code
-        title.TextSize = 12
-        title.TextXAlignment = Enum.TextXAlignment.Left
-
-        local value = Instance.new("TextLabel", card)
-        value.Size = UDim2.new(1, -56, 0, 27)
-        value.Position = UDim2.new(0, 50, 0, 32)
-        value.BackgroundTransparency = 1
-        value.Text = "CARREGANDO..."
-        value.TextColor3 = Color3.fromRGB(235, 235, 235)
-        value.Font = Enum.Font.GothamBold
-        value.TextSize = 16
-        value.TextXAlignment = Enum.TextXAlignment.Left
-        value.RichText = true
-        return value
-    end
-
-    local lblForca = CriarStatCard("Forca", "💪", 1)
-    local lblDura = CriarStatCard("Durabilidade", "🛡", 2)
-    local lblAgil = CriarStatCard("Agilidade", "⚡", 3)
-    local lblRebirths = CriarStatCard("Rebirths", "🔄️", 4)
-
-    local sessionPanel = Instance.new("Frame", tabInicio)
-    sessionPanel.Size = UDim2.new(1, -20, 0, 67)
-    sessionPanel.Position = UDim2.new(0, 10, 0, 304)
-    sessionPanel.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-    sessionPanel.BorderSizePixel = 0
-    Instance.new("UICorner", sessionPanel).CornerRadius = UDim.new(0, 4)
-    local sessionStroke = Instance.new("UIStroke", sessionPanel)
-    sessionStroke.Color = Color3.fromRGB(35, 35, 35)
-
-    local playIcon = Instance.new("TextLabel", sessionPanel)
-    playIcon.Size = UDim2.new(0, 35, 0, 35)
-    playIcon.Position = UDim2.new(0, 12, 0.5, -17)
-    playIcon.BackgroundColor3 = Color3.fromRGB(22, 10, 10)
-    playIcon.BorderSizePixel = 0
-    playIcon.Text = "◷"
-    playIcon.TextColor3 = Color3.fromRGB(215, 50, 50)
-    playIcon.TextSize = 17
-    Instance.new("UICorner", playIcon).CornerRadius = UDim.new(0, 3)
-
-    local playTitle = Instance.new("TextLabel", sessionPanel)
-    playTitle.Size = UDim2.new(0.5, 0, 0, 15)
-    playTitle.Position = UDim2.new(0, 58, 0, 12)
-    playTitle.BackgroundTransparency = 1
-    playTitle.Text = "TEMPO DE SESSAO"
-    playTitle.TextColor3 = Color3.fromRGB(105, 105, 105)
-    playTitle.Font = Enum.Font.Code
-    playTitle.TextSize = 8
-    playTitle.TextXAlignment = Enum.TextXAlignment.Left
-
-    local lblPlaytime = Instance.new("TextLabel", sessionPanel)
-    lblPlaytime.Size = UDim2.new(0.6, 0, 0, 24)
-    lblPlaytime.Position = UDim2.new(0, 58, 0, 29)
-    lblPlaytime.BackgroundTransparency = 1
-    lblPlaytime.Text = "00h 00m 00s"
-    lblPlaytime.TextColor3 = Color3.fromRGB(235, 235, 235)
-    lblPlaytime.Font = Enum.Font.GothamBold
-    lblPlaytime.TextSize = 13
-    lblPlaytime.TextXAlignment = Enum.TextXAlignment.Left
-
-    local sessionCode = Instance.new("TextLabel", sessionPanel)
-    sessionCode.Size = UDim2.new(0, 190, 0, 18)
-    sessionCode.Position = UDim2.new(1, -202, 0.5, -9)
-    sessionCode.BackgroundTransparency = 1
-    sessionCode.Text = "SYS://ARASAKA/CLIENTE\nID://" .. tostring(player.UserId)
-    sessionCode.TextColor3 = Color3.fromRGB(70, 70, 70)
-    sessionCode.Font = Enum.Font.Code
-    sessionCode.TextSize = 7
-    sessionCode.TextXAlignment = Enum.TextXAlignment.Right
-
-    local initialStats = { Forca = nil, Dura = nil, Agil = nil, Rebirths = nil }
-
-    local function getRawStat(nome1, nome2)
-        return Utils.ReadStat(player, nome1, nome2)
-    end
-
-    initialStats.Forca = getRawStat("Muscle", "Strength")
-    initialStats.Dura = getRawStat("Durability")
-    initialStats.Agil = getRawStat("Agility", "Speed")
-    initialStats.Rebirths = getRawStat("Rebirths", "Rebirth")
-
-    Core:StartWorker("UI.DashboardStats", function(isAlive)
-        while isAlive() do
-            if abas["Início"] and abas["Início"].container.Visible then
-                pcall(function()
-                    local curForca = getRawStat("Muscle", "Strength")
-                    local curDura = getRawStat("Durability")
-                    local curAgil = getRawStat("Agility", "Speed")
-                    local curRebirths = getRawStat("Rebirths", "Rebirth")
-
-                    local gainForca = curForca - (initialStats.Forca or curForca)
-                    local gainDura = curDura - (initialStats.Dura or curDura)
-                    local gainAgil = curAgil - (initialStats.Agil or curAgil)
-                    local gainRebirths = curRebirths - (initialStats.Rebirths or curRebirths)
-
-                    lblForca.Text = string.format("%s <font color='#50ff50'>(+%s)</font>", FormatNumber(curForca), FormatNumber(gainForca))
-                    lblDura.Text = string.format("%s <font color='#50ff50'>(+%s)</font>", FormatNumber(curDura), FormatNumber(gainDura))
-                    lblAgil.Text = string.format("%s <font color='#50ff50'>(+%s)</font>", FormatNumber(curAgil), FormatNumber(gainAgil))
-                    lblRebirths.Text = string.format("%s <font color='#50ff50'>(+%s)</font>", FormatNumber(curRebirths), FormatNumber(gainRebirths))
-
-                    local elapsed = os.time() - startTime
-                    local hours = math.floor(elapsed / 3600)
-                    local mins = math.floor((elapsed % 3600) / 60)
-                    local secs = elapsed % 60
-                    lblPlaytime.Text = string.format("%02dh %02dm %02ds", hours, mins, secs)
-                end)
-            end
-            task.wait(1)
-        end
-    end)
-
-    -- MODULE // FARMS
-    function Farms:Init()
-        Utils.PerfBegin("FARMS_UI")
-    -- ABA FARMS
-    local farmScroll = Instance.new("ScrollingFrame", tabFarms)
-    farmScroll.Size = UDim2.new(1, -20, 1, -10)
-    farmScroll.Position = UDim2.new(0, 10, 0, 5)
-    farmScroll.BackgroundTransparency = 1
-    farmScroll.ScrollBarThickness = 4
-
-    local farmLayout = Instance.new("UIListLayout", farmScroll)
-    farmLayout.Padding = UDim.new(0, 6)
-    farmLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    farmLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        farmScroll.CanvasSize = UDim2.new(0, 0, 0, farmLayout.AbsoluteContentSize.Y + 20)
-    end)
-
-    local function CriarBotaoFarmScroll(texto, order)
-        local btn = Utils.CreateTextButton(farmScroll, {
-            LayoutOrder = order,
-            Size = UDim2.new(1, -6, 0, 32),
-            BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-            BorderSizePixel = 0,
-            Text = texto .. ": OFF 🔴",
-            TextColor3 = Color3.fromRGB(205, 205, 205),
-            Font = Enum.Font.GothamBold,
-            TextSize = 12,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            CornerRadius = UDim.new(0, 2),
-        })
-        local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(42, 42, 42)
-        stroke.Thickness = 1
-        btn.MouseEnter:Connect(function()
-            TweenService:Create(btn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(35, 10, 10)}):Play()
-            TweenService:Create(stroke, TweenInfo.new(0.12), {Color = Color3.fromRGB(215, 50, 50)}):Play()
-        end)
-        btn.MouseLeave:Connect(function()
-            TweenService:Create(btn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(14, 14, 14)}):Play()
-            TweenService:Create(stroke, TweenInfo.new(0.12), {Color = Color3.fromRGB(42, 42, 42)}):Play()
-        end)
-        return btn
-    end
-
-    local autoFarmActive, autoRepsActive, autoUnifiedFarmActive, travarLocalActive = false, false, false, false
-    local overlordRebirthActive = false
-    local farmOpActive = false
-    local customRebirthActive = false
-
-    local targetRebirthValue = 0
-    local targetRebirthActive = false
-    local targetRebirthButton
-    local startTargetRebirthWorker
-    local startCustomRebirthWorker
-    local startAutoRepsWorker
-    local startUnifiedFarmWorker
-    local startOverlordWorker
-    local refreshTrainingWatchdog = function() end
-
-    local function CriarSeparadorFarm(texto, order)
-        local sep = Instance.new("TextLabel", farmScroll)
-        sep.LayoutOrder = order
-        sep.Size = UDim2.new(1, -6, 0, 24)
-        sep.BackgroundTransparency = 1
-        sep.Text = texto
-        sep.TextColor3 = Color3.fromRGB(215, 50, 50)
-        sep.Font = Enum.Font.GothamBold
-        sep.TextSize = 12
-        sep.TextXAlignment = Enum.TextXAlignment.Left
-        return sep
-    end
-    local lockedCFrame, lockConnection, noclipConnection = nil, nil, nil
-    local currentOffsetY = 60
-
-    local customFarmingSlots = {}
-    local customRebirthSlots = {}
-    local saveFileName = "ArasakaHub_PetsConfig_" .. player.UserId .. ".json"
-
-    local function SalvarConfiguracaoPets()
-        if writefile then
-            pcall(function()
-                local data = {
-                    farming = customFarmingSlots,
-                    rebirth = customRebirthSlots
-                }
-                writefile(saveFileName, HttpService:JSONEncode(data))
-            end)
-        end
-    end
-
-    local function CarregarConfiguracaoPets()
-        if readfile and isfile and isfile(saveFileName) then
-            pcall(function()
-                local raw = readfile(saveFileName)
-                local data = HttpService:JSONDecode(raw)
-                if data then
-                    if data.farming then customFarmingSlots = data.farming end
-                    if data.rebirth then customRebirthSlots = data.rebirth end
-                end
-            end)
-        end
-    end
-
-    CarregarConfiguracaoPets()
-
-    Core:StartWorker("Farms.ConfigAutosave", function(isAlive)
-        while isAlive() do
-            task.wait(60)
-            if isAlive() then SalvarConfiguracaoPets() end
-        end
-    end)
-
-    local function GetUserPetsCounts()
-        local petsFolder = player:FindFirstChild("petsFolder")
-        local petCounts = {}
-
-        if petsFolder then
-            for _, folder in ipairs(petsFolder:GetChildren()) do
-                if folder:IsA("Folder") then
-                    for _, pet in ipairs(folder:GetChildren()) do
-                        local pName = pet.Name
-                        petCounts[pName] = (petCounts[pName] or 0) + 1
-                    end
-                end
-            end
-        end
-        return petCounts
-    end
-
-    local function GetUserPetsList()
-        local counts = GetUserPetsCounts()
-        local petNames = {}
-        for name, _ in pairs(counts) do
-            table.insert(petNames, name)
-        end
-        table.sort(petNames)
-        return petNames
-    end
-
-    local function unequipAllPetsGeneral()
-        local petsFolder = player:FindFirstChild("petsFolder")
-        if not petsFolder then return end
-        for _, folder in pairs(petsFolder:GetChildren()) do
-            if folder:IsA("Folder") then
-                for _, pet in pairs(folder:GetChildren()) do
-                    pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("unequipPet", pet) end)
-                end
-            end
-        end
-        task.wait(0.01)
-    end
-
-    local function equipCustomSlotsTeam(slotsTable)
-        unequipAllPetsGeneral()
-        local petsFolder = player:FindFirstChild("petsFolder")
-        if not petsFolder then return end
-
-        local requiredCounts = {}
-        for slotIndex = 1, 9 do
-            local petName = slotsTable[slotIndex]
-            if petName and petName ~= "Nenhum" then
-                requiredCounts[petName] = (requiredCounts[petName] or 0) + 1
-            end
-        end
-
-        local equippedCounts = {}
-        for petName, reqAmount in pairs(requiredCounts) do
-            equippedCounts[petName] = 0
-            for _, folder in ipairs(petsFolder:GetChildren()) do
-                if folder:IsA("Folder") then
-                    for _, petObj in ipairs(folder:GetChildren()) do
-                        if petObj.Name == petName and equippedCounts[petName] < reqAmount then
-                            pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", petObj) end)
-                            equippedCounts[petName] = equippedCounts[petName] + 1
-                            task.wait(0.03)
-                        end
-                        if equippedCounts[petName] >= reqAmount then break end
-                    end
-                end
-                if equippedCounts[petName] >= reqAmount then break end
-            end
-        end
-    end
-
-    CriarSeparadorFarm("// REBIRTH PERSONALIZADO", 1)
-
-    local rebirthTargetBox = Instance.new("TextBox", farmScroll)
-    rebirthTargetBox.LayoutOrder = 2
-    rebirthTargetBox.Size = UDim2.new(1, -6, 0, 32)
-    rebirthTargetBox.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-    rebirthTargetBox.BorderSizePixel = 0
-    rebirthTargetBox.PlaceholderText = "REBIRTH META — digite a meta"
-    rebirthTargetBox.Text = ""
-    rebirthTargetBox.TextColor3 = Color3.fromRGB(235, 235, 235)
-    rebirthTargetBox.PlaceholderColor3 = Color3.fromRGB(110, 110, 110)
-    rebirthTargetBox.Font = Enum.Font.GothamBold
-    rebirthTargetBox.TextSize = 12
-    rebirthTargetBox.ClearTextOnFocus = false
-    rebirthTargetBox.TextXAlignment = Enum.TextXAlignment.Left
-    Instance.new("UICorner", rebirthTargetBox).CornerRadius = UDim.new(0, 2)
-    local rebirthTargetStroke = Instance.new("UIStroke", rebirthTargetBox)
-    rebirthTargetStroke.Color = Color3.fromRGB(42, 42, 42)
-    rebirthTargetStroke.Thickness = 1
-
-    rebirthTargetBox.FocusLost:Connect(function()
-        local newValue = tonumber(rebirthTargetBox.Text)
-        if newValue and newValue > 0 then
-            targetRebirthValue = math.floor(newValue)
-            rebirthTargetBox.Text = tostring(targetRebirthValue)
-        else
-            rebirthTargetBox.Text = ""
-        end
-    end)
-
-    targetRebirthButton = CriarBotaoFarmScroll("AUTO REBIRTH TARGET", 3)
-    local btnFarm = CriarBotaoFarmScroll("AUTO FARM BOSS ⚔️", 4)
-    local btnRepsOnly = CriarBotaoFarmScroll("AUTO REPS 2X (SO FORCA) 🏋️", 5)
-    local btnUnifiedFarm = CriarBotaoFarmScroll("AUTO REPS 2X + REBIRTH 🏋️🔄", 6)
-    local btnOverlordRebirth = CriarBotaoFarmScroll("REBIRTH PACK OVERLORD 👑", 7)
-    local btnFarmOp = CriarBotaoFarmScroll("FARM OP (11 PETS) 💎", 8)
-
-    -- Quantidade de REPS do FARM OP. Este bloco fecha os temporários aqui
-    -- para não aumentar os registradores locais do chunk principal.
-    do
-        local box = Instance.new("TextBox", farmScroll)
-        box.Name = "ArasakaFarmOpRepsBox"
-        box.LayoutOrder = 9
-        box.Size = UDim2.new(1, -6, 0, 32)
-        box.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-        box.BorderSizePixel = 0
-        box.PlaceholderText = "FARM OP — REPS POR CICLO (PADRAO: 1)"
-        box.Text = ""
-        box.TextColor3 = Color3.fromRGB(235, 235, 235)
-        box.PlaceholderColor3 = Color3.fromRGB(110, 110, 110)
-        box.Font = Enum.Font.GothamBold
-        box.TextSize = 11
-        box.ClearTextOnFocus = false
-        box.TextXAlignment = Enum.TextXAlignment.Left
-        box:SetAttribute("RepsPerCycle", 1)
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 2)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(42, 42, 42)
-        stroke.Thickness = 1
-
-        box.FocusLost:Connect(function()
-            local value = tonumber(box.Text)
-            if value and value >= 1 then
-                value = math.max(1, math.floor(value))
-                box:SetAttribute("RepsPerCycle", value)
-                box.Text = tostring(value)
-            else
-                box:SetAttribute("RepsPerCycle", 1)
-                box.Text = ""
-            end
-        end)
-    end
-
-    local btnConfigRebirth = Instance.new("TextButton", farmScroll)
-    btnConfigRebirth.LayoutOrder = 10
-    btnConfigRebirth.Size = UDim2.new(1, -6, 0, 32)
-    btnConfigRebirth.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-    btnConfigRebirth.Text = "CONFIGURAR REBIRTH ⚙️"
-    btnConfigRebirth.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btnConfigRebirth.Font = Enum.Font.GothamBold
-    btnConfigRebirth.TextSize = 11
-    Instance.new("UICorner", btnConfigRebirth).CornerRadius = UDim.new(0, 6)
-
-    local btnCustomRebirthToggle = CriarBotaoFarmScroll("CUSTOM REBIRTH AUTO 🔄", 11)
-    local btnTravarLocal = CriarBotaoFarmScroll("TRAVAR LOCAL 📍", 12)
-
-    local function AbrirJanelaConfigRebirth()
-        local oldGui = targetGui:FindFirstChild("ArasakaConfigRebirth_Gui")
-        if oldGui then oldGui:Destroy() end
-
-        local configGui = Instance.new("ScreenGui", targetGui)
-        configGui.Name = "ArasakaConfigRebirth_Gui"
-        configGui.IgnoreGuiInset = true
-        configGui.ResetOnSpawn = false
-        configGui.DisplayOrder = 5000
-        configGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-        local bgOverlay = Instance.new("TextButton", configGui)
-        bgOverlay.Size = UDim2.new(1, 0, 1, 0)
-        bgOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        bgOverlay.BackgroundTransparency = 0.28
-        bgOverlay.BorderSizePixel = 0
-        bgOverlay.Text = ""
-        bgOverlay.AutoButtonColor = false
-
-        local mainFrame = Instance.new("Frame", configGui)
-        mainFrame.Size = UDim2.new(0, 500, 0, 440)
-        mainFrame.Position = UDim2.new(0.5, -250, 0.5, -220)
-        mainFrame.BackgroundColor3 = Color3.fromRGB(6, 6, 6)
-        mainFrame.BorderSizePixel = 0
-        mainFrame.Active, mainFrame.Draggable = true, true
-        Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
-
-        local stroke = Instance.new("UIStroke", mainFrame)
-        stroke.Color = Color3.fromRGB(150, 25, 25)
-        stroke.Thickness = 1
-
-        local topLine = Instance.new("Frame", mainFrame)
-        topLine.Size = UDim2.new(1, 0, 0, 3)
-        topLine.BackgroundColor3 = Color3.fromRGB(215, 50, 50)
-        topLine.BorderSizePixel = 0
-
-        local header = Instance.new("Frame", mainFrame)
-        header.Size = UDim2.new(1, 0, 0, 58)
-        header.Position = UDim2.new(0, 0, 0, 3)
-        header.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
-        header.BorderSizePixel = 0
-
-        local logo = Instance.new("ImageLabel", header)
-        logo.Size = UDim2.new(0, 30, 0, 30)
-        logo.Position = UDim2.new(0, 14, 0.5, -15)
-        logo.BackgroundTransparency = 1
-        logo.Image = "rbxassetid://132397224962668"
-        logo.ScaleType = Enum.ScaleType.Fit
-
-        local titleLbl = Instance.new("TextLabel", header)
-        titleLbl.Size = UDim2.new(1, -90, 0, 22)
-        titleLbl.Position = UDim2.new(0, 52, 0, 8)
-        titleLbl.BackgroundTransparency = 1
-        titleLbl.Text = "ARASAKA // REBIRTH CONFIG"
-        titleLbl.TextColor3 = Color3.fromRGB(235, 235, 235)
-        titleLbl.Font = Enum.Font.GothamBlack
-        titleLbl.TextSize = 13
-        titleLbl.TextXAlignment = Enum.TextXAlignment.Left
-
-        local subLbl = Instance.new("TextLabel", header)
-        subLbl.Size = UDim2.new(1, -90, 0, 14)
-        subLbl.Position = UDim2.new(0, 52, 0, 31)
-        subLbl.BackgroundTransparency = 1
-        subLbl.Text = "CORPORATION // PET LOADOUT MATRIX"
-        subLbl.TextColor3 = Color3.fromRGB(155, 35, 35)
-        subLbl.Font = Enum.Font.Code
-        subLbl.TextSize = 8
-        subLbl.TextXAlignment = Enum.TextXAlignment.Left
-
-        local closeBtn = Instance.new("TextButton", mainFrame)
-        closeBtn.Size = UDim2.new(0, 28, 0, 28)
-        closeBtn.Position = UDim2.new(1, -39, 0.5, -14)
-        closeBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-        closeBtn.BorderSizePixel = 0
-        closeBtn.Text = "×"
-        closeBtn.TextColor3 = Color3.fromRGB(215, 50, 50)
-        closeBtn.Font = Enum.Font.GothamBold
-        closeBtn.TextSize = 16
-        Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 4)
-
-        closeBtn.MouseButton1Click:Connect(function() configGui:Destroy() end)
-        bgOverlay.MouseButton1Click:Connect(function() configGui:Destroy() end)
-
-        local separator = Instance.new("Frame", mainFrame)
-        separator.Size = UDim2.new(1, -24, 0, 1)
-        separator.Position = UDim2.new(0, 12, 0, 65)
-        separator.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
-        separator.BorderSizePixel = 0
-
-        local matrixLabel = Instance.new("TextLabel", mainFrame)
-        matrixLabel.Size = UDim2.new(1, -24, 0, 18)
-        matrixLabel.Position = UDim2.new(0, 12, 0, 72)
-        matrixLabel.BackgroundTransparency = 1
-        matrixLabel.Text = "// SLOT MATRIX    TRAINING / REBIRTH"
-        matrixLabel.TextColor3 = Color3.fromRGB(90, 90, 90)
-        matrixLabel.Font = Enum.Font.Code
-        matrixLabel.TextSize = 8
-        matrixLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-        local scrollSlots = Instance.new("ScrollingFrame", mainFrame)
-        scrollSlots.Size = UDim2.new(1, -24, 1, -125)
-        scrollSlots.Position = UDim2.new(0, 12, 0, 94)
-        scrollSlots.BackgroundTransparency = 1
-        scrollSlots.ScrollBarThickness = 4
-
-        local layoutSlots = Instance.new("UIListLayout", scrollSlots)
-        layoutSlots.Padding = UDim.new(0, 6)
-
-        layoutSlots:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            scrollSlots.CanvasSize = UDim2.new(0, 0, 0, layoutSlots.AbsoluteContentSize.Y + 10)
-        end)
-
-        local function GetAvailablePetsForSlot(targetSlotsTable, currentSlotIndex)
-            local userCounts = GetUserPetsCounts()
-            local selectedCounts = {}
-
-            for idx, name in pairs(targetSlotsTable) do
-                if idx ~= currentSlotIndex and name and name ~= "Nenhum" then
-                    selectedCounts[name] = (selectedCounts[name] or 0) + 1
-                end
-            end
-
-            local availableList = {"Nenhum"}
-            for name, maxCount in pairs(userCounts) do
-                local used = selectedCounts[name] or 0
-                if used < maxCount then
-                    table.insert(availableList, name)
-                end
-            end
-            table.sort(availableList, function(a, b)
-                if a == "Nenhum" then return true end
-                if b == "Nenhum" then return false end
-                return a < b
-            end)
-            return availableList
-        end
-
-        for i = 1, 9 do
-            local slotFrame = Instance.new("Frame", scrollSlots)
-            slotFrame.Size = UDim2.new(1, -6, 0, 30)
-            slotFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-            slotFrame.BorderSizePixel = 0
-            local slotStroke = Instance.new("UIStroke", slotFrame)
-            slotStroke.Color = Color3.fromRGB(28, 28, 28)
-            slotStroke.Thickness = 1
-            Instance.new("UICorner", slotFrame).CornerRadius = UDim.new(0, 4)
-
-            local btnSlotTrain = Instance.new("TextButton", slotFrame)
-            btnSlotTrain.Size = UDim2.new(0.48, 0, 1, 0)
-            btnSlotTrain.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-            btnSlotTrain.BorderSizePixel = 0
-            btnSlotTrain.Text = "Tr. S" .. i .. ": " .. (customFarmingSlots[i] or "Nenhum")
-            btnSlotTrain.TextColor3 = Color3.fromRGB(220, 220, 220)
-            btnSlotTrain.Font = Enum.Font.GothamBold
-            btnSlotTrain.TextSize = 12
-            Instance.new("UICorner", btnSlotTrain).CornerRadius = UDim.new(0, 4)
-
-            btnSlotTrain.MouseEnter:Connect(function()
-                btnSlotTrain.BackgroundColor3 = Color3.fromRGB(34, 9, 9)
-            end)
-            btnSlotTrain.MouseLeave:Connect(function()
-                btnSlotTrain.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-            end)
-
-            btnSlotTrain.MouseButton1Click:Connect(function()
-                playClickSound()
-                local options = GetAvailablePetsForSlot(customFarmingSlots, i)
-                AbrirMenuSelecao("Slot " .. i .. " - Time Treino", options, function(val)
-                    customFarmingSlots[i] = val
-                    btnSlotTrain.Text = "Tr. S" .. i .. ": " .. val
-                end)
-            end)
-
-            local btnSlotRebirth = Instance.new("TextButton", slotFrame)
-            btnSlotRebirth.Size = UDim2.new(0.48, 0, 1, 0)
-            btnSlotRebirth.Position = UDim2.new(0.52, 0, 0, 0)
-            btnSlotRebirth.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-            btnSlotRebirth.BorderSizePixel = 0
-            btnSlotRebirth.Text = "Rb. S" .. i .. ": " .. (customRebirthSlots[i] or "Nenhum")
-            btnSlotRebirth.TextColor3 = Color3.fromRGB(220, 220, 220)
-            btnSlotRebirth.Font = Enum.Font.GothamBold
-            btnSlotRebirth.TextSize = 12
-            Instance.new("UICorner", btnSlotRebirth).CornerRadius = UDim.new(0, 4)
-
-            btnSlotRebirth.MouseEnter:Connect(function()
-                btnSlotRebirth.BackgroundColor3 = Color3.fromRGB(34, 9, 9)
-            end)
-            btnSlotRebirth.MouseLeave:Connect(function()
-                btnSlotRebirth.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-            end)
-
-            btnSlotRebirth.MouseButton1Click:Connect(function()
-                playClickSound()
-                local options = GetAvailablePetsForSlot(customRebirthSlots, i)
-                AbrirMenuSelecao("Slot " .. i .. " - Time Rebirth", options, function(val)
-                    customRebirthSlots[i] = val
-                    btnSlotRebirth.Text = "Rb. S" .. i .. ": " .. val
-                end)
-            end)
-        end
-
-        local btnSaveAndStart = Instance.new("TextButton", mainFrame)
-        btnSaveAndStart.Size = UDim2.new(1, -24, 0, 34)
-        btnSaveAndStart.Position = UDim2.new(0, 12, 1, -46)
-        btnSaveAndStart.BackgroundColor3 = Color3.fromRGB(150, 28, 28)
-        btnSaveAndStart.BorderSizePixel = 0
-        btnSaveAndStart.Text = "SALVAR & INICIAR FARM 💾"
-        btnSaveAndStart.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btnSaveAndStart.Font = Enum.Font.GothamBold
-        btnSaveAndStart.TextSize = 11
-        Instance.new("UICorner", btnSaveAndStart).CornerRadius = UDim.new(0, 6)
-
-        btnSaveAndStart.MouseButton1Click:Connect(function()
-            playClickSound()
-            SalvarConfiguracaoPets()
-            configGui:Destroy()
-            customRebirthActive = true
-            btnCustomRebirthToggle.Text = "CUSTOM REBIRTH AUTO: ON 🟢"
-            btnCustomRebirthToggle.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
-            if startCustomRebirthWorker then startCustomRebirthWorker() end
-            refreshTrainingWatchdog()
-        end)
-    end
-
-    startTargetRebirthWorker = function()
-        if not targetRebirthActive or targetRebirthValue <= 0 then
-            Core:StopWorker("Farms.TargetRebirth")
-            return
-        end
-        Core:StartWorker("Farms.TargetRebirth", function(isAlive)
-            while isAlive() and targetRebirthActive and targetRebirthValue > 0 do
-                local leaderstats = player:FindFirstChild("leaderstats")
-                local rebirthsVal = leaderstats and leaderstats:FindFirstChild("Rebirths")
-                if rebirthsVal then
-                    local rebirthRemote = getRebirthRemote()
-                    if rebirthsVal.Value >= targetRebirthValue then
-                        targetRebirthActive = false
-                        targetRebirthButton.Text = "AUTO REBIRTH TARGET: OFF 🔴"
-                        targetRebirthButton.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-                        break
-                    elseif rebirthRemote then
-                        pcall(function() rebirthRemote:InvokeServer("rebirthRequest") end)
-                    end
-                end
-                task.wait(0.1)
-            end
-        end)
-    end
-
-    targetRebirthButton.MouseButton1Click:Connect(function()
-        playClickSound()
-        if targetRebirthValue <= 0 then return end
-        targetRebirthActive = not targetRebirthActive
-        targetRebirthButton.Text = "AUTO REBIRTH TARGET: " .. (targetRebirthActive and "ON 🟢" or "OFF 🔴")
-        targetRebirthButton.BackgroundColor3 = targetRebirthActive and Color3.fromRGB(40, 120, 40) or Color3.fromRGB(14, 14, 14)
-        if targetRebirthActive then startTargetRebirthWorker() else Core:StopWorker("Farms.TargetRebirth") end
-    end)
-
-    btnConfigRebirth.MouseButton1Click:Connect(function()
-        playClickSound()
-        AbrirJanelaConfigRebirth()
-    end)
-
-    startCustomRebirthWorker = function()
-        if not customRebirthActive then
-            Core:StopWorker("Farms.CustomRebirth")
-            return
-        end
-        Core:StartWorker("Farms.CustomRebirth", function(isAlive)
-            local lastEquippedState = ""
-            while isAlive() and customRebirthActive do
-                local leaderstats = player:FindFirstChild("leaderstats")
-                local rebirthsVal = leaderstats and leaderstats:FindFirstChild("Rebirths")
-                local strengthVal = leaderstats and leaderstats:FindFirstChild("Strength")
-
-                if rebirthsVal and strengthVal then
-                    local targetStr = 5000 + (rebirthsVal.Value * 2550)
-                    local repsBurst = player.MembershipType == Enum.MembershipType.Premium and 6 or 12
-
-                    if lastEquippedState ~= "train" then
-                        equipCustomSlotsTeam(customFarmingSlots)
-                        lastEquippedState = "train"
-                    end
-
-                    while isAlive() and customRebirthActive and strengthVal.Value < targetStr do
-                        local event = getMuscleEvent()
-                        if event then
-                            for _ = 1, repsBurst do event:FireServer("rep") end
-                        end
-                        task.wait(0.01)
-                    end
-
-                    if isAlive() and customRebirthActive and strengthVal.Value >= targetStr then
-                        if lastEquippedState ~= "rebirth" then
-                            equipCustomSlotsTeam(customRebirthSlots)
-                            lastEquippedState = "rebirth"
-                        end
-                        task.wait(0.05)
-                        local startR = rebirthsVal.Value
-                        local rebirthRemote = getRebirthRemote()
-                        repeat
-                            if rebirthRemote then pcall(function() rebirthRemote:InvokeServer("rebirthRequest") end) end
-                            task.wait(0.1)
-                        until rebirthsVal.Value > startR or not customRebirthActive or not isAlive()
-                    end
-                end
-                task.wait(0.5)
-            end
-        end)
-    end
-
-    btnCustomRebirthToggle.MouseButton1Click:Connect(function()
-        playClickSound()
-        customRebirthActive = not customRebirthActive
-        btnCustomRebirthToggle.Text = "CUSTOM REBIRTH AUTO: " .. (customRebirthActive and "ON 🟢" or "OFF 🔴")
-        btnCustomRebirthToggle.BackgroundColor3 = customRebirthActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if customRebirthActive then startCustomRebirthWorker() else Core:StopWorker("Farms.CustomRebirth") end
-        refreshTrainingWatchdog()
-    end)
-
-    startAutoRepsWorker = function()
-        if not autoRepsActive then
-            Core:StopWorker("Farms.AutoReps")
-            return
-        end
-        Core:StartWorker("Farms.AutoReps", function(isAlive)
-            while isAlive() and autoRepsActive do
-                local event = getMuscleEvent()
-                if event then
-                    for _ = 1, 4 do pcall(function() event:FireServer("rep") end) end
-                    RunService.Heartbeat:Wait()
-                else
-                    task.wait(0.05)
-                end
-            end
-        end)
-    end
-
-    btnRepsOnly.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoRepsActive = not autoRepsActive
-        btnRepsOnly.Text = "AUTO REPS 2X (SO FORCA): " .. (autoRepsActive and "ON 🟢" or "OFF 🔴")
-        btnRepsOnly.BackgroundColor3 = autoRepsActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if autoRepsActive then startAutoRepsWorker() else Core:StopWorker("Farms.AutoReps") end
-        refreshTrainingWatchdog()
-    end)
-
-    startUnifiedFarmWorker = function()
-        if not autoUnifiedFarmActive then
-            Core:StopWorker("Farms.AutoUnified")
-            return
-        end
-        Core:StartWorker("Farms.AutoUnified", function(isAlive)
-            local lastRebirthTime = 0
-            while isAlive() and autoUnifiedFarmActive do
-                local event = getMuscleEvent()
-                local rebirthRemote = getRebirthRemote()
-                if event then
-                    for _ = 1, 4 do pcall(function() event:FireServer("rep") end) end
-                    if rebirthRemote and (tick() - lastRebirthTime >= 1) then
-                        pcall(function() rebirthRemote:InvokeServer("rebirthRequest") end)
-                        lastRebirthTime = tick()
-                    end
-                    RunService.Heartbeat:Wait()
-                else
-                    task.wait(0.05)
-                end
-            end
-        end)
-    end
-
-    btnUnifiedFarm.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoUnifiedFarmActive = not autoUnifiedFarmActive
-        btnUnifiedFarm.Text = "AUTO REPS 2X + REBIRTH: " .. (autoUnifiedFarmActive and "ON 🟢" or "OFF 🔴")
-        btnUnifiedFarm.BackgroundColor3 = autoUnifiedFarmActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if autoUnifiedFarmActive then startUnifiedFarmWorker() else Core:StopWorker("Farms.AutoUnified") end
-        refreshTrainingWatchdog()
-    end)
-
-    -- WATCHDOG DE TREINO // 5 SEGUNDOS
-    -- Aplica-se aos treinos comuns desta aba. OVERLORD e FARM OP (11 PETS)
-    -- ficam fora para preservar exatamente as versões ajustadas recentemente.
-    ;(function()
-        local function getStrength()
-            local ls = player:FindFirstChild("leaderstats")
-            local v = ls and (ls:FindFirstChild("Strength") or ls:FindFirstChild("Muscle"))
-            return v and tonumber(v.Value) or 0
-        end
-
-        local function equipWeightAndTrain()
-            local char = player.Character
-            local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-            local backpack = player:FindFirstChild("Backpack")
-            if not char or not humanoid then return end
-
-            local weight = char:FindFirstChild("Weight")
-            if not weight and backpack then
-                weight = backpack:FindFirstChild("Weight")
-            end
-
-            -- Compatibilidade caso o peso tenha variação no nome.
-            if not weight then
-                for _, container in ipairs({char, backpack}) do
-                    if container then
-                        for _, item in ipairs(container:GetChildren()) do
-                            if item:IsA("Tool") and string.find(string.lower(item.Name), "weight", 1, true) then
-                                weight = item
-                                break
-                            end
-                        end
-                    end
-                    if weight then break end
-                end
-            end
-
-            if weight and weight:IsA("Tool") and weight.Parent ~= char then
-                pcall(function() humanoid:EquipTool(weight) end)
-                task.wait()
-            end
-
-            local event = getMuscleEvent()
-            if event then
-                for _ = 1, 8 do
-                    pcall(function() event:FireServer("rep") end)
-                end
-            end
-        end
-
-        refreshTrainingWatchdog = function()
-            local active = autoRepsActive or autoUnifiedFarmActive or customRebirthActive
-            if not active then
-                Core:StopWorker("Farms.TrainingWatchdog")
-                return
-            end
-            if Core:IsWorkerRunning("Farms.TrainingWatchdog") then return end
-
-            Core:StartWorker("Farms.TrainingWatchdog", function(isAlive)
-                local previous = getStrength()
-                while isAlive() and (autoRepsActive or autoUnifiedFarmActive or customRebirthActive) do
-                    local elapsed = 0
-                    while elapsed < 5 and isAlive() and (autoRepsActive or autoUnifiedFarmActive or customRebirthActive) do
-                        task.wait(0.25)
-                        elapsed += 0.25
-                    end
-                    if not isAlive() then break end
-                    local current = getStrength()
-                    if current <= previous then equipWeightAndTrain() end
-                    previous = getStrength()
-                end
-            end)
-        end
-    end)()
-
-    local function unequipAllPetsOverlord()
-        local petsFolder = player:FindFirstChild("petsFolder")
-        if not petsFolder then return end
-        for _, folder in pairs(petsFolder:GetChildren()) do
-            if folder:IsA("Folder") then
-                for _, pet in pairs(folder:GetChildren()) do
-                    pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("unequipPet", pet) end)
-                end
-            end
-        end
-        task.wait(0.01)
-    end
-
-    local function equipFarmingPetsOverlord()
-        unequipAllPetsOverlord()
-        local uniqueFolder = player:FindFirstChild("petsFolder") and player.petsFolder:FindFirstChild("Unique")
-        if not uniqueFolder then return end
-
-        local omegas, swifts, hounds = {}, {}, {}
-        for _, pet in ipairs(uniqueFolder:GetChildren()) do
-            if pet.Name == "Omega Overlord" then table.insert(omegas, pet)
-            elseif pet.Name == "Swift Samurai" then table.insert(swifts, pet)
-            elseif pet.Name == "Powercore Hound" then table.insert(hounds, pet) end
-        end
-
-        local equippedCount, currentPercent, maxSlots = 0, 0, 9
-        for i = #omegas, 1, -1 do
-            if equippedCount < maxSlots and currentPercent < 100 then
-                pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", table.remove(omegas, i)) end)
-                currentPercent += 20; equippedCount += 1
-            end
-        end
-        for i = #swifts, 1, -1 do
-            if equippedCount < maxSlots and currentPercent < 100 then
-                pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", table.remove(swifts, i)) end)
-                currentPercent += 15; equippedCount += 1
-            end
-        end
-        if currentPercent >= 100 then
-            for i = #hounds, 1, -1 do
-                if equippedCount < maxSlots then
-                    pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", table.remove(hounds, i)) end)
-                    equippedCount += 1
-                end
-            end
-        end
-    end
-
-    local function equipRebirthPetsOverlord()
-        unequipAllPetsOverlord()
-        local uniqueFolder = player:FindFirstChild("petsFolder") and player.petsFolder:FindFirstChild("Unique")
-        if not uniqueFolder then return end
-
-        local hydras, tribals = {}, {}
-        for _, pet in ipairs(uniqueFolder:GetChildren()) do
-            if pet.Name == "Titanium Hydra" then table.insert(hydras, pet)
-            elseif pet.Name == "Tribal Overlord" then table.insert(tribals, pet) end
-        end
-
-        local equippedCount, maxSlots = 0, 9
-        for _, pet in ipairs(hydras) do
-            if equippedCount < maxSlots then
-                pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", pet) end)
-                equippedCount += 1
-            end
-        end
-        for _, pet in ipairs(tribals) do
-            if equippedCount < maxSlots then
-                pcall(function() ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", pet) end)
-                equippedCount += 1
-            end
-        end
-    end
-
-    startOverlordWorker = function()
-        if not overlordRebirthActive then
-            Core:StopWorker("Farms.Overlord")
-            return
-        end
-        Core:StartWorker("Farms.Overlord", function(isAlive)
-            while isAlive() and overlordRebirthActive do
-                equipFarmingPetsOverlord()
-                local leaderstats = player:FindFirstChild("leaderstats")
-                local rebirthsVal = leaderstats and leaderstats:FindFirstChild("Rebirths")
-                local strengthVal = leaderstats and leaderstats:FindFirstChild("Strength")
-
-                if rebirthsVal and strengthVal then
-                    local targetStr = 5000 + (rebirthsVal.Value * 2550)
-                    local repsBurst = player.MembershipType == Enum.MembershipType.Premium and 6 or 12
-
-                    while isAlive() and overlordRebirthActive and strengthVal.Value < targetStr do
-                        local event = getMuscleEvent()
-                        if event then
-                            for _ = 1, repsBurst do event:FireServer("rep") end
-                        end
-                        task.wait(0.01)
-                    end
-
-                    if isAlive() and overlordRebirthActive and strengthVal.Value >= targetStr then
-                        equipRebirthPetsOverlord()
-                        task.wait(0.01)
-                        local startR = rebirthsVal.Value
-                        local rebirthRemote = getRebirthRemote()
-                        repeat
-                            if rebirthRemote then pcall(function() rebirthRemote:InvokeServer("rebirthRequest") end) end
-                            task.wait(0.01)
-                        until rebirthsVal.Value > startR or not overlordRebirthActive or not isAlive()
-                    end
-                end
-                task.wait(0.01)
-            end
-        end)
-    end
-
-    btnOverlordRebirth.MouseButton1Click:Connect(function()
-        playClickSound()
-        overlordRebirthActive = not overlordRebirthActive
-        btnOverlordRebirth.Text = "REBIRTH PACK OVERLORD: " .. (overlordRebirthActive and "ON 🟢" or "OFF 🔴")
-        btnOverlordRebirth.BackgroundColor3 = overlordRebirthActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if overlordRebirthActive then startOverlordWorker() else Core:StopWorker("Farms.Overlord") end
-    end)
-
-    local farmOpActive = false
-
-    local function equipRareBossPetsFarmOp()
-        local petsFolder = player:FindFirstChild("petsFolder")
-        local rareFolder = petsFolder and petsFolder:FindFirstChild("Rare")
-        local rEvents = ReplicatedStorage:FindFirstChild("rEvents")
-        local equipEvent = rEvents and rEvents:FindFirstChild("equipPetEvent")
-        if not rareFolder or not equipEvent then return 0 end
-
-        local rareBossPets = {}
-        for _, pet in ipairs(rareFolder:GetChildren()) do
-            if pet.Name == "Rare Boss Pet" then
-                table.insert(rareBossPets, pet)
-            end
-        end
-
-        local equippedCount = 0
-        for i = #rareBossPets, 1, -1 do
-            if equippedCount >= 11 or not farmOpActive or not Core:IsAlive() then
-                break
-            end
-
-            local pet = rareBossPets[i]
-            pcall(function()
-                equipEvent:FireServer("equipPet", pet)
-            end)
-            equippedCount += 1
-            task.wait(0.03)
-        end
-
-        return equippedCount
-    end
-
-    local function stopFarmOp()
-        farmOpActive = false
-        farmOpPetsEquipped = false
-        Core:StopWorker("Farms.FarmOp")
-    end
-
-    local function startFarmOp()
-        if Core:IsWorkerRunning("Farms.FarmOp") then return end
-        Core:StartWorker("Farms.FarmOp", function(isAlive)
-            while isAlive() and farmOpActive do
-                local event = getMuscleEvent()
-
-                if event then
-                    -- Sem atraso artificial de treino: envia a quantidade escolhida
-                    -- e apenas devolve o controle ao scheduler no próximo frame.
-                    local repsBox = farmScroll:FindFirstChild("ArasakaFarmOpRepsBox")
-                    local repsNow = math.max(1, math.floor(tonumber(repsBox and repsBox:GetAttribute("RepsPerCycle")) or 1))
-                    for _ = 1, repsNow do
-                        if not isAlive() or not farmOpActive then break end
-                        pcall(function() event:FireServer("rep") end)
-                    end
-                    RunService.Heartbeat:Wait()
-                else
-                    RunService.Heartbeat:Wait()
-                end
-            end
-        end)
-    end
-
-    btnFarmOp.MouseButton1Click:Connect(function()
-        playClickSound()
-
-        if farmOpActive then
-            stopFarmOp()
-            btnFarmOp.Text = "FARM OP (11 PETS): OFF 🔴"
-            btnFarmOp.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
-        else
-            farmOpActive = true
-            farmOpPetsEquipped = false
-            btnFarmOp.Text = "FARM OP (11 PETS): ON 🟢"
-            btnFarmOp.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
-            startFarmOp()
-        end
-    end)
-
-    local function equipPunch()
-        local character = player.Character
-        if not character then return nil end
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid and humanoid.Health > 0 then
-            local currentTool = character:FindFirstChild("Punch")
-            if not currentTool then
-                local backpackPunch = player.Backpack:FindFirstChild("Punch")
-                if backpackPunch then humanoid:EquipTool(backpackPunch); return backpackPunch end
-            else return currentTool end
-        end
-        return nil
-    end
-
-    local function collectBossChest()
-        local chest = workspace:FindFirstChild("BossChest")
-        if not chest then return false end
-
-        local prompt = chest:FindFirstChildWhichIsA("ProximityPrompt", true)
-        if prompt and fireproximityprompt then
-            pcall(function()
-                fireproximityprompt(prompt)
-            end)
-            return true
-        end
-
-        return false
-    end
-
-    local function getBossTargetPosition()
-        local events = workspace:FindFirstChild("Events")
-        if not events then return nil end
-        local bossArena = events:FindFirstChild("BossArena")
-        if not bossArena then return nil end
-        local targetBosses = {"Boss1", "Boss2", "Boss3", "Boss4", "Boss5", "Boss6", "BossRainbow"}
-        for _, bossName in ipairs(targetBosses) do
-            local bossObj = bossArena:FindFirstChild(bossName)
-            if bossObj then
-                if bossObj:IsA("Model") then
-                    local humanoid = bossObj:FindFirstChildOfClass("Humanoid")
-                    if not humanoid or humanoid.Health > 0 then
-                        local part = bossObj.PrimaryPart or bossObj:FindFirstChild("HumanoidRootPart") or bossObj:FindFirstChild("Head") or bossObj:FindFirstChildOfClass("BasePart")
-                        if part then
-                            return part.Position
-                        end
-                    end
-                elseif bossObj:IsA("BasePart") then
-                    return bossObj.Position
-                end
-            end
-        end
-        local spawnPart = bossArena:FindFirstChild("BossSpawn") or bossArena:FindFirstChild("Part") or bossArena:FindFirstChildOfClass("BasePart")
-        return spawnPart and spawnPart.Position or nil
-    end
-
-    local function setNoclip(enabled)
-        if enabled then
-            if not noclipConnection then
-                noclipConnection = RunService.Stepped:Connect(function()
-                    if player.Character then
-                        for _, part in pairs(player.Character:GetDescendants()) do
-                            if part:IsA("BasePart") and part.CanCollide then part.CanCollide = false end
-                        end
-                    end
-                end)
-            end
-        elseif noclipConnection then
-            noclipConnection:Disconnect()
-            noclipConnection = nil
-        end
-    end
-
-    local damageCharacterConnection = nil
-    local damageCount = 0
-
-    local function disconnectBossDamageChecks()
-        Core:StopWorker("Farms.BossDamage")
-        if damageCharacterConnection then
-            damageCharacterConnection:Disconnect()
-            damageCharacterConnection = nil
-        end
-    end
-
-    local function bindBossDamageCheck()
-        local character = player.Character
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-        if not humanoid then return end
-
-        local lastHealth = humanoid.Health
-        Core:StartWorker("Farms.BossDamage", function(isAlive)
-            while isAlive() and autoFarmActive and humanoid.Parent do
-                task.wait(5)
-                if not isAlive() or not autoFarmActive or not humanoid.Parent then break end
-
-                local currentHealth = humanoid.Health
-                if currentHealth < lastHealth then
-                    damageCount += 1
-                    currentOffsetY = 45 + (damageCount * 2.5)
-                end
-                lastHealth = currentHealth
-            end
-        end)
-    end
-
-    btnFarm.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoFarmActive = not autoFarmActive
-        if autoFarmActive then
-            currentOffsetY = 45
-            damageCount = 0
-            disconnectBossDamageChecks()
-            bindBossDamageCheck()
-            damageCharacterConnection = player.CharacterAdded:Connect(function()
-                if autoFarmActive then
-                    task.wait(0.5)
-                    bindBossDamageCheck()
-                end
-            end)
-            btnFarm.Text = "AUTO FARM BOSS: ON 🟢"
-            btnFarm.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
-
-            Core:StartWorker("Farms.BossPosition", function(isAlive)
-                setNoclip(true)
-                while isAlive() and autoFarmActive do
-                    collectBossChest()
-                    local character = player.Character
-                    local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-                    local targetPos = getBossTargetPosition()
-                    if hrp and humanoid and humanoid.Health > 0 and targetPos then
-                        hrp.CFrame = CFrame.new(targetPos + Vector3.new(0, currentOffsetY, 0))
-                        hrp.Velocity = Vector3.new(0, 0, 0)
-                    end
-                    RunService.Heartbeat:Wait()
-                end
-                setNoclip(false)
-            end)
-
-            Core:StartWorker("Farms.BossAttack", function(isAlive)
-                while isAlive() and autoFarmActive do
-                    local character = player.Character
-                    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-                    if humanoid and humanoid.Health > 0 then
-                        local punchTool = equipPunch()
-                        if punchTool then pcall(function() punchTool:Activate() end) end
-                        local event = getMuscleEvent()
-                        if event then
-                            event:FireServer("punch", "leftHand")
-                            event:FireServer("punch", "rightHand")
-                        end
-                    end
-                    RunService.Heartbeat:Wait()
-                end
-            end)
-        else
-            disconnectBossDamageChecks()
-            Core:StopWorker("Farms.BossPosition")
-            Core:StopWorker("Farms.BossAttack")
-            setNoclip(false)
-            damageCount = 0
-            currentOffsetY = 45
-            btnFarm.Text = "AUTO FARM BOSS: OFF 🔴"
-            btnFarm.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-        end
-    end)
-
-    btnTravarLocal.MouseButton1Click:Connect(function()
-        playClickSound()
-        travarLocalActive = not travarLocalActive
-        if travarLocalActive then
-            local character = player.Character
-            local hrp = character and character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                lockedCFrame = hrp.CFrame
-                btnTravarLocal.Text = "TRAVAR LOCAL: ON 🟢"
-                btnTravarLocal.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
-                if lockConnection then lockConnection:Disconnect() end
-                lockConnection = RunService.RenderStepped:Connect(function()
-                    if not travarLocalActive or not Core:IsAlive() then
-                        if lockConnection then lockConnection:Disconnect(); lockConnection = nil end
-                        return
-                    end
-                    local char = player.Character
-                    local root = char and char:FindFirstChild("HumanoidRootPart")
-                    if root and lockedCFrame then
-                        root.CFrame = lockedCFrame
-                        root.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-                        root.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
-                    end
-                end)
-            else
-                travarLocalActive = false
-            end
-        else
-            if lockConnection then lockConnection:Disconnect(); lockConnection = nil end
-            lockedCFrame = nil
-            btnTravarLocal.Text = "TRAVAR LOCAL: OFF 🔴"
-            btnTravarLocal.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-        end
-    end)
-
-        Utils.PerfEnd("FARMS_UI")
-    end
-
-    function Farms:Stop()
-        for _, workerName in ipairs({
-            "Farms.ConfigAutosave", "Farms.TargetRebirth", "Farms.CustomRebirth",
-            "Farms.AutoReps", "Farms.AutoUnified", "Farms.TrainingWatchdog", "Farms.Overlord",
-            "Farms.FarmOp", "Farms.BossDamage", "Farms.BossPosition", "Farms.BossAttack"
-        }) do
-            Core:StopWorker(workerName)
-        end
-    end
-
-    Core:RegisterModule("Farms", Farms)
-    local farmsOk, farmsErr = Core:StartModule("Farms")
-    if not farmsOk then warn("[ARASAKA][MODULE:Farms] Falha:", farmsErr) end
-
-    -- MODULE // TELEPORTS
-    function Teleports:Init()
-        Utils.PerfBegin("TELEPORTES_UI")
-    -- ABA TELEPORTES
-    local teleScroll = Instance.new("ScrollingFrame", tabTeleports)
-    teleScroll.Size = UDim2.new(1, -20, 1, -10)
-    teleScroll.Position = UDim2.new(0, 10, 0, 5)
-    teleScroll.BackgroundTransparency = 1
-    teleScroll.ScrollBarThickness = 4
-
-    local teleLayout = Instance.new("UIListLayout", teleScroll)
-    teleLayout.Padding = UDim.new(0, 6)
-    teleLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    teleLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        teleScroll.CanvasSize = UDim2.new(0, 0, 0, teleLayout.AbsoluteContentSize.Y + 20)
-    end)
-
-    local locations = {
-        {"Ilha Principal", CFrame.new(16, 9, 133)},
-        {"Muscle King Academia", CFrame.new(-8665, 17, -5792)},
-        {"Legends Academia", CFrame.new(4516, 991, -3856)},
-        {"Jungle Academia", CFrame.new(-8543, 6, 2400)},
-        {"Infernal Academia", CFrame.new(-6759, 7, -1284)},
-        {"Mythical Academia", CFrame.new(2250, 7, 1073)},
-        {"Frost Academia", CFrame.new(-2623, 7, -409)},
-        {"Industrial Academia", CFrame.new(-5414.23, 89.76, 4941.73)}
-    }
-
-    for idx, loc in ipairs(locations) do
-        local tpBtn = Instance.new("TextButton", teleScroll)
-        tpBtn.LayoutOrder = idx
-        tpBtn.Size = UDim2.new(1, -6, 0, 34)
-        tpBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
-        tpBtn.Text = "📌 " .. loc[1]
-        tpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tpBtn.Font = Enum.Font.GothamBold
-        tpBtn.TextSize = 13
-        Instance.new("UICorner", tpBtn).CornerRadius = UDim.new(0, 6)
-
-        tpBtn.MouseButton1Click:Connect(function()
-            playClickSound()
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                player.Character.HumanoidRootPart.CFrame = loc[2]
-            end
-        end)
-    end
-
-        Utils.PerfEnd("TELEPORTES_UI")
-    end
-    Core:RegisterModule("Teleports", Teleports)
-    local teleOk, teleErr = Core:StartModule("Teleports")
-    if not teleOk then warn("[ARASAKA][MODULE:Teleports] Falha:", teleErr) end
-
-    -- MODULE // PETS
-    function Pets:Init()
-        Utils.PerfBegin("PETS_UI")
-    -- ABA PETS
-    local petScroll = Instance.new("ScrollingFrame", tabPets)
-    petScroll.Size = UDim2.new(1, -20, 1, -10)
-    petScroll.Position = UDim2.new(0, 10, 0, 5)
-    petScroll.BackgroundTransparency = 1
-    petScroll.ScrollBarThickness = 4
-
-    local petLayout = Instance.new("UIListLayout", petScroll)
-    petLayout.Padding = UDim.new(0, 5)
-    petLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    petLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        petScroll.CanvasSize = UDim2.new(0, 0, 0, petLayout.AbsoluteContentSize.Y + 20)
-    end)
-
-    local function CriarSecaoTitulo(txt, order)
-        local lbl = Instance.new("TextLabel", petScroll)
-        lbl.LayoutOrder = order
-        lbl.Size = UDim2.new(1, 0, 0, 20)
-        lbl.BackgroundTransparency = 1
-        lbl.Text = txt
-        lbl.TextColor3 = Color3.fromRGB(215, 50, 50)
-        lbl.Font = Enum.Font.GothamBold
-        lbl.TextSize = 13
-        lbl.TextXAlignment = Enum.TextXAlignment.Left
-    end
-
-    local PetShopRuntime = ReplicatedStorage:WaitForChild("shared", 5) and ReplicatedStorage.shared:WaitForChild("runtime", 5)
-    local PetShopFolder = PetShopRuntime and PetShopRuntime:WaitForChild("cPetShopFolder", 5)
-    local PetShopRemote = ReplicatedStorage:FindFirstChild("rEvents") and ReplicatedStorage.rEvents:FindFirstChild("cPetShopRemote")
-
-    local PetShopData = { SelectedPet = nil, PetList = {} }
-    local AuraData = { SelectedAura = nil, AuraList = {} }
-    local TradeData = { SelectedPlayer = nil }
-
-    if PetShopFolder then
-        for _, item in ipairs(PetShopFolder:GetChildren()) do
-            if item:GetAttribute("IsPowerUp") == true then table.insert(AuraData.AuraList, item.Name)
-            else table.insert(PetShopData.PetList, item.Name) end
-        end
-
-        table.sort(PetShopData.PetList)
-        table.sort(AuraData.AuraList)
-    end
-
-    CriarSecaoTitulo("🛒 Pet Shop:", 1)
-
-    local btnSelectPetShop = Instance.new("TextButton", petScroll)
-    btnSelectPetShop.LayoutOrder = 2
-    btnSelectPetShop.Size = UDim2.new(1, -6, 0, 28)
-    btnSelectPetShop.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    btnSelectPetShop.Text = "Escolher Pet / Aura: Nenhum"
-    btnSelectPetShop.TextColor3 = Color3.fromRGB(220, 220, 220)
-    btnSelectPetShop.Font = Enum.Font.GothamBold
-    btnSelectPetShop.TextSize = 11
-    Instance.new("UICorner", btnSelectPetShop).CornerRadius = UDim.new(0, 4)
-
-    btnSelectPetShop.MouseButton1Click:Connect(function()
-        playClickSound()
-        local combinedList = {}
-        for _, p in ipairs(PetShopData.PetList) do table.insert(combinedList, p) end
-        for _, a in ipairs(AuraData.AuraList) do table.insert(combinedList, "[Aura] " .. a) end
-
-        AbrirMenuSelecao("Selecione um Pet ou Aura", combinedList, function(val, text)
-            local cleanName = text:gsub("%[Aura%] ", "")
-            PetShopData.SelectedPet = cleanName
-            btnSelectPetShop.Text = "Pet/Aura: " .. cleanName
-        end)
-    end)
-
-    local autoHatchActive = false
-    local btnBuyPet = Instance.new("TextButton", petScroll)
-    btnBuyPet.LayoutOrder = 3
-    btnBuyPet.Size = UDim2.new(1, -6, 0, 28)
-    btnBuyPet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    btnBuyPet.Text = "Comprar Pet (Auto Hatch): OFF 🔴"
-    btnBuyPet.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btnBuyPet.Font = Enum.Font.GothamBold
-    btnBuyPet.TextSize = 11
-    Instance.new("UICorner", btnBuyPet).CornerRadius = UDim.new(0, 4)
-
-    btnBuyPet.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoHatchActive = not autoHatchActive
-        btnBuyPet.Text = "Comprar Pet (Auto Hatch): " .. (autoHatchActive and "ON 🟢" or "OFF 🔴")
-        btnBuyPet.BackgroundColor3 = autoHatchActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        
-        if autoHatchActive then
-            task.spawn(function()
-                while autoHatchActive and Core:IsAlive() do
-                    if PetShopData.SelectedPet and PetShopFolder and PetShopRemote then
-                        local selectedObj = PetShopFolder:FindFirstChild(PetShopData.SelectedPet)
-                        if selectedObj then pcall(function() PetShopRemote:InvokeServer(selectedObj) end) end
-                    end
-                    task.wait(0.01)
-                end
-            end)
-        end
-    end)
-
-    ;(function()
-        --==================================================
-        -- OVERCHARGED CRYSTAL // AUTO OPEN + AUTO SELL
-        -- Pets marcados abaixo são vendidos automaticamente.
-        -- Qualquer pet removido/desmarcado da lista será mantido.
-        -- O pet raro de 1% não entra na lista e, portanto, nunca é auto-vendido.
-        --==================================================
-        local CrystalRemote = ReplicatedStorage:FindFirstChild("rEvents") and ReplicatedStorage.rEvents:FindFirstChild("openCrystalRemote")
-        local overchargedAutoOpen = false
-        local overchargedCrystalName = "Overcharged Crystal"
-        local overchargedBulkAmount = 10
-    
-        local overchargedAutoSellPets = {
-            ["Volt Wolf"] = true,
-            ["Shard Dragon"] = true,
-            ["Surge Tiger"] = true,
-            ["Core Golem"] = true,
-            ["Plasma Jelly"] = true,
-        }
-    
-        local function SaveOverchargedAutoSell()
-            if not CrystalRemote then return false end
-            local petsToSell = {}
-            for petName, enabled in pairs(overchargedAutoSellPets) do
-                if enabled then
-                    petsToSell[petName] = true
-                end
-            end
-    
-            return pcall(function()
-                CrystalRemote:InvokeServer(
-                    "saveAutoSell",
-                    overchargedCrystalName,
-                    {
-                        Pets = petsToSell,
-                        Enabled = true,
-                        Auras = {}
-                    }
-                )
-            end)
-        end
-    
-        CriarSecaoTitulo("⚡ Overcharged Crystal:", 11)
-    
-        local overchargedInfo = Instance.new("TextLabel", petScroll)
-        overchargedInfo.LayoutOrder = 12
-        overchargedInfo.Size = UDim2.new(1, -6, 0, 32)
-        overchargedInfo.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
-        overchargedInfo.Text = "AUTO SELL // marque apenas os pets que deseja excluir"
-        overchargedInfo.TextColor3 = Color3.fromRGB(180, 180, 185)
-        overchargedInfo.Font = Enum.Font.Gotham
-        overchargedInfo.TextSize = 10
-        Instance.new("UICorner", overchargedInfo).CornerRadius = UDim.new(0, 4)
-    
-        local autoSellButtons = {}
-        local autoSellNames = {"Volt Wolf", "Shard Dragon", "Surge Tiger", "Core Golem", "Plasma Jelly"}
-    
-        local function UpdateAutoSellButton(petName)
-            local btn = autoSellButtons[petName]
-            if not btn then return end
-            local enabled = overchargedAutoSellPets[petName] == true
-            btn.Text = petName .. " // AUTO EXCLUIR: " .. (enabled and "ON 🟢" or "OFF 🔴")
-            btn.BackgroundColor3 = enabled and Color3.fromRGB(35, 115, 55) or Color3.fromRGB(95, 25, 30)
-        end
-    
-        for index, petName in ipairs(autoSellNames) do
-            local btn = Instance.new("TextButton", petScroll)
-            btn.LayoutOrder = 12 + index
-            btn.Size = UDim2.new(1, -6, 0, 27)
-            btn.TextColor3 = Color3.fromRGB(245, 245, 245)
-            btn.Font = Enum.Font.GothamBold
-            btn.TextSize = 10
-            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
-            autoSellButtons[petName] = btn
-            UpdateAutoSellButton(petName)
-    
-            btn.MouseButton1Click:Connect(function()
-                playClickSound()
-                overchargedAutoSellPets[petName] = not overchargedAutoSellPets[petName]
-                UpdateAutoSellButton(petName)
-                SaveOverchargedAutoSell()
-            end)
-        end
-    
-        local btnOverchargedOpen = Instance.new("TextButton", petScroll)
-        btnOverchargedOpen.LayoutOrder = 17.5
-        btnOverchargedOpen.Size = UDim2.new(1, -6, 0, 30)
-        btnOverchargedOpen.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-        btnOverchargedOpen.Text = "AUTO ABRIR OVERCHARGED x10: OFF 🔴"
-        btnOverchargedOpen.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btnOverchargedOpen.Font = Enum.Font.GothamBold
-        btnOverchargedOpen.TextSize = 11
-        Instance.new("UICorner", btnOverchargedOpen).CornerRadius = UDim.new(0, 4)
-    
-        btnOverchargedOpen.MouseButton1Click:Connect(function()
-            playClickSound()
-            overchargedAutoOpen = not overchargedAutoOpen
-            btnOverchargedOpen.Text = "AUTO ABRIR OVERCHARGED x10: " .. (overchargedAutoOpen and "ON 🟢" or "OFF 🔴")
-            btnOverchargedOpen.BackgroundColor3 = overchargedAutoOpen and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-    
-            if overchargedAutoOpen then
-                SaveOverchargedAutoSell()
-                task.spawn(function()
-                    while overchargedAutoOpen and Core:IsAlive() do
-                        if CrystalRemote then
-                            pcall(function()
-                                CrystalRemote:InvokeServer("openCrystalBulk", overchargedCrystalName, overchargedBulkAmount)
-                            end)
-                        end
-                        task.wait(0.01)
-                    end
-                end)
-            end
-        end)
-    
-    end)()
-
-    CriarSecaoTitulo("🧬 Evolução Automática:", 18)
-
-    local btnSelectEvolve = Instance.new("TextButton", petScroll)
-    btnSelectEvolve.LayoutOrder = 19
-    btnSelectEvolve.Size = UDim2.new(1, -6, 0, 28)
-    btnSelectEvolve.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    btnSelectEvolve.Text = "Escolher Pet p/ Evoluir: Nenhum"
-    btnSelectEvolve.TextColor3 = Color3.fromRGB(220, 220, 220)
-    btnSelectEvolve.Font = Enum.Font.GothamBold
-    btnSelectEvolve.TextSize = 11
-    Instance.new("UICorner", btnSelectEvolve).CornerRadius = UDim.new(0, 4)
-
-    btnSelectEvolve.MouseButton1Click:Connect(function()
-        playClickSound()
-        local userPets = GetUserPetsList()
-        if #userPets > 0 then
-            AbrirMenuSelecao("Selecione o Pet para Evoluir", userPets, function(val, text)
-                PetShopData.SelectedPet = val
-                btnSelectEvolve.Text = "Pet p/ Evoluir: " .. val
-            end)
-        else
-            btnSelectEvolve.Text = "Nenhum Pet encontrado no inventário!"
-        end
-    end)
-
-    local autoEvolveActive = false
-    local btnEvolvePet = Instance.new("TextButton", petScroll)
-    btnEvolvePet.LayoutOrder = 20
-    btnEvolvePet.Size = UDim2.new(1, -6, 0, 28)
-    btnEvolvePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    btnEvolvePet.Text = "Auto Evoluir: OFF 🔴"
-    btnEvolvePet.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btnEvolvePet.Font = Enum.Font.GothamBold
-    btnEvolvePet.TextSize = 11
-    Instance.new("UICorner", btnEvolvePet).CornerRadius = UDim.new(0, 4)
-
-    btnEvolvePet.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoEvolveActive = not autoEvolveActive
-        btnEvolvePet.Text = "Auto Evoluir: " .. (autoEvolveActive and "ON 🟢" or "OFF 🔴")
-        btnEvolvePet.BackgroundColor3 = autoEvolveActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-
-        if autoEvolveActive then
-            task.spawn(function()
-                while autoEvolveActive and Core:IsAlive() do
-                    if PetShopData.SelectedPet and ReplicatedStorage:FindFirstChild("rEvents") and ReplicatedStorage.rEvents:FindFirstChild("petEvolveEvent") then
-                        pcall(function() ReplicatedStorage.rEvents.petEvolveEvent:FireServer("evolvePet", PetShopData.SelectedPet) end)
-                    end
-                    task.wait(0.01)
-                end
-            end)
-        end
-    end)
-
-    CriarSecaoTitulo("🤝 Trocas Automáticas:", 21)
-
-    local btnSelectPlayer = Instance.new("TextButton", petScroll)
-    btnSelectPlayer.LayoutOrder = 22
-    btnSelectPlayer.Size = UDim2.new(1, -6, 0, 28)
-    btnSelectPlayer.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    btnSelectPlayer.Text = "Escolher Jogador: Nenhum"
-    btnSelectPlayer.TextColor3 = Color3.fromRGB(220, 220, 220)
-    btnSelectPlayer.Font = Enum.Font.GothamBold
-    btnSelectPlayer.TextSize = 11
-    Instance.new("UICorner", btnSelectPlayer).CornerRadius = UDim.new(0, 4)
-
-    btnSelectPlayer.MouseButton1Click:Connect(function()
-        playClickSound()
-        local plist = {}
-        for _, p in ipairs(Players:GetPlayers()) do
-            if p ~= player then table.insert(plist, {Text = p.DisplayName .. " (@" .. p.Name .. ")", Value = p}) end
-        end
-
-        if #plist > 0 then
-            AbrirMenuSelecao("Selecione o Jogador", plist, function(val, text)
-                TradeData.SelectedPlayer = val
-                btnSelectPlayer.Text = "Jogador: " .. text
-            end)
-        else
-            btnSelectPlayer.Text = "Sem jogadores disponíveis!"
-        end
-    end)
-
-    local btnSelectTradePet = Instance.new("TextButton", petScroll)
-    btnSelectTradePet.LayoutOrder = 23
-    btnSelectTradePet.Size = UDim2.new(1, -6, 0, 28)
-    btnSelectTradePet.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    btnSelectTradePet.Text = "Escolher Pet p/ Troca: Nenhum"
-    btnSelectTradePet.TextColor3 = Color3.fromRGB(220, 220, 220)
-    btnSelectTradePet.Font = Enum.Font.GothamBold
-    btnSelectTradePet.TextSize = 11
-    Instance.new("UICorner", btnSelectTradePet).CornerRadius = UDim.new(0, 4)
-
-    btnSelectTradePet.MouseButton1Click:Connect(function()
-        playClickSound()
-        local userPets = GetUserPetsList()
-        if #userPets > 0 then
-            AbrirMenuSelecao("Selecione o Pet para Troca", userPets, function(val, text)
-                PetShopData.SelectedPet = val
-                btnSelectTradePet.Text = "Pet p/ Troca: " .. val
-            end)
-        else
-            btnSelectTradePet.Text = "Nenhum Pet encontrado!"
-        end
-    end)
-
-    local autoTradeActive = false
-    local btnTradePet = Instance.new("TextButton", petScroll)
-    btnTradePet.LayoutOrder = 24
-    btnTradePet.Size = UDim2.new(1, -6, 0, 28)
-    btnTradePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-    btnTradePet.Text = "Auto Troca: OFF 🔴"
-    btnTradePet.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btnTradePet.Font = Enum.Font.GothamBold
-    btnTradePet.TextSize = 11
-    Instance.new("UICorner", btnTradePet).CornerRadius = UDim.new(0, 4)
-
-    btnTradePet.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoTradeActive = not autoTradeActive
-        btnTradePet.Text = "Auto Troca: " .. (autoTradeActive and "ON 🟢" or "OFF 🔴")
-        btnTradePet.BackgroundColor3 = autoTradeActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-
-        if autoTradeActive then
-            task.spawn(function()
-                while autoTradeActive and Core:IsAlive() do
-                    if TradeData.SelectedPlayer and PetShopData.SelectedPet then
-                        local tradingEvent = ReplicatedStorage:FindFirstChild("rEvents") and ReplicatedStorage.rEvents:FindFirstChild("tradingEvent")
-                        local petsFolder = player:FindFirstChild("petsFolder")
-
-                        if tradingEvent and petsFolder then
-                            pcall(function() tradingEvent:FireServer("sendTradeRequest", TradeData.SelectedPlayer) end)
-                            task.wait(0.01)
-                            local offered = 0
-                            
-                            for _, folder in ipairs(petsFolder:GetChildren()) do
-                                if folder:IsA("Folder") then
-                                    for _, petObj in ipairs(folder:GetChildren()) do
-                                        if not autoTradeActive then break end
-                                        if petObj.Name == PetShopData.SelectedPet then
-                                            pcall(function() tradingEvent:FireServer("offerItem", petObj) end)
-                                            offered += 1
-                                            task.wait(0.01)
-                                            if offered >= 10 then break end
-                                        end
-                                    end
-                                end
-                                if offered >= 10 then break end
-                            end
-                            task.wait(0.01)
-                            if autoTradeActive then pcall(function() tradingEvent:FireServer("acceptTrade") end) end
-                        end
-                    end
-                    task.wait(1)
-                end
-            end)
-        end
-    end)
-
-        Utils.PerfEnd("PETS_UI")
-    end
-    Core:RegisterModule("Pets", Pets)
-    local petsOk, petsErr = Core:StartModule("Pets")
-    if not petsOk then warn("[ARASAKA][MODULE:Pets] Falha:", petsErr) end
-
-    -- MODULE // VISUAL
-    function Visual:Init()
-        Utils.PerfBegin("VISUAL_UI")
-    -- ABA VISUAL
-    local rtxActive, vibeActive, antiLagActive, terrorActive, fotorealistaActive, blackScreenActive = false, false, false, false, false, false
-
-    local defaultLighting = {
-        Ambient = Lighting.Ambient, OutdoorAmbient = Lighting.OutdoorAmbient, Brightness = Lighting.Brightness,
-        FogEnd = Lighting.FogEnd, FogColor = Lighting.FogColor, ClockTime = Lighting.ClockTime, GlobalShadows = Lighting.GlobalShadows,
-        GeographicLatitude = Lighting.GeographicLatitude, ShadowSoftness = Lighting.ShadowSoftness
-    }
-
-    local function CriarBotaoVisual(parent, texto, posY)
-        local btn = Instance.new("TextButton", parent)
-        btn.Size = UDim2.new(1, -20, 0, 30)
-        btn.Position = UDim2.new(0, 10, 0, posY)
-        btn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-        btn.Text = texto .. ": OFF 🔴"
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 11
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-        return btn
-    end
-
-    local btnRTX = CriarBotaoVisual(tabVisual, "MODO RTX 🌟", 10)
-    local btnVibe = CriarBotaoVisual(tabVisual, "VIBE AMBIENTE + METEORES 🌌", 45)
-    local btnAntiLag = CriarBotaoVisual(tabVisual, "MODO ANTI-LAG ⚡", 80)
-    local btnTerror = CriarBotaoVisual(tabVisual, "MODO TERROR 🩸", 115)
-    local btnFotorealista = CriarBotaoVisual(tabVisual, "MODO FOTORREALISTA ULTRA 📸", 150)
-    local btnBlackScreen = CriarBotaoVisual(tabVisual, "MODO TELA PRETA 🖤", 185)
-
-    btnRTX.MouseButton1Click:Connect(function()
-        playClickSound()
-        rtxActive = not rtxActive
-        btnRTX.Text = "MODO RTX: " .. (rtxActive and "ON 🟢" or "OFF 🔴")
-        btnRTX.BackgroundColor3 = rtxActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if rtxActive then
-            Lighting.GlobalShadows = true; Lighting.ShadowSoftness = 0.2
-            Lighting.Brightness = 3; Lighting.ClockTime = 14; Lighting.GeographicLatitude = 41.5
-            Lighting.Ambient = Color3.fromRGB(150, 150, 150); Lighting.OutdoorAmbient = Color3.fromRGB(120, 120, 120)
-
-            local sunRays = Lighting:FindFirstChildOfClass("SunRaysEffect") or Instance.new("SunRaysEffect", Lighting)
-            sunRays.Intensity = 0.25; sunRays.Spread = 1
-
-            local bloom = Lighting:FindFirstChildOfClass("BloomEffect") or Instance.new("BloomEffect", Lighting)
-            bloom.Intensity = 1.2; bloom.Size = 24; bloom.Threshold = 0.8
-
-            local blur = Lighting:FindFirstChildOfClass("BlurEffect") or Instance.new("BlurEffect", Lighting)
-            blur.Size = 4
-        else
-            Lighting.GlobalShadows = defaultLighting.GlobalShadows; Lighting.ShadowSoftness = defaultLighting.ShadowSoftness
-            Lighting.Brightness = defaultLighting.Brightness; Lighting.ClockTime = defaultLighting.ClockTime
-            Lighting.GeographicLatitude = defaultLighting.GeographicLatitude; Lighting.Ambient = defaultLighting.Ambient; Lighting.OutdoorAmbient = defaultLighting.OutdoorAmbient
-            for _, v in ipairs(Lighting:GetChildren()) do
-                if v:IsA("SunRaysEffect") or v:IsA("BloomEffect") or v:IsA("BlurEffect") then v:Destroy() end
-            end
-        end
-    end)
-
-    btnVibe.MouseButton1Click:Connect(function()
-        playClickSound()
-        vibeActive = not vibeActive
-        btnVibe.Text = "VIBE AMBIENTE: " .. (vibeActive and "ON 🟢" or "OFF 🔴")
-        btnVibe.BackgroundColor3 = vibeActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if vibeActive then
-            Lighting.Ambient = Color3.fromRGB(80, 0, 120); Lighting.OutdoorAmbient = Color3.fromRGB(40, 0, 80); Lighting.ClockTime = 0
-            task.spawn(function()
-                while vibeActive and Core:IsAlive() do
-                    local m = Instance.new("Part", workspace)
-                    m.Size = Vector3.new(2, 2, 2); m.Position = player.Character and player.Character.HumanoidRootPart.Position + Vector3.new(math.random(-100, 100), 100, math.random(-100, 100)) or Vector3.new(0, 100, 0)
-                    m.Color = Color3.fromRGB(255, 0, 150); m.Material = Enum.Material.Neon; m.Velocity = Vector3.new(math.random(-20, 20), -50, math.random(-20, 20))
-                    Debris:AddItem(m, 3)
-                    task.wait(1)
-                end
-            end)
-        else
-            Lighting.Ambient = defaultLighting.Ambient; Lighting.OutdoorAmbient = defaultLighting.OutdoorAmbient; Lighting.ClockTime = defaultLighting.ClockTime
-        end
-    end)
-
-    btnAntiLag.MouseButton1Click:Connect(function()
-        playClickSound()
-        antiLagActive = not antiLagActive
-        btnAntiLag.Text = "MODO ANTI-LAG: " .. (antiLagActive and "ON 🟢" or "OFF 🔴")
-        btnAntiLag.BackgroundColor3 = antiLagActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if antiLagActive then
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("BasePart") then v.Material = Enum.Material.SmoothPlastic
-                elseif v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
-            end
-            Lighting.GlobalShadows = false
-        else
-            Lighting.GlobalShadows = defaultLighting.GlobalShadows
-        end
-    end)
-
-    local terrorConn = nil
-    local terrorChildConn = nil
-    local originalGuiStates = {}
-    local originalBillboardStates = {}
-    local originalSoundVolumes = {}
-    local terrorAudio = nil
-    local terrorAudioList = {"rbxassetid://130233633203928", "rbxassetid://134959834418523"}
-
-    local function EsconderBillboardObjeto(obj)
-        if obj:IsA("BillboardGui") or obj:IsA("SurfaceGui") then
-            local isNextBoss = obj.Name:lower():find("boss") or (obj:FindFirstChildOfClass("TextLabel") and obj:FindFirstChildOfClass("TextLabel").Text:lower():find("boss"))
-            if not isNextBoss then
-                if originalBillboardStates[obj] == nil then
-                    originalBillboardStates[obj] = obj.Enabled
-                end
-                obj.Enabled = false
-            end
-        end
-    end
-
-    local function OcultarGuisTerror()
-        originalGuiStates = {}
-        originalBillboardStates = {}
-        originalSoundVolumes = {}
-
-        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
-            if gui:IsA("ScreenGui") and gui.Name ~= uiName and gui.Name ~= "ArasakaDropdown_Gui" and gui.Name ~= "ArasakaConfigRebirth_Gui" and gui.Name ~= "ArasakaBlackScreen_Gui" and gui.Name ~= "ArasakaKeyTimer_Gui" then
-                originalGuiStates[gui] = gui.Enabled
-                gui.Enabled = false
-            end
-        end
-
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            EsconderBillboardObjeto(obj)
-        end
-
-        for _, snd in ipairs(game:GetDescendants()) do
-            if snd:IsA("Sound") and snd ~= terrorAudio and snd ~= clickSound then
-                originalSoundVolumes[snd] = snd.Volume
-                snd.Volume = 0
-            end
-        end
-    end
-
-    local function RestaurarGuisTerror()
-        for gui, wasEnabled in pairs(originalGuiStates) do
-            if gui and gui.Parent then
-                gui.Enabled = wasEnabled
-            end
-        end
-        originalGuiStates = {}
-
-        for obj, wasEnabled in pairs(originalBillboardStates) do
-            if obj and obj.Parent then
-                obj.Enabled = wasEnabled
-            end
-        end
-        originalBillboardStates = {}
-
-        for snd, vol in pairs(originalSoundVolumes) do
-            if snd and snd.Parent then
-                snd.Volume = vol
-            end
-        end
-        originalSoundVolumes = {}
-    end
-
-    btnTerror.MouseButton1Click:Connect(function()
-        playClickSound()
-        terrorActive = not terrorActive
-        btnTerror.Text = "MODO TERROR: " .. (terrorActive and "ON 🟢" or "OFF 🔴")
-        btnTerror.BackgroundColor3 = terrorActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if terrorActive then
-            OcultarGuisTerror()
-            
-            if terrorConn then terrorConn:Disconnect() end
-            if terrorChildConn then terrorChildConn:Disconnect() end
-
-            terrorConn = RunService.RenderStepped:Connect(function()
-                if not terrorActive then return end
-                Lighting.Ambient = Color3.fromRGB(100, 0, 0)
-                Lighting.OutdoorAmbient = Color3.fromRGB(80, 0, 0)
-                Lighting.FogColor = Color3.fromRGB(15, 0, 0)
-                Lighting.FogEnd = 120
-                Lighting.ClockTime = 0
-            end)
-
-            terrorChildConn = workspace.DescendantAdded:Connect(function(descendant)
-                if terrorActive then
-                    EsconderBillboardObjeto(descendant)
-                end
-            end)
-
-            task.spawn(function()
-                task.wait(5)
-                if terrorActive and Core:IsAlive() then
-                    if terrorAudio then terrorAudio:Destroy() end
-                    terrorAudio = Instance.new("Sound", SoundService)
-                    terrorAudio.SoundId = terrorAudioList[math.random(1, #terrorAudioList)]
-                    terrorAudio.Volume = 1
-                    terrorAudio.Looped = true
-                    terrorAudio:Play()
-                end
-            end)
-        else
-            RestaurarGuisTerror()
-            if terrorConn then terrorConn:Disconnect(); terrorConn = nil end
-            if terrorChildConn then terrorChildConn:Disconnect(); terrorChildConn = nil end
-            
-            if terrorAudio then
-                terrorAudio:Stop()
-                terrorAudio:Destroy()
-                terrorAudio = nil
-            end
-            
-            Lighting.Ambient = defaultLighting.Ambient
-            Lighting.OutdoorAmbient = defaultLighting.OutdoorAmbient
-            Lighting.FogColor = defaultLighting.FogColor
-            Lighting.FogEnd = defaultLighting.FogEnd
-            Lighting.ClockTime = defaultLighting.ClockTime
-        end
-    end)
-
-    local fotoEffects = {}
-    local blurConn = nil
-    local originalMaterials = {}
-
-    local function VarreduraLeveMateriais()
-        local allDescendants = workspace:GetDescendants()
-        local batchSize = 100
-        local count = 0
-
-        for i = 1, #allDescendants do
-            if not fotorealistaActive or not Core:IsAlive() then break end
-            local part = allDescendants[i]
-            if part:IsA("BasePart") and part.Size.Magnitude > 4 then
-                if not part:IsDescendantOf(player.Character) and not part.Parent:FindFirstChildOfClass("Humanoid") then
-                    if not originalMaterials[part] then
-                        originalMaterials[part] = {Mat = part.Material, Ref = part.Reflectance}
-                        if part.Material == Enum.Material.Concrete or part.Material == Enum.Material.Pavement then
-                            part.Material = Enum.Material.Slate
-                        elseif part.Material == Enum.Material.Grass then
-                            part.Material = Enum.Material.Grass
-                        elseif part.Material == Enum.Material.SmoothPlastic or part.Material == Enum.Material.Plastic then
-                            part.Material = Enum.Material.SmoothPlastic
-                        end
-                        part.Reflectance = math.clamp(part.Reflectance + 0.05, 0, 0.3)
-                    end
-                end
-            end
-
-            count += 1
-            if count >= batchSize then
-                count = 0
-                task.wait(0.01)
-            end
-        end
-    end
-
-    btnFotorealista.MouseButton1Click:Connect(function()
-        playClickSound()
-        fotorealistaActive = not fotorealistaActive
-        btnFotorealista.Text = "MODO FOTORREALISTA ULTRA: " .. (fotorealistaActive and "ON 🟢" or "OFF 🔴")
-        btnFotorealista.BackgroundColor3 = fotorealistaActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if fotorealistaActive then
-            Lighting.Technology = Enum.Technology.Future
-            Lighting.GlobalShadows = true
-            Lighting.ShadowSoftness = 0.1
-            Lighting.Brightness = 2.2
-            Lighting.ColorShift_Top = Color3.fromRGB(255, 245, 225)
-            Lighting.ColorShift_Bottom = Color3.fromRGB(180, 200, 220)
-            Lighting.OutdoorAmbient = Color3.fromRGB(110, 120, 130)
-            Lighting.Ambient = Color3.fromRGB(90, 95, 100)
-            Lighting.ClockTime = 14.5
-            Lighting.GeographicLatitude = 35
-
-            local cc = Instance.new("ColorCorrectionEffect", Lighting)
-            cc.Name = "Arasaka_CC"
-            cc.Brightness = 0.03
-            cc.Contrast = 0.18
-            cc.Saturation = 0.15
-            cc.TintColor = Color3.fromRGB(255, 252, 245)
-            table.insert(fotoEffects, cc)
-
-            local bloom = Instance.new("BloomEffect", Lighting)
-            bloom.Name = "Arasaka_Bloom"
-            bloom.Intensity = 0.35
-            bloom.Size = 18
-            bloom.Threshold = 0.85
-            table.insert(fotoEffects, bloom)
-
-            local sunRays = Instance.new("SunRaysEffect", Lighting)
-            sunRays.Name = "Arasaka_SunRays"
-            sunRays.Intensity = 0.12
-            sunRays.Spread = 0.8
-            table.insert(fotoEffects, sunRays)
-
-            local dof = Instance.new("DepthOfFieldEffect", Lighting)
-            dof.Name = "Arasaka_DoF"
-            dof.FarIntensity = 0.15
-            dof.FocusDistance = 25
-            dof.InFocusRadius = 30
-            dof.NearIntensity = 0
-            table.insert(fotoEffects, dof)
-
-            local blur = Instance.new("BlurEffect", Lighting)
-            blur.Name = "Arasaka_MotionBlur"
-            blur.Size = 0
-            table.insert(fotoEffects, blur)
-
-            blurConn = RunService.RenderStepped:Connect(function()
-                if not fotorealistaActive then return end
-                local char = player.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    local speed = hrp.AssemblyLinearVelocity.Magnitude
-                    blur.Size = math.clamp((speed - 15) * 0.15, 0, 6)
-                end
-            end)
-
-            task.spawn(function()
-                while fotorealistaActive and Core:IsAlive() do
-                    VarreduraLeveMateriais()
-                    task.wait(60)
-                end
-            end)
-        else
-            if blurConn then blurConn:Disconnect(); blurConn = nil end
-
-            for _, eff in ipairs(fotoEffects) do
-                if eff and eff.Parent then eff:Destroy() end
-            end
-            fotoEffects = {}
-
-            for part, original in pairs(originalMaterials) do
-                if part and part.Parent then
-                    part.Material = original.Mat
-                    part.Reflectance = original.Ref
-                end
-            end
-            originalMaterials = {}
-
-            Lighting.GlobalShadows = defaultLighting.GlobalShadows
-            Lighting.ShadowSoftness = defaultLighting.ShadowSoftness
-            Lighting.Brightness = defaultLighting.Brightness
-            Lighting.OutdoorAmbient = defaultLighting.OutdoorAmbient
-            Lighting.Ambient = defaultLighting.Ambient
-            Lighting.ClockTime = defaultLighting.ClockTime
-            Lighting.GeographicLatitude = defaultLighting.GeographicLatitude
-        end
-    end)
-
-    local blackScreenGui = nil
-    btnBlackScreen.MouseButton1Click:Connect(function()
-        playClickSound()
-        blackScreenActive = not blackScreenActive
-        btnBlackScreen.Text = "MODO TELA PRETA: " .. (blackScreenActive and "ON 🟢" or "OFF 🔴")
-        btnBlackScreen.BackgroundColor3 = blackScreenActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-        if blackScreenActive then
-            if not blackScreenGui then
-                blackScreenGui = Instance.new("ScreenGui", targetGui)
-                blackScreenGui.Name = "ArasakaBlackScreen_Gui"
-                blackScreenGui.IgnoreGuiInset = true
-                blackScreenGui.DisplayOrder = 100
-
-                local bg = Instance.new("Frame", blackScreenGui)
-                bg.Size = UDim2.new(1, 0, 1, 0)
-                bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                bg.BorderSizePixel = 0
-
-                local label = Instance.new("TextLabel", bg)
-                label.Size = UDim2.new(1, 0, 0, 40)
-                label.Position = UDim2.new(0, 0, 0.02, 0)
-                label.BackgroundTransparency = 1
-                label.Text = "ARASAKA HUB - MODO TELA PRETA ATIVO 🖤"
-                label.TextColor3 = Color3.fromRGB(215, 50, 50)
-                label.Font = Enum.Font.GothamBold
-                label.TextSize = 14
-            end
-            blackScreenGui.Enabled = true
-        else
-            if blackScreenGui then
-                blackScreenGui.Enabled = false
-            end
-        end
-    end)
-
-        Utils.PerfEnd("VISUAL_UI")
-    end
-    Core:RegisterModule("Visual", Visual)
-    local visualOk, visualErr = Core:StartModule("Visual")
-    if not visualOk then warn("[ARASAKA][MODULE:Visual] Falha:", visualErr) end
-
-    -- MODULE // SYSTEM / OUTROS
-    function System:Init()
-        Utils.PerfBegin("OUTROS_UI")
-    -- ABA OUTROS
-    local outrosScroll = Instance.new("ScrollingFrame", tabOutros)
-    outrosScroll.Size = UDim2.new(1, -20, 1, -10)
-    outrosScroll.Position = UDim2.new(0, 10, 0, 5)
-    outrosScroll.BackgroundTransparency = 1
-    outrosScroll.ScrollBarThickness = 4
-
-    local outrosLayout = Instance.new("UIListLayout", outrosScroll)
-    outrosLayout.Padding = UDim.new(0, 6)
-    outrosLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    outrosLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        outrosScroll.CanvasSize = UDim2.new(0, 0, 0, outrosLayout.AbsoluteContentSize.Y + 20)
-    end)
-
-    local function CriarBotaoOutros(texto, order)
-        local btn = Instance.new("TextButton", outrosScroll)
-        btn.LayoutOrder = order
-        btn.Size = UDim2.new(1, -6, 0, 32)
-        btn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-        btn.Text = texto .. ": OFF 🔴"
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 11
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-        return btn
-    end
-
-    local autoSpinWheelActive, eatAllBoostsActive = false, false
-
-    local btnSpinWheel = CriarBotaoOutros("GIRAR ROLETA 🎰", 1)
-    local btnEatAllBoosts = CriarBotaoOutros("USAR TODOS OS BOOSTS 💊", 2)
-    local btnServerHop = CriarBotaoOutros("SERVIDOR COM MENOS PESSOAS 🌐", 3)
-    local btnRejoin = CriarBotaoOutros("REJOIN 🔄", 4)
-    local btnMelhorPing = CriarBotaoOutros("PROCURAR MELHOR PING 📡", 5)
-
-    btnServerHop.Text = "SERVIDOR COM MENOS PESSOAS 🌐"
-    btnRejoin.Text = "REJOIN 🔄"
-    btnMelhorPing.Text = "PROCURAR MELHOR PING 📡"
-
-    local serverHopBusy = false
-    local function IrServidorMenosCheio()
-        if serverHopBusy then return end
-        serverHopBusy = true
-
-        local textoOriginal = btnServerHop.Text
-        btnServerHop.Text = "PROCURANDO SERVIDOR..."
-        btnServerHop.BackgroundColor3 = Color3.fromRGB(125, 25, 25)
-
-        task.spawn(function()
-            local melhorServidor = nil
-            local menorQuantidade = math.huge
-            local cursor = nil
-
-            for _ = 1, 5 do
-                local url = "https://games.roblox.com/v1/games/" .. tostring(game.PlaceId)
-                    .. "/servers/Public?sortOrder=Asc&limit=100"
-
-                if cursor and cursor ~= "" then
-                    url = url .. "&cursor=" .. HttpService:UrlEncode(cursor)
-                end
-
-                local ok, resposta = pcall(function()
-                    return HttpService:JSONDecode(game:HttpGet(url))
-                end)
-
-                if not ok or type(resposta) ~= "table" then
-                    break
-                end
-
-                for _, servidor in ipairs(resposta.data or {}) do
-                    local playing = tonumber(servidor.playing) or math.huge
-                    local maxPlayers = tonumber(servidor.maxPlayers) or 0
-
-                    if servidor.id
-                        and servidor.id ~= game.JobId
-                        and playing < maxPlayers
-                        and playing < menorQuantidade then
-
-                        melhorServidor = servidor.id
-                        menorQuantidade = playing
-                    end
-                end
-
-                cursor = resposta.nextPageCursor
-                if not cursor or cursor == "" or menorQuantidade == 0 then
-                    break
-                end
-            end
-
-            if melhorServidor then
-                btnServerHop.Text = "ENTRANDO // " .. tostring(menorQuantidade) .. " PLAYER(S)"
-                task.wait(0.25)
-                local ok = pcall(function()
-                    TeleportService:TeleportToPlaceInstance(game.PlaceId, melhorServidor, player)
-                end)
-
-                if not ok then
-                    btnServerHop.Text = "FALHA AO TROCAR SERVIDOR"
-                    task.wait(1.5)
-                end
-            else
-                btnServerHop.Text = "NENHUM SERVIDOR ENCONTRADO"
-                task.wait(1.5)
-            end
-
-            if btnServerHop and btnServerHop.Parent then
-                btnServerHop.Text = textoOriginal
-                btnServerHop.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-            end
-            serverHopBusy = false
-        end)
-    end
-
-    btnServerHop.MouseButton1Click:Connect(function()
-        playClickSound()
-        IrServidorMenosCheio()
-    end)
-
-    local melhorPingBusy = false
-
-    local function ProcurarServidorMelhorPing()
-        if melhorPingBusy then
-            return
-        end
-
-        melhorPingBusy = true
-        btnMelhorPing.Text = "PROCURANDO MELHOR CONEXAO..."
-        btnMelhorPing.BackgroundColor3 = Color3.fromRGB(125, 25, 25)
-
-        task.wait(0.25)
-
-        local sucesso, erroTeleport = pcall(function()
-            TeleportService:Teleport(game.PlaceId, player)
-        end)
-
-        if not sucesso then
-            warn("[ARASAKA] Falha no matchmaking:", erroTeleport)
-            btnMelhorPing.Text = "FALHA // TENTE NOVAMENTE"
-            btnMelhorPing.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-            melhorPingBusy = false
-        end
-    end
-
-    btnMelhorPing.MouseButton1Click:Connect(function()
-        playClickSound()
-        ProcurarServidorMelhorPing()
-    end)
-
-    btnRejoin.MouseButton1Click:Connect(function()
-        playClickSound()
-        if btnRejoin.Text == "REENTRANDO..." then return end
-
-        btnRejoin.Text = "REENTRANDO..."
-        btnRejoin.BackgroundColor3 = Color3.fromRGB(125, 25, 25)
-
-        task.delay(0.15, function()
-            local ok = pcall(function()
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
-            end)
-
-            if not ok and btnRejoin and btnRejoin.Parent then
-                btnRejoin.Text = "FALHA NO REJOIN"
-                task.wait(1.5)
-                if btnRejoin and btnRejoin.Parent then
-                    btnRejoin.Text = "REJOIN 🔄"
-                    btnRejoin.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-                end
-            end
-        end)
-    end)
-
-    task.spawn(function()
-        while Core:IsAlive() do
-            if autoSpinWheelActive then
-                local rEvents = ReplicatedStorage:FindFirstChild("rEvents")
-                local rspin = rEvents and rEvents:FindFirstChild("openFortuneWheelRemote")
-                local chances = ReplicatedStorage:FindFirstChild("shared") and ReplicatedStorage.shared:FindFirstChild("catalogs") and ReplicatedStorage.shared.catalogs:FindFirstChild("fortuneWheelChances") and ReplicatedStorage.shared.catalogs.fortuneWheelChances:FindFirstChild("Fortune Wheel")
-                if rspin and chances then
-                    pcall(function() rspin:InvokeServer("openFortuneWheel", chances) end)
-                end
-                
-                for i = 1, 10 do
-                    if not autoSpinWheelActive or not Core:IsAlive() then break end
-                    task.wait(0.1)
-                end
-            else
-                task.wait(0.1)
-            end
-        end
-    end)
-
-    btnSpinWheel.MouseButton1Click:Connect(function()
-        playClickSound()
-        autoSpinWheelActive = not autoSpinWheelActive
-        btnSpinWheel.Text = "GIRAR ROLETA: " .. (autoSpinWheelActive and "ON 🟢" or "OFF 🔴")
-        btnSpinWheel.BackgroundColor3 = autoSpinWheelActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-    end)
-
-    local boostItemList = { "Tropical Shake", "Energy Shake", "Protein Bar", "TOUGH Bar", "Protein Shake", "ULTRA Shake", "Energy Bar" }
-    local boostActions = { ["Tropical Shake"] = "tropicalShake", ["Energy Shake"] = "energyShake", ["Protein Bar"] = "proteinBar", ["TOUGH Bar"] = "toughBar", ["Protein Shake"] = "proteinShake", ["ULTRA Shake"] = "ultraShake", ["Energy Bar"] = "energyBar" }
-
-    task.spawn(function()
-        while Core:IsAlive() do
-            if eatAllBoostsActive then
-                local char = player.Character
-                local backpack = player:FindFirstChild("Backpack")
-                local event = getMuscleEvent()
-
-                for _, boostName in ipairs(boostItemList) do
-                    if not eatAllBoostsActive or not Core:IsAlive() then break end
-                    local tool = (char and char:FindFirstChild(boostName)) or (backpack and backpack:FindFirstChild(boostName))
-                    if tool and event and boostActions[boostName] then
-                        pcall(function() event:FireServer(boostActions[boostName], tool) end)
-                    end
-                end
-                task.wait(0.05)
-            else
-                task.wait(0.1)
-            end
-        end
-    end)
-
-    btnEatAllBoosts.MouseButton1Click:Connect(function()
-        playClickSound()
-        eatAllBoostsActive = not eatAllBoostsActive
-        btnEatAllBoosts.Text = "USAR TODOS OS BOOSTS: " .. (eatAllBoostsActive and "ON 🟢" or "OFF 🔴")
-        btnEatAllBoosts.BackgroundColor3 = eatAllBoostsActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
-    end)
-
-
-    --==================================================
-    -- NOTIFICAÇÕES UNIVERSAIS // TODAS AS FUNÇÕES DA UI
-    -- Observa mudanças ON/OFF sem alterar a lógica das funções.
-    --==================================================
-    local function limparNomeFuncao(texto)
-        texto = tostring(texto or "")
-        texto = texto:gsub("%s*:%s*ON%s*🟢", "")
-        texto = texto:gsub("%s*:%s*OFF%s*🔴", "")
-        texto = texto:gsub("%s*ON%s*🟢", "")
-        texto = texto:gsub("%s*OFF%s*🔴", "")
-        texto = texto:gsub("^%s+", ""):gsub("%s+$", "")
-        return texto ~= "" and texto or "FUNÇÃO"
-    end
-
-    local function estadoDoTexto(texto)
-        texto = tostring(texto or "")
-        if texto:find("ON 🟢", 1, true) then return true end
-        if texto:find("OFF 🔴", 1, true) then return false end
-        return nil
-    end
-
-    local botoesNotificacaoConectados = setmetatable({}, {__mode = "k"})
-
-    local function conectarNotificacaoBotao(botao)
-        if not botao:IsA("TextButton") or botoesNotificacaoConectados[botao] then return end
-        botoesNotificacaoConectados[botao] = true
-
-        local conexao = botao.MouseButton1Click:Connect(function()
-            local textoAntes = botao.Text
-            local estadoAntes = estadoDoTexto(textoAntes)
-
-            task.defer(function()
-                if not botao or not botao.Parent or not Core then return end
-
-                local textoDepois = botao.Text
-                local estadoDepois = estadoDoTexto(textoDepois)
-
-                -- Toggle real: notifica somente quando o estado mudou.
-                if estadoDepois ~= nil and estadoDepois ~= estadoAntes then
-                    Core:NotificarToggle(limparNomeFuncao(textoDepois), estadoDepois)
-                    return
-                end
-
-                -- Ações instantâneas importantes que não possuem ON/OFF.
-                local upper = string.upper(textoAntes or "")
-                local ehAcao =
-                    upper:find("TELEPORT", 1, true)
-                    or upper:find("REJOIN", 1, true)
-                    or upper:find("SERVIDOR", 1, true)
-                    or upper:find("MELHOR PING", 1, true)
-
-                if ehAcao then
-                    Core:Notify(
-                        limparNomeFuncao(textoAntes),
-                        "Ação iniciada.",
-                        2
-                    )
-                end
-            end)
-        end)
-
-        if Core then
-            Core:TrackConnection("NotificacoesUniversais", conexao)
-        end
-    end
-
-    local function iniciarNotificacoesUniversais()
-        for _, objeto in ipairs(screenGui:GetDescendants()) do
-            conectarNotificacaoBotao(objeto)
-        end
-
-        local conexaoNovoBotao = screenGui.DescendantAdded:Connect(function(objeto)
-            if objeto:IsA("TextButton") then
-                task.defer(function()
-                    conectarNotificacaoBotao(objeto)
-                end)
-            end
-        end)
-
-        if Core then
-            Core:TrackConnection("NotificacoesUniversais", conexaoNovoBotao)
-        end
-
-        print("[ARASAKA][NOTIFICAÇÕES] Todas as funções ON/OFF = MONITORADAS")
-    end
-
-    iniciarNotificacoesUniversais()
-
-    --==================================================
-    -- MODULE // DASHBOARD // COMPLETE UPGRADE
-    -- Observabilidade local: uptime, FPS, jogadores, workers e conexões.
-    --==================================================
-    local DashboardModule = {
-        Name = "Dashboard",
-        Connections = {},
-        Initialized = false
-    }
-
-    function DashboardModule:Init()
-        if self.Initialized then return end
-        self.Initialized = true
-
-        local card = Instance.new("Frame")
-        card.Name = "ArasakaDashboard"
-        card.Parent = tabInicio
-        card.BackgroundColor3 = Color3.fromRGB(7, 7, 7)
-        card.BorderSizePixel = 0
-        card.Position = UDim2.new(0, 14, 0, 310)
-        card.Size = UDim2.new(1, -28, 0, 128)
-
-        local stroke = Instance.new("UIStroke")
-        stroke.Parent = card
-        stroke.Color = Color3.fromRGB(70, 18, 18)
-        stroke.Thickness = 1
-
-        local title = Instance.new("TextLabel")
-        title.Parent = card
-        title.BackgroundTransparency = 1
-        title.Position = UDim2.new(0, 14, 0, 5)
-        title.Size = UDim2.new(1, -28, 0, 20)
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 13
-        title.TextXAlignment = Enum.TextXAlignment.Left
-        title.TextColor3 = Color3.fromRGB(235, 235, 235)
-        title.Text = "ARASAKA // PAINEL DO SISTEMA"
-
-        local info = Instance.new("TextLabel")
-        info.Parent = card
-        info.BackgroundTransparency = 1
-        info.Position = UDim2.new(0, 16, 0, 34)
-        info.Size = UDim2.new(1, -32, 0, 86)
-        info.Font = Enum.Font.Code
-        info.TextSize = 11
-        info.TextXAlignment = Enum.TextXAlignment.Left
-        info.TextYAlignment = Enum.TextYAlignment.Top
-        info.TextColor3 = Color3.fromRGB(155, 155, 155)
-        info.TextWrapped = true
-
-        local fpsFrames, fpsElapsed, fpsValue = 0, 0, 0
-
-        local function formatUptime(seconds)
-            seconds = math.max(0, math.floor(seconds))
-            local h = math.floor(seconds / 3600)
-            local m = math.floor((seconds % 3600) / 60)
-            local s = seconds % 60
-            return string.format("%02d:%02d:%02d", h, m, s)
-        end
-
-        local function refresh()
-            if not Core then return end
-            local workers = Core:GetRunningWorkerNames()
-            local nomesProcessos = {}
-            for _, nome in ipairs(workers) do
-                local traduzido = ({
-                    CoreMemory = "Memória do Sistema",
-                    HubLifecycle = "Ciclo do Hub",
-                    LifecycleTest = "Teste de Ciclo"
-                })[nome] or nome
-                table.insert(nomesProcessos, traduzido)
-            end
-            local workerText = #nomesProcessos > 0 and table.concat(nomesProcessos, ", ") or "NENHUM"
-            local playersNow = #Players:GetPlayers()
-            local maxPlayers = Players.MaxPlayers
-            info.Text = string.format(
-                "VERSAO       // %s\nTEMPO ATIVO  // %s\nFPS          // %d\nJOGADORES    // %d / %d\nPROCESSOS    // %d [%s]\nCONEXOES     // %d\nCHAT         // %s",
-                tostring(Core.Version),
-                formatUptime(os.clock() - Core.StartedAt),
-                fpsValue,
-                playersNow,
-                maxPlayers,
-                #workers,
-                workerText,
-                Core:GetConnectionCount(),
-                (Core.Modules.Chat and Core.States.Chat) and "CARREGADO" or "EM ESPERA"
-            )
-        end
-
-        local conn = RunService.RenderStepped:Connect(function(dt)
-            fpsFrames += 1
-            fpsElapsed += dt
-            if fpsElapsed >= 0.5 then
-                fpsValue = math.floor((fpsFrames / fpsElapsed) + 0.5)
-                fpsFrames = 0
-                fpsElapsed = 0
-                refresh()
-            end
-        end)
-
-        if Core then
-            Core:TrackConnection("Dashboard", conn)
-        else
-            table.insert(self.Connections, conn)
-        end
-
-        refresh()
-        print("[ARASAKA][MODULE] Dashboard = MIGRADO")
-    end
-
-    function DashboardModule:Stop()
-        if Core then
-            Core:CleanupOwner("Dashboard")
-        end
-        for _, connection in ipairs(self.Connections) do
-            pcall(function() connection:Disconnect() end)
-        end
-        table.clear(self.Connections)
-    end
-
-    if Core then
-        Core:RegisterModule("Dashboard", DashboardModule)
-        local okDash, errDash = Core:StartModule("Dashboard")
-        if not okDash then
-            warn("[ARASAKA][MODULE:Dashboard] Falha:", errDash)
-        end
-    else
-        DashboardModule:Init()
-    end
-
-    --==================================================
-    --==================================================
-    -- MODULE // PROCESS PANEL // FASE 7
-    -- Painel visual para workers gerenciados pelo Core.
-    --==================================================
-    local ProcessPanelModule = {
-        Name = "ProcessPanel",
-        Connections = {}
-    }
-
-    function ProcessPanelModule:Init()
-        if self.Initialized then return end
-        self.Initialized = true
-
-        local title = Instance.new("TextLabel")
-        title.Name = "ProcessManagerTitle"
-        title.Parent = tabOutros
-        title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -24, 0, 24)
-        title.Position = UDim2.new(0, 12, 0, 238)
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 14
-        title.TextXAlignment = Enum.TextXAlignment.Left
-        title.TextColor3 = Color3.fromRGB(210, 210, 210)
-        title.Text = "SISTEMA // GERENCIADOR DE PROCESSOS"
-
-        local status = Instance.new("TextLabel")
-        status.Name = "ProcessManagerStatus"
-        status.Parent = tabOutros
-        status.BackgroundTransparency = 1
-        status.Size = UDim2.new(1, -24, 0, 34)
-        status.Position = UDim2.new(0, 12, 0, 262)
-        status.Font = Enum.Font.Code
-        status.TextSize = 11
-        status.TextWrapped = true
-        status.TextXAlignment = Enum.TextXAlignment.Left
-        status.TextYAlignment = Enum.TextYAlignment.Top
-        status.TextColor3 = Color3.fromRGB(145, 145, 145)
-        status.Text = "PROCESSOS // NENHUM ATIVO"
-
-        local stopButton = Instance.new("TextButton")
-        stopButton.Name = "MasterStopButton"
-        stopButton.Parent = tabOutros
-        stopButton.Size = UDim2.new(1, -24, 0, 34)
-        stopButton.Position = UDim2.new(0, 12, 0, 298)
-        stopButton.BackgroundColor3 = Color3.fromRGB(45, 8, 8)
-        stopButton.BorderSizePixel = 0
-        stopButton.Font = Enum.Font.GothamBold
-        stopButton.TextSize = 13
-        stopButton.TextColor3 = Color3.fromRGB(255, 90, 90)
-        stopButton.Text = "PARAR TODOS OS PROCESSOS"
-
-        local stroke = Instance.new("UIStroke")
-        stroke.Parent = stopButton
-        stroke.Color = Color3.fromRGB(120, 25, 25)
-        stroke.Thickness = 1
-
-        local notifyButton = Instance.new("TextButton")
-        notifyButton.Name = "NotificationToggle"
-        notifyButton.Parent = tabOutros
-        notifyButton.Size = UDim2.new(1, -24, 0, 32)
-        notifyButton.Position = UDim2.new(0, 12, 0, 338)
-        notifyButton.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-        notifyButton.BorderSizePixel = 0
-        notifyButton.Font = Enum.Font.GothamBold
-        notifyButton.TextSize = 13
-        notifyButton.TextColor3 = Color3.fromRGB(185, 185, 185)
-
-        local function refreshNotifyButton()
-            local enabled = Core and Core:GetConfig("notifications", true)
-            notifyButton.Text = "NOTIFICAÇÕES ARASAKA // " .. (enabled and "ON" or "OFF")
-        end
-
-        local notifyConnection = notifyButton.MouseButton1Click:Connect(function()
-            if not Core then return end
-            local nextValue = not Core:GetConfig("notifications", true)
-            Core:SetConfig("notifications", nextValue)
-            refreshNotifyButton()
-        end)
-
-        if Core then
-            Core:TrackConnection("ProcessPanel", notifyConnection)
-        end
-        refreshNotifyButton()
-
-        local compactButton = Instance.new("TextButton")
-        compactButton.Name = "CompactStatusToggle"
-        compactButton.Parent = tabOutros
-        compactButton.Size = UDim2.new(1, -24, 0, 32)
-        compactButton.Position = UDim2.new(0, 12, 0, 376)
-        compactButton.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-        compactButton.BorderSizePixel = 0
-        compactButton.Font = Enum.Font.GothamBold
-        compactButton.TextSize = 12
-        compactButton.TextColor3 = Color3.fromRGB(185, 185, 185)
-
-        local function atualizarBotaoCompacto()
-            local ativo = Core and Core:GetConfig("compactStatus", false)
-            compactButton.Text = "STATUS COMPACTO // " .. (ativo and "ON" or "OFF")
-        end
-
-        local compactConnection = compactButton.MouseButton1Click:Connect(function()
-            if not Core then return end
-            local novoValor = not Core:GetConfig("compactStatus", false)
-            Core:SetConfig("compactStatus", novoValor)
-            atualizarBotaoCompacto()
-        end)
-
-        if Core then
-            Core:TrackConnection("ProcessPanel", compactConnection)
-        end
-        atualizarBotaoCompacto()
-
-        local function refresh()
-            if not ProcessControlModule then
-                status.Text = "PROCESSOS // CONTROLE OFFLINE"
-                return
-            end
-
-            local snapshot = ProcessControlModule:GetSnapshot()
-            local running = {}
-            for name, info in pairs(snapshot) do
-                if info.running then
-                    table.insert(running, name)
-                end
-            end
-            table.sort(running)
-
-            local connectionCount = 0
-            if Core then
-                for _, connections in pairs(Core.Connections) do
-                    connectionCount += #connections
-                end
-            end
-
-            local compacto = Core and Core:GetConfig("compactStatus", false)
-
-            if compacto then
-                status.Text = "PROCESSOS // " .. tostring(#running)
-                    .. "   |   CONEXÕES // " .. tostring(connectionCount)
-            elseif #running == 0 then
-                status.Text = "PROCESSOS // 0   |   CONEXÕES // " .. tostring(connectionCount)
-            else
-                status.Text = "ATIVOS // " .. table.concat(running, " | ")
-                    .. "   // CONEXÕES " .. tostring(connectionCount)
-            end
-        end
-
-        local masterStopConnection = stopButton.MouseButton1Click:Connect(function()
-            if playClickSound then
-                pcall(playClickSound)
-            end
-            if ProcessControlModule then
-                ProcessControlModule:StopAllManagedWorkers()
-            end
-            refresh()
-        end)
-
-        if Core then
-            Core:TrackConnection("ProcessPanel", masterStopConnection)
-        else
-            table.insert(self.Connections, masterStopConnection)
-        end
-
-        -- Atualiza ~2x por segundo, sem interferir no gameplay.
-        local elapsed = 0
-        local refreshConnection = RunService.Heartbeat:Connect(function(dt)
-            elapsed += dt
-            if elapsed >= 0.5 then
-                elapsed = 0
-                refresh()
-            end
-        end)
-
-        if Core then
-            Core:TrackConnection("ProcessPanel", refreshConnection)
-        else
-            table.insert(self.Connections, refreshConnection)
-        end
-
-        refresh()
-        print("[ARASAKA][MODULE] ProcessPanel = MIGRADO")
-    end
-
-    function ProcessPanelModule:Stop()
-        if Core then
-            Core:CleanupOwner("ProcessPanel")
-        end
-
-        for _, connection in ipairs(self.Connections) do
-            pcall(function()
-                connection:Disconnect()
-            end)
-        end
-        table.clear(self.Connections)
-    end
-
-    if Core then
-        Core:RegisterModule("ProcessPanel", ProcessPanelModule)
-        local okPanel, errPanel = Core:StartModule("ProcessPanel")
-        if not okPanel then
-            warn("[ARASAKA][MODULE:ProcessPanel] Falha:", errPanel)
-        end
-    else
-        ProcessPanelModule:Init()
-    end
-
-    --==================================================
-        Utils.PerfEnd("OUTROS_UI")
-    end
-    Core:RegisterModule("System", System)
-    local systemOk, systemErr = Core:StartModule("System")
-    if not systemOk then warn("[ARASAKA][MODULE:System] Falha:", systemErr) end
-
-    --==================================================
-        -- MODULE // SYSTEM UI
-    -- Primeira migração real para a arquitetura modular.
-    --==================================================
-    local SystemUIModule = { Name = "SystemUI" }
-
-    function SystemUIModule:Init()
-        local minimizado = false
-        local TAMANHO_NORMAL = UDim2.new(0, 820, 0, 520)
-        local TAMANHO_MINIMIZADO = UDim2.new(0, 420, 0, 52)
-        local ALTURA_BARRA_NORMAL = 52
-        local ALTURA_BARRA_MIN = 49
-        local minimizeTween = nil
-        local minimizeGeneration = 0
-
-        local function AplicarEstadoMinimizado(isMin)
-            if isMin then
-                sidebar.Visible = false
-                contentArea.Visible = false
-                separator.Visible = false
-                techLeft.Visible = false
-                techRight.Visible = false
-                subtitleText.Visible = false
-                userText.Visible = false
-                contentGlow.Visible = false
-                contentCode.Visible = false
-
-                titleBar.Size = UDim2.new(1, 0, 0, ALTURA_BARRA_MIN)
-                titleBar.Position = UDim2.new(0, 0, 0, 3)
-                decalImage.Size = UDim2.new(0, 26, 0, 26)
-                decalImage.Position = UDim2.new(0, 16, 0.5, -13)
-                titleText.Position = UDim2.new(0, 51, 0, 5)
-                titleText.Size = UDim2.new(0, 180, 0, 24)
-                titleText.TextSize = 17
-                onlineText.Size = UDim2.new(0, 130, 0, 7)
-                onlineText.Position = UDim2.new(1, -175, 0, 7)
-                onlineText.TextSize = 12
-                btnMinimizar.Size = UDim2.new(0, 28, 0, 28)
-                btnMinimizar.Position = UDim2.new(1, -36, 0.5, -14)
-            else
-                titleBar.Size = UDim2.new(1, 0, 0, ALTURA_BARRA_NORMAL)
-                titleBar.Position = UDim2.new(0, 0, 0, 3)
-                decalImage.Size = UDim2.new(0, 30, 0, 30)
-                decalImage.Position = UDim2.new(0, 17, 0.5, -15)
-                titleText.Position = UDim2.new(0, 57, 0, 8)
-                titleText.Size = UDim2.new(0, 300, 0, 23)
-                titleText.TextSize = 18
-                onlineText.Size = UDim2.new(0, 150, 0, 20)
-                onlineText.Position = UDim2.new(1, -205, 0, 9)
-                onlineText.TextSize = 12
-                btnMinimizar.Size = UDim2.new(0, 30, 0, 30)
-                btnMinimizar.Position = UDim2.new(1, -38, 0.5, -15)
-
-                sidebar.Visible = true
-                contentArea.Visible = true
-                separator.Visible = true
-                techLeft.Visible = true
-                techRight.Visible = true
-                subtitleText.Visible = true
-                userText.Visible = true
-                contentGlow.Visible = true
-                contentCode.Visible = true
-            end
-        end
-
-        btnMinimizar.MouseButton1Click:Connect(function()
-            playClickSound()
-            minimizado = not minimizado
-            minimizeGeneration = minimizeGeneration + 1
-            local thisGen = minimizeGeneration
-
-            if minimizeTween then
-                pcall(function() minimizeTween:Cancel() end)
-                minimizeTween = nil
-            end
-
-            if minimizado then
-                AplicarEstadoMinimizado(true)
-            end
-
-            local novoTamanho = minimizado and TAMANHO_MINIMIZADO or TAMANHO_NORMAL
-            minimizeTween = TweenService:Create(
-                frame,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
-                {Size = novoTamanho}
-            )
-            minimizeTween:Play()
-
-            if not minimizado then
-                minimizeTween.Completed:Once(function()
-                    if thisGen == minimizeGeneration and not minimizado then
-                        AplicarEstadoMinimizado(false)
-                    end
-                end)
-            end
-
-            btnMinimizar.Text = minimizado and "+" or "—"
-        end)
-    end
-
-    if Core then
-        Core:RegisterModule("SystemUI", SystemUIModule)
-        local okSystem, errSystem = Core:StartModule("SystemUI")
-        if not okSystem then
-            warn("[ARASAKA][MODULE:SystemUI] Falha:", errSystem)
-        end
-    else
-        SystemUIModule:Init()
-    end
-
-end
-
-function UI:Stop()
-    Core:StopWorker("UI.DashboardStats")
-    Core:CleanupOwner("ChatLoader")
-    Core:CleanupOwner("UI")
-    if self.ScreenGui then
-        pcall(function() self.ScreenGui:Destroy() end)
-        self.ScreenGui = nil
-    end
-end
-
---==================================================
--- CORE já foi declarado no topo para que todos os módulos compartilhem
--- o mesmo gerenciador local sem depender de _G.
---==================================================
-
---==================================================
--- MODULE // PROCESS CONTROL
--- MASTER STOP para todos os workers que forem migrados
--- para o WorkerManager. Não encerra o Hub/UI.
---==================================================
-ProcessControlModule = {
-    Name = "ProcessControl"
-}
-
-function ProcessControlModule:StopAllManagedWorkers()
-    Core:StopAllWorkers()
-    print("[ARASAKA][MASTER STOP] Todos os processos gerenciados foram encerrados.")
-end
-
-function ProcessControlModule:GetSnapshot()
-    return Core:GetWorkerSnapshot()
-end
-
-Core:RegisterModule("ProcessControl", ProcessControlModule)
--- ProcessControlModule já é local
-
---==================================================
--- MODULE // CORE MEMORY // FASE 10
--- Primeira rotina real migrada para o WorkerManager.
--- Mantém exatamente a operação antiga: consulta periódica
--- ao contador de memória do coletor Lua.
---==================================================
-local CoreMemoryModule = {
-    Name = "CoreMemory"
-}
-
-function CoreMemoryModule:Start()
-    if Core:IsWorkerRunning("CoreMemory") then
-        return true
-    end
-
-    return Core:StartWorker("CoreMemory", function(isAlive)
-        while isAlive() do
-            -- Espera fracionada para que STOP não precise aguardar 30s.
-            local elapsed = 0
-            while elapsed < 30 and isAlive() do
-                task.wait(0.25)
-                elapsed += 0.25
-            end
-
-            if not isAlive() then
-                break
-            end
-
-            pcall(function()
-                collectgarbage("count")
-            end)
-        end
-    end)
-end
-
-function CoreMemoryModule:Stop()
-    return Core:StopWorker("CoreMemory")
-end
-
-Core:RegisterModule("CoreMemory", CoreMemoryModule)
-
-local coreMemoryOk, coreMemoryErr = Core:StartModule("CoreMemory")
-if not coreMemoryOk then
-    warn("[ARASAKA][MODULE:CoreMemory] Falha:", coreMemoryErr)
+local v311 = v44:v181(v4("return '\\v36\\v8\\v11\\v37\\v6\\v16\\v182\\v19\\v9'")())
+local function v312()
+local v313 = v44:v181(v4("return '\\v36\\v8\\v11\\v37\\v6\\v16\\v182\\v19\\v9'")())
+local v213 = v313:v184(v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v33\\v15\\v11\\v13\\v9\\v20\\v17\\v14\\v10\\v16\\v6\\v6\\v20'")())
+if v213 then v213:v215() end
+local v314 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")())
+v314.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v33\\v15\\v11\\v13\\v9\\v20\\v17\\v14\\v10\\v16\\v6\\v6\\v20'")()
+v314.v190 = true
+v314.v188 = false
+v314.v189 = 999999
+v314.v315 = v201.v315.v316
+v314.v191 = v313
+local v317 = v186.v187(v4("return '\\v29\\v31\\v14\\v10\\v11\\v8\\v6'")())
+local v318 = v319.v320
+local v321 = v318 and v318.v322.v323 or 1920
+local v324 = v318 and v318.v322.v325 or 1080
+if v28.v326 then
+v317.v327 = v286.v328(v286.v329(v321 / 1000, v324 / 700) * 0.94, 0.55, 0.82)
 else
-    print("[ARASAKA][MODULE] CoreMemory = MIGRADO")
+v317.v327 = 1
 end
-
---==================================================
--- MODULE // HUB LIFECYCLE WATCHER // FASE 11
--- Stops managed workers if the hub itself is invalidated/re-executed.
--- Does not control gameplay actions; only lifecycle cleanup.
---==================================================
-local HubLifecycleModule = {
-    Name = "HubLifecycle"
+v317.v191 = v314
+local v330 = v218.v219(215, 50, 50)
+local v331 = v218.v219(100, 15, 15)
+local v332 = v218.v219(3, 3, 3)
+local v333 = v218.v219(9, 9, 9)
+local v334 = v218.v219(235, 235, 235)
+local v335 = v218.v219(105, 105, 105)
+local v336 = v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v289\\v61\\v66\\v61\\v338\\v339\\v66\\v66\\v340\\v338\\v341\\v66\\v341\\v341\\v342'")()
+local v343 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v343.v197 = v196.v344(1, 1)
+v343.v217 = v332
+v343.v220 = 0
+v343.v191 = v314
+local v345 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v345.v197 = v196.v187(1, 0, 0, 2)
+v345.v217 = v330
+v345.v220 = 0
+v345.v191 = v343
+local v346 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v346.v197 = v196.v187(0, 100, 0, 1)
+v346.v195 = v196.v187(0, 35, 0.5, -95)
+v346.v217 = v331
+v346.v220 = 0
+v346.v191 = v343
+local v347 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v347.v197 = v196.v187(0, 100, 0, 1)
+v347.v195 = v196.v187(1, -135, 0.5, 95)
+v347.v217 = v331
+v347.v220 = 0
+v347.v191 = v343
+local v348 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v348.v193 = v194.v187(0.5, 0.5)
+v348.v195 = v196.v344(0.5, 0.5)
+v348.v197 = v196.v187(0, 650, 0, 280)
+v348.v217 = v333
+v348.v198 = 0.05
+v348.v220 = 0
+v348.v191 = v343
+local v349 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")())
+v349.v224 = v218.v219(45, 45, 45)
+v349.v225 = 1
+v349.v191 = v348
+local v350 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v350.v197 = v196.v187(0, 3, 1, 0)
+v350.v217 = v330
+v350.v220 = 0
+v350.v191 = v348
+local v351 = v186.v187(v4("return '\\v31\\v75\\v11\\v17\\v6\\v33\\v11\\v40\\v6\\v8'")())
+v351.v193 = v194.v187(0.5, 0.5)
+v351.v195 = v196.v187(0, 105, 0.5, -10)
+v351.v197 = v196.v187(0, 125, 0, 125)
+v351.v198 = 1
+v351.v352 = v336
+v351.v353 = 1
+v351.v354 = v201.v354.v355
+v351.v191 = v348
+local v356 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")())
+v356.v224 = v330
+v356.v225 = 1
+v356.v357 = 1
+v356.v191 = v351
+local v358 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v358.v197 = v196.v187(0, 400, 0, 45)
+v358.v195 = v196.v187(0, 185, 0, 48)
+v358.v198 = 1
+v358.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65'")()
+v358.v231 = v334
+v358.v230 = 36
+v358.v228 = v201.v228.v359
+v358.v232 = v201.v232.v233
+v358.v360 = 1
+v358.v191 = v348
+local v361 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v361.v197 = v196.v187(0, 400, 0, 20)
+v361.v195 = v196.v187(0, 187, 0, 88)
+v361.v198 = 1
+v361.v234 = v4("return '\\v50\\v64\\v5\\v36\\v64\\v5\\v65\\v23\\v31\\v64\\v185\\v121\\v337\\v337\\v121\\v14\\v31\\v14\\v23\\v109\\v63\\v65\\v121\\v39\\v109\\v121\\v50\\v33\\v31\\v109\\v185\\v23\\v109'")()
+v361.v231 = v330
+v361.v230 = 12
+v361.v228 = v201.v228.v229
+v361.v232 = v201.v232.v233
+v361.v360 = 1
+v361.v191 = v348
+local v362 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v362.v197 = v196.v187(0, 0, 0, 2)
+v362.v195 = v196.v187(0, 187, 0, 113)
+v362.v217 = v330
+v362.v220 = 0
+v362.v191 = v348
+local v363 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v363.v197 = v196.v187(0, 420, 0, 25)
+v363.v195 = v196.v187(0, 187, 0, 130)
+v363.v198 = 1
+v363.v234 = v4("return '\\v31\\v185\\v31\\v23\\v31\\v65\\v33\\v31\\v364\\v31\\v185\\v182\\v121\\v14\\v365\\v14\\v23\\v109\\v63\\v67\\v67\\v67'")()
+v363.v231 = v335
+v363.v230 = 11
+v363.v228 = v201.v228.v237
+v363.v232 = v201.v232.v233
+v363.v360 = 1
+v363.v191 = v348
+local v366 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v366.v197 = v196.v187(0, 420, 0, 5)
+v366.v195 = v196.v187(0, 187, 0, 165)
+v366.v217 = v218.v219(28, 28, 28)
+v366.v220 = 0
+v366.v191 = v348
+local v367 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v367.v197 = v196.v187(0, 0, 1, 0)
+v367.v217 = v330
+v367.v220 = 0
+v367.v191 = v366
+local v368 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v368.v197 = v196.v187(0, 60, 0, 20)
+v368.v195 = v196.v187(1, -67, 0, 180)
+v368.v198 = 1
+v368.v234 = v4("return '\\v68\\v280'")()
+v368.v231 = v330
+v368.v230 = 11
+v368.v228 = v201.v228.v229
+v368.v232 = v201.v232.v206
+v368.v360 = 1
+v368.v191 = v348
+local v369 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v369.v197 = v196.v187(0, 400, 0, 20)
+v369.v195 = v196.v187(0, 187, 0, 202)
+v369.v198 = 1
+v369.v234 = v4("return '\\v14\\v365\\v14\\v131\\v337\\v337\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v337\\v50\\v33\\v31\\v109\\v185\\v23\\v109'")()
+v369.v231 = v218.v219(55, 55, 55)
+v369.v230 = 12
+v369.v228 = v201.v228.v370
+v369.v232 = v201.v232.v233
+v369.v191 = v348
+local v371 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v371.v197 = v196.v187(1, -50, 0, 20)
+v371.v195 = v196.v187(0, 25, 1, -35)
+v371.v198 = 1
+v371.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v50\\v64\\v5\\v36\\v64\\v5\\v65\\v23\\v31\\v64\\v185\\v121\\v121\\v337\\v337\\v121\\v121\\v14\\v109\\v50\\v29\\v5\\v109\\v121\\v50\\v64\\v185\\v185\\v109\\v50\\v23\\v31\\v64\\v185'")()
+v371.v231 = v218.v219(50, 50, 50)
+v371.v230 = 12
+v371.v228 = v201.v228.v229
+v371.v232 = v201.v232.v206
+v371.v191 = v343
+local v372 = {
+v4("return '\\v31\\v185\\v31\\v23\\v31\\v65\\v33\\v31\\v364\\v31\\v185\\v182\\v121\\v14\\v365\\v14\\v23\\v109\\v63\\v67\\v67\\v67'")(),
+v4("return '\\v50\\v64\\v185\\v185\\v109\\v50\\v23\\v31\\v185\\v182\\v121\\v23\\v64\\v121\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v185\\v109\\v23\\v106\\v64\\v5\\v78\\v67\\v67\\v67'")(),
+v4("return '\\v42\\v109\\v5\\v31\\v74\\v365\\v31\\v185\\v182\\v121\\v29\\v14\\v109\\v5\\v121\\v39\\v65\\v23\\v65\\v67\\v67\\v67'")(),
+v4("return '\\v33\\v64\\v65\\v39\\v31\\v185\\v182\\v121\\v50\\v64\\v5\\v109\\v121\\v63\\v64\\v39\\v29\\v33\\v109\\v14\\v67\\v67\\v67'")(),
+v4("return '\\v50\\v65\\v33\\v31\\v96\\v5\\v65\\v23\\v31\\v185\\v182\\v121\\v31\\v185\\v23\\v109\\v5\\v74\\v65\\v50\\v109\\v67\\v67\\v67'")(),
+v4("return '\\v109\\v14\\v23\\v65\\v96\\v33\\v31\\v14\\v26\\v31\\v185\\v182\\v121\\v14\\v109\\v50\\v29\\v5\\v109\\v121\\v50\\v64\\v185\\v185\\v109\\v50\\v23\\v31\\v64\\v185\\v67\\v67\\v67'")(),
+v4("return '\\v33\\v64\\v65\\v39\\v31\\v185\\v182\\v121\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v31\\v185\\v23\\v109\\v5\\v74\\v65\\v50\\v109\\v67\\v67\\v67'")(),
+v4("return '\\v14\\v365\\v14\\v23\\v109\\v63\\v121\\v5\\v109\\v65\\v39\\v365\\v67'")()
 }
-
-function HubLifecycleModule:Start()
-    if Core:IsWorkerRunning("HubLifecycle") then
-        return true
-    end
-
-    return Core:StartWorker("HubLifecycle", function(isAlive)
-        while isAlive() do
-            task.wait(0.25)
-
-            if not Core:IsAlive() then
-                -- Snapshot names first so the manager can safely mutate Workers.
-                local names = {}
-                for workerName in pairs(Core.Workers) do
-                    if workerName ~= "HubLifecycle" then
-                        table.insert(names, workerName)
-                    end
-                end
-
-                for _, workerName in ipairs(names) do
-                    Core:StopWorker(workerName)
-                end
-                break
-            end
-        end
-    end)
+local v373 = v242.v187(0.7, v201.v243.v374, v201.v245.v246)
+v22:v241(v351, v373, {v353 = 0}):v247()
+v22:v241(v356, v373, {v357 = 0.25}):v247()
+v22:v241(v358, v373, {v360 = 0}):v247()
+v22:v241(v361, v373, {v360 = 0}):v247()
+v22:v241(v363, v373, {v360 = 0}):v247()
+v22:v241(v368, v373, {v360 = 0}):v247()
+v22:v241(v362, v242.v187(0.6, v201.v243.v374), {v197 = v196.v187(0, 420, 0, 2)}):v247()
+local v375 = true
+v107.v124(function()
+while v375 and v314.v191 do
+v107.v108(v286.v376(25, 70) / 100)
+if v286.v376(1, 4) == 1 then
+local v377 = v358.v195
+local v378 = v358.v231
+v358.v195 = v377 + v196.v187(0, v286.v376(-3, 3), 0, v286.v376(-1, 1))
+v358.v231 = v330
+v107.v108(0.025)
+if v358.v191 then
+v358.v195 = v377
+v358.v231 = v378
 end
-
-function HubLifecycleModule:Stop()
-    return Core:StopWorker("HubLifecycle")
 end
-
-Core:RegisterModule("HubLifecycle", HubLifecycleModule)
-
-local lifecycleOk, lifecycleErr = Core:StartModule("HubLifecycle")
-if not lifecycleOk then
-    warn("[ARASAKA][MODULE:HubLifecycle] Falha:", lifecycleErr)
+end
+end)
+for v379 = 1, 100 do
+local v380 = v379 / 100
+v22:v241(v367, v242.v187(0.035, v201.v243.v381), {v197 = v196.v187(v380, 0, 1, 0)}):v247()
+v368.v234 = v235(v379) .. v4("return '\\v280'")()
+local v382 = v286.v328(v286.v383(v380 * #v372), 1, #v372)
+v363.v234 = v372[v382]
+if v379 < 20 then v107.v108(0.035) elseif v379 < 75 then v107.v108(0.025) else v107.v108(0.045) end
+end
+v363.v234 = v4("return '\\v14\\v365\\v14\\v23\\v109\\v63\\v121\\v5\\v109\\v65\\v39\\v365\\v67'")()
+v368.v234 = v4("return '\\v289\\v68\\v68\\v280'")()
+v107.v108(0.6)
+v375 = false
+local v384 = v242.v187(0.7, v201.v243.v374, v201.v245.v251)
+for v138, v385 in v139({v351, v358, v361, v363, v368}) do
+local v386 = v385:v212(v4("return '\\v31\\v75\\v11\\v17\\v6\\v33\\v11\\v40\\v6\\v8'")()) and v4("return '\\v31\\v75\\v11\\v17\\v6\\v23\\v16\\v11\\v20\\v30\\v7\\v11\\v16\\v6\\v20\\v10\\v37'")() or v4("return '\\v23\\v6\\v120\\v12\\v23\\v16\\v11\\v20\\v30\\v7\\v11\\v16\\v6\\v20\\v10\\v37'")()
+v22:v241(v385, v384, {[v386] = 1}):v247()
+end
+v22:v241(v356, v384, {v357 = 1}):v247()
+v22:v241(v362, v384, {v198 = 1}):v247()
+v22:v241(v366, v384, {v198 = 1}):v247()
+v22:v241(v367, v384, {v198 = 1}):v247()
+v22:v241(v343, v384, {v198 = 1}):v247()
+v107.v108(0.8)
+if v314 then v314:v215() end
+end
+v312()
+local v387 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v50\\v34\\v11\\v12\\v388\\v182\\v19\\v9'")()
+for v138, v389 in v139(v311:v211()) do
+if v389.v47 == v387 or v389.v47 == v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v33\\v15\\v11\\v13\\v9\\v20\\v17\\v388\\v182\\v19\\v9'")() or v389.v47 == v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v65\\v20\\v12\\v9\\v33\\v11\\v17\\v388\\v182\\v19\\v9'")() or v389.v47 == v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v39\\v16\\v15\\v7\\v13\\v15\\v24\\v20\\v388\\v182\\v19\\v9'")() or v389.v47 == v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v50\\v15\\v20\\v101\\v9\\v17\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v388\\v182\\v19\\v9'")() or v389.v47 == v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v96\\v8\\v11\\v10\\v95\\v14\\v10\\v16\\v6\\v6\\v20\\v388\\v182\\v19\\v9'")() then
+v389:v215()
+end
+end
+function v85:v390(v391, v392)
+local v393 = v393 or v394 and v394.v395 or v396 and v396.v393
+local v397
+if v393 then
+v102(function() v397 = v393.v398(v4("return '\\v24\\v30\\v30\\v131\\v337\\v337\\v10\\v34\\v11\\v12\\v7\\v16\\v9\\v21\\v11\\v13\\v15\\v62\\v10\\v24\\v19\\v61\\v67\\v15\\v20\\v16\\v6\\v20\\v13\\v6\\v16\\v67\\v10\\v15\\v75'")()) end)
+end
+v113.v399 = v397
+local v400 = {}
+local function v401(v402)
+if v400[v402] then return v400[v402] end
+local v403, v404 = v102(function()
+return v2:v3(v4("return '\\v36\\v8\\v11\\v37\\v6\\v16\\v30'")()):v405(v402, v201.v406.v407, v201.v408.v409)
+end)
+v400[v402] = v403 and v404 or v4("return ''")()
+return v400[v402]
+end
+local v410 = v401(v44.v411)
+local v412 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v391)
+v412.v47 = v4("return '\\v50\\v34\\v11\\v12\\v63\\v6\\v30\\v30\\v11\\v17\\v6\\v30'")()
+v412.v217 = v218.v219(8, 8, 8)
+v412.v198 = 0
+v412.v220 = 0
+v412.v195 = v196.v187(0, 10, 0, 35)
+v412.v197 = v196.v187(1, -20, 1, -83)
+v412.v413 = v196.v187(0, 0, 0, 0)
+v412.v414 = v201.v415.v325
+v412.v416 = 3
+v412.v417 = v218.v219(110, 20, 20)
+v412.v221 = true
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v412).v222 = v208.v187(0, 3)
+local v418 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v412)
+v418.v224 = v218.v219(35, 35, 35)
+v418.v225 = 1
+local v419 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v391)
+v419.v197 = v196.v187(1, -20, 0, 1)
+v419.v195 = v196.v187(0, 10, 0, 10)
+v419.v217 = v218.v219(215, 50, 50)
+v419.v220 = 0
+v419.v420 = 2
+local v421 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v412)
+v421.v422 = v201.v422.v423
+v421.v207 = v208.v187(0, 6)
+local v424 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v391)
+v424.v197 = v196.v187(1, -30, 0, 18)
+v424.v195 = v196.v187(0, 18, 0, 16)
+v424.v198 = 1
+v424.v234 = v4("return '\\v337\\v337\\v121\\v14\\v109\\v50\\v29\\v5\\v109\\v121\\v50\\v26\\v65\\v185\\v185\\v109\\v33'")()
+v424.v231 = v218.v219(90, 90, 90)
+v424.v228 = v201.v228.v370
+v424.v230 = 8
+v424.v232 = v201.v232.v233
+v424.v420 = 3
+local v425 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v15\\v120'")(), v391)
+v425.v217 = v218.v219(14, 14, 14)
+v425.v220 = 0
+v425.v195 = v196.v187(0, 10, 1, -42)
+v425.v197 = v196.v187(1, -90, 0, 32)
+v425.v426 = false
+v425.v228 = v201.v228.v237
+v425.v427 = v4("return '\\v14\\v19\\v11\\v121\\v75\\v6\\v20\\v30\\v11\\v17\\v6\\v75\\v67\\v67\\v67'")()
+v425.v234 = v4("return ''")()
+v425.v231 = v218.v219(255, 255, 255)
+v425.v230 = 12
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v425).v222 = v208.v187(0, 4)
+local v428 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v391)
+v428.v217 = v218.v219(170, 32, 32)
+v428.v220 = 0
+v428.v195 = v196.v187(1, -75, 1, -42)
+v428.v197 = v196.v187(0, 65, 0, 32)
+v428.v228 = v201.v228.v229
+v428.v234 = v4("return '\\v109\\v185\\v42\\v31\\v65\\v5\\v121\\v262\\v263\\v429\\v430'")()
+v428.v231 = v218.v219(255, 255, 255)
+v428.v230 = 11
+v428.v220 = 0
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v428).v222 = v208.v187(0, 4)
+local function v431(v432, v433, v434)
+local v435 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v412)
+v435.v198 = 1
+v435.v197 = v196.v187(1, 0, 0, 28)
+local v436 = v186.v187(v4("return '\\v31\\v75\\v11\\v17\\v6\\v33\\v11\\v40\\v6\\v8'")(), v435)
+v436.v198 = 1
+v436.v197 = v196.v187(0, 24, 0, 24)
+v436.v352 = v434 or v4("return ''")()
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v436).v222 = v208.v187(1, 0)
+local v437 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v435)
+v437.v198 = 1
+v437.v195 = v196.v187(0, 30, 0, 0)
+v437.v197 = v196.v187(1, -30, 1, 0)
+v437.v228 = v201.v228.v237
+v437.v234 = v4("return '\\v438\\v101\\v15\\v20\\v12\\v121\\v10\\v15\\v8\\v15\\v16\\v281\\v439\\v440\\v13\\v339\\v61\\v66\\v61\\v66\\v439\\v441\\v438\\v40\\v441\\v442'")() .. v432 .. v4("return '\\v131\\v438\\v337\\v40\\v441\\v438\\v337\\v101\\v15\\v20\\v12\\v441\\v121'")() .. v433
+v437.v443 = true
+v437.v231 = v218.v219(220, 220, 220)
+v437.v230 = 11
+v437.v232 = v201.v232.v233
+v437.v239 = v201.v239.v444
+v412.v413 = v196.v187(0, 0, 0, v421.v445.v325 + 20)
+end
+if v397 then
+local v446 = v397.v447:v308(function(v448)
+v102(function()
+local v449 = v278.v449(v448, v4("return '\\v450\\v450'")())
+if #v449 >= 3 then
+local v432 = v449[1]
+local v434 = v449[2]
+local v433 = v449[3]
+if not v278.v268(v432, v4("return '\\v36\\v31\\v185\\v182'")()) and not v278.v268(v433, v4("return '\\v36\\v31\\v185\\v182'")()) and v432 ~= v4("return '\\v64\\v185\\v33\\v31\\v185\\v109\\v388\\v50\\v64\\v29\\v185\\v23'")() and v432 ~= v4("return '\\v129\\v14\\v31\\v14\\v23\\v109\\v63\\v65\\v130'")() then
+v431(v432, v433, v434)
+end
+end
+end)
+end)
+v49:v143(v4("return '\\v50\\v34\\v11\\v12'")(), v446)
+end
+local function v451()
+if v425.v234 ~= v4("return ''")() and v397 then
+if v392 then v392() end
+v397:v452(v44.v47 .. v4("return '\\v450\\v450'")() .. v410 .. v4("return '\\v450\\v450'")() .. v425.v234)
+v425.v234 = v4("return ''")()
+end
+end
+v49:v143(v4("return '\\v50\\v34\\v11\\v12'")(), v428.v453:v308(v451))
+v49:v143(v4("return '\\v50\\v34\\v11\\v12'")(), v425.v454:v308(function(v455)
+if v455 then v451() end
+end))
+end
+local function v456(v457, v458, v119)
+local v459 = v311:v184(v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v39\\v16\\v15\\v7\\v13\\v15\\v24\\v20\\v388\\v182\\v19\\v9'")())
+if v459 then v459:v215() end
+local v460 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")(), v311)
+v460.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v39\\v16\\v15\\v7\\v13\\v15\\v24\\v20\\v388\\v182\\v19\\v9'")()
+v460.v190 = true
+v460.v188 = false
+v460.v189 = 5000
+v460.v315 = v201.v315.v316
+local v461 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v460)
+v461.v197 = v196.v187(1, 0, 1, 0)
+v461.v217 = v218.v219(0, 0, 0)
+v461.v198 = 0.30
+v461.v220 = 0
+v461.v234 = v4("return ''")()
+v461.v462 = false
+local v463 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v460)
+v463.v197 = v196.v187(0, 430, 0, 390)
+v463.v195 = v196.v187(0.5, -215, 0.5, -195)
+v463.v217 = v218.v219(6, 6, 6)
+v463.v220 = 0
+v463.v464 = true
+v463.v465 = true
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v463).v222 = v208.v187(0, 4)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v463)
+v223.v224 = v218.v219(150, 25, 25)
+v223.v225 = 1
+local v466 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v466.v197 = v196.v187(1, 0, 0, 3)
+v466.v217 = v218.v219(215, 50, 50)
+v466.v220 = 0
+local v467 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v467.v197 = v196.v187(1, 0, 0, 58)
+v467.v195 = v196.v187(0, 0, 0, 3)
+v467.v217 = v218.v219(9, 9, 9)
+v467.v220 = 0
+local v468 = v186.v187(v4("return '\\v31\\v75\\v11\\v17\\v6\\v33\\v11\\v40\\v6\\v8'")(), v467)
+v468.v197 = v196.v187(0, 30, 0, 30)
+v468.v195 = v196.v187(0, 14, 0.5, -15)
+v468.v198 = 1
+v468.v352 = v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v289\\v61\\v66\\v61\\v338\\v339\\v66\\v66\\v340\\v338\\v341\\v66\\v341\\v341\\v342'")()
+v468.v354 = v201.v354.v355
+local v469 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v467)
+v469.v197 = v196.v187(1, -90, 0, 22)
+v469.v195 = v196.v187(0, 52, 0, 9)
+v469.v198 = 1
+v469.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v337\\v337\\v121'")() .. v278.v470(v457)
+v469.v231 = v218.v219(235, 235, 235)
+v469.v228 = v201.v228.v359
+v469.v230 = 13
+v469.v232 = v201.v232.v233
+local v471 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v467)
+v471.v197 = v196.v187(1, -90, 0, 14)
+v471.v195 = v196.v187(0, 52, 0, 31)
+v471.v198 = 1
+v471.v234 = v4("return '\\v50\\v64\\v5\\v36\\v64\\v5\\v65\\v23\\v31\\v64\\v185\\v121\\v337\\v337\\v121\\v14\\v109\\v33\\v109\\v50\\v23\\v121\\v63\\v64\\v39\\v29\\v33\\v109'")()
+v471.v231 = v218.v219(155, 35, 35)
+v471.v228 = v201.v228.v370
+v471.v230 = 8
+v471.v232 = v201.v232.v233
+local v472 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v467)
+v472.v197 = v196.v187(0, 28, 0, 28)
+v472.v195 = v196.v187(1, -39, 0.5, -14)
+v472.v217 = v218.v219(15, 15, 15)
+v472.v220 = 0
+v472.v234 = v4("return '\\v257\\v473'")()
+v472.v231 = v218.v219(215, 50, 50)
+v472.v228 = v201.v228.v229
+v472.v230 = 16
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v472).v222 = v208.v187(0, 3)
+local v474 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v472)
+v474.v224 = v218.v219(45, 45, 45)
+local v475 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v475.v197 = v196.v187(1, -24, 0, 1)
+v475.v195 = v196.v187(0, 12, 0, 65)
+v475.v217 = v218.v219(38, 38, 38)
+v475.v220 = 0
+local v476 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v476.v197 = v196.v187(1, -24, 1, -91)
+v476.v195 = v196.v187(0, 12, 0, 76)
+v476.v198 = 1
+v476.v220 = 0
+v476.v416 = 3
+v476.v417 = v218.v219(110, 20, 20)
+v476.v413 = v196.v187(0, 0, 0, 0)
+local v199 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v476)
+v199.v207 = v208.v187(0, 5)
+v199.v422 = v201.v422.v423
+local v477 = v186.v187(v4("return '\\v29\\v31\\v36\\v11\\v13\\v13\\v9\\v20\\v17'")(), v476)
+v477.v478 = v208.v187(0, 8)
+v199:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v476.v413 = v196.v187(0, 0, 0, v199.v445.v325 + 12)
+end)
+local v481 = {}
+local function v482()
+for v138, v483 in v139(v481) do v483:v149() end
+v481 = {}
+if v460 then v460:v215() end
+end
+v136.v137(v481, v472.v453:v308(v482))
+v136.v137(v481, v461.v453:v308(v482))
+for v484, v485 in v139(v458) do
+local v486 = v487(v485) == v4("return '\\v12\\v11\\v40\\v8\\v6'")() and v485.v234 or v235(v485)
+local v488 = v487(v485) == v4("return '\\v12\\v11\\v40\\v8\\v6'")() and v485.v299 or v485
+local v489 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v476)
+v489.v423 = v484
+v489.v197 = v196.v187(1, -6, 0, 36)
+v489.v217 = v218.v219(13, 13, 13)
+v489.v220 = 0
+v489.v234 = v4("return ''")()
+v489.v462 = false
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v489).v222 = v208.v187(0, 2)
+local v490 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v489)
+v490.v197 = v196.v187(0, 2, 1, 0)
+v490.v217 = v218.v219(120, 22, 22)
+v490.v220 = 0
+local v491 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v489)
+v491.v197 = v196.v187(0, 28, 1, 0)
+v491.v195 = v196.v187(0, 7, 0, 0)
+v491.v198 = 1
+v491.v234 = v278.v279(v4("return '\\v280\\v68\\v66\\v13'")(), v484)
+v491.v231 = v218.v219(75, 75, 75)
+v491.v228 = v201.v228.v370
+v491.v230 = 12
+local v492 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v489)
+v492.v197 = v196.v187(1, -45, 1, 0)
+v492.v195 = v196.v187(0, 36, 0, 0)
+v492.v198 = 1
+v492.v234 = v486
+v492.v231 = v218.v219(210, 210, 210)
+v492.v228 = v201.v228.v493
+v492.v230 = 12
+v492.v232 = v201.v232.v233
+v492.v494 = v201.v494.v495
+v136.v137(v481, v489.v496:v308(function()
+v489.v217 = v218.v219(34, 9, 9)
+v490.v217 = v218.v219(215, 50, 50)
+v492.v231 = v218.v219(255, 255, 255)
+end))
+v136.v137(v481, v489.v497:v308(function()
+v489.v217 = v218.v219(13, 13, 13)
+v490.v217 = v218.v219(120, 22, 22)
+v492.v231 = v218.v219(210, 210, 210)
+end))
+v136.v137(v481, v489.v453:v308(function()
+v119(v488, v486)
+v482()
+end))
+end
+end
+function v72:v154()
+local v498 = v70.v499()
+local v282 = v46.v282
+local function v500() return v46.v300(v44) end
+local function v501() return v46.v301(v1) end
+local v502 = v186.v187(v4("return '\\v14\\v15\\v19\\v20\\v13'")(), v18)
+v502.v503 = v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v340\\v340\\v338\\v338\\v340\\v68\\v68\\v504\\v341\\v68'")()
+v502.v505 = 1
+local function v392() v102(function() v502:v247() end) end
+local v506 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")(), v311)
+v506.v47 = v387
+v506.v189 = 1000
+v506.v188 = false
+v113.v507 = v506
+local v508 = v186.v187(v4("return '\\v29\\v31\\v14\\v10\\v11\\v8\\v6'")())
+local v318 = v319.v320
+local v321 = v318 and v318.v322.v323 or 1920
+local v324 = v318 and v318.v322.v325 or 1080
+if v28.v326 then
+v508.v327 = v286.v328(v286.v329(v321 / 820, v324 / 520) * 0.94, 0.42, 0.82)
 else
-    print("[ARASAKA][MODULE] HubLifecycle = MIGRADO")
+v508.v327 = 1
 end
-
-
-
--- Worker de diagnóstico local (inativo por padrão).
-local WorkerDiagnosticModule = {
-    Name = "WorkerDiagnostic"
+v508.v191 = v506
+local v509 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v506)
+v509.v193 = v194.v187(0.5, 0.5)
+v509.v197 = v196.v187(0, 820, 0, 520)
+v509.v195 = v196.v187(0.5, 0, 0.5, 0)
+v509.v217 = v218.v219(5, 5, 5)
+v509.v220 = 0
+v509.v464, v509.v465 = true, true
+v509.v221 = true
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v509).v222 = v208.v187(0, 4)
+local v510 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v509)
+v510.v224 = v218.v219(55, 55, 55)
+v510.v225 = 1
+local v511 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v511.v197 = v196.v187(1, 0, 0, 3)
+v511.v217 = v218.v219(215, 50, 50)
+v511.v220 = 0
+v511.v420 = 10
+local v512 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v512.v197 = v196.v187(0, 55, 0, 1)
+v512.v195 = v196.v187(0, 18, 0, 15)
+v512.v217 = v218.v219(100, 15, 15)
+v512.v220 = 0
+local v513 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v513.v197 = v196.v187(0, 55, 0, 1)
+v513.v195 = v196.v187(1, -73, 0, 15)
+v513.v217 = v218.v219(100, 15, 15)
+v513.v220 = 0
+local v514 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v514.v197 = v196.v187(1, 0, 0, 52)
+v514.v195 = v196.v187(0, 0, 0, 3)
+v514.v217 = v218.v219(9, 9, 9)
+v514.v220 = 0
+local v515 = v186.v187(v4("return '\\v31\\v75\\v11\\v17\\v6\\v33\\v11\\v40\\v6\\v8'")(), v514)
+v515.v197 = v196.v187(0, 30, 0, 30)
+v515.v195 = v196.v187(0, 17, 0.5, -15)
+v515.v198 = 1
+v515.v352 = v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v289\\v61\\v66\\v61\\v338\\v339\\v66\\v66\\v340\\v338\\v341\\v66\\v341\\v341\\v342'")()
+v515.v354 = v201.v354.v355
+local v516 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v514)
+v516.v197 = v196.v187(0, 300, 0, 23)
+v516.v195 = v196.v187(0, 57, 0, 8)
+v516.v198 = 1
+v516.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65'")()
+v516.v231 = v218.v219(235, 235, 235)
+v516.v228 = v201.v228.v359
+v516.v230 = 18
+v516.v232 = v201.v232.v233
+local v517 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v514)
+v517.v197 = v196.v187(0, 360, 0, 16)
+v517.v195 = v196.v187(0, 58, 0, 30)
+v517.v198 = 1
+v517.v234 = v4("return '\\v50\\v64\\v5\\v36\\v64\\v5\\v65\\v23\\v31\\v64\\v185\\v121\\v337\\v337\\v121\\v14\\v31\\v14\\v23\\v109\\v63\\v65\\v121\\v39\\v109\\v121\\v50\\v33\\v31\\v109\\v185\\v23\\v109'")()
+v517.v231 = v218.v219(215, 50, 50)
+v517.v228 = v201.v228.v370
+v517.v230 = 12
+v517.v232 = v201.v232.v233
+local v518 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v514)
+v518.v197 = v196.v187(0, 190, 0, 20)
+v518.v195 = v196.v187(1, -250, 0, 7)
+v518.v198 = 1
+v518.v234 = v4("return '\\v519\\v473\\v520\\v121\\v14\\v31\\v14\\v23\\v109\\v63\\v65\\v121\\v64\\v185\\v33\\v31\\v185\\v109'")()
+v518.v231 = v218.v219(215, 50, 50)
+v518.v228 = v201.v228.v370
+v518.v230 = 11
+v518.v232 = v201.v232.v206
+local v521 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v514)
+v521.v197 = v196.v187(0, 235, 0, 18)
+v521.v195 = v196.v187(1, -295, 0, 29)
+v521.v198 = 1
+v521.v234 = v4("return '\\v31\\v39\\v121\\v39\\v64\\v121\\v29\\v14\\v29\\v65\\v5\\v31\\v64\\v131\\v121'")() .. v235(v44.v411)
+v521.v231 = v218.v219(190, 190, 190)
+v521.v228 = v201.v228.v370
+v521.v230 = 10
+v521.v232 = v201.v232.v206
+local v522 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v514)
+v522.v197 = v196.v187(0, 30, 0, 30)
+v522.v195 = v196.v187(1, -38, 0.5, -15)
+v522.v217 = v218.v219(18, 18, 18)
+v522.v220 = 0
+v522.v234 = v4("return '\\v519\\v523\\v265'")()
+v522.v231 = v218.v219(215, 50, 50)
+v522.v228 = v201.v228.v229
+v522.v230 = 16
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v522).v222 = v208.v187(0, 3)
+local v524 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v522)
+v524.v224 = v218.v219(55, 55, 55)
+v524.v225 = 1
+local v475 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v475.v197 = v196.v187(1, -32, 0, 1)
+v475.v195 = v196.v187(0, 16, 0, 55)
+v475.v217 = v218.v219(35, 35, 35)
+v475.v220 = 0
+local v525 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v525.v197 = v196.v187(0, 155, 1, -57)
+v525.v195 = v196.v187(0, 0, 0, 57)
+v525.v217 = v218.v219(8, 8, 8)
+v525.v220 = 0
+local v526 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v525)
+v526.v197 = v196.v187(0, 2, 1, 0)
+v526.v195 = v196.v187(1, -2, 0, 0)
+v526.v217 = v218.v219(70, 10, 10)
+v526.v220 = 0
+local v527 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v525)
+v527.v197 = v196.v187(1, -24, 0, 28)
+v527.v195 = v196.v187(0, 12, 0, 12)
+v527.v198 = 1
+v527.v234 = v4("return '\\v337\\v337\\v121\\v63\\v64\\v39\\v29\\v33\\v64\\v14'")()
+v527.v231 = v218.v219(95, 95, 95)
+v527.v228 = v201.v228.v370
+v527.v230 = 12
+v527.v232 = v201.v232.v233
+local v528 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v525)
+v528.v197 = v196.v187(1, -24, 0, 1)
+v528.v195 = v196.v187(0, 12, 0, 38)
+v528.v217 = v218.v219(35, 35, 35)
+v528.v220 = 0
+local v529 = 48
+local v530 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v509)
+v530.v197 = v196.v187(1, -155, 1, -57)
+v530.v195 = v196.v187(0, 155, 0, 57)
+v530.v217 = v218.v219(5, 5, 5)
+v530.v220 = 0
+local v531 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v530)
+v531.v197 = v196.v187(1, 0, 0, 1)
+v531.v195 = v196.v187(0, 0, 0, 0)
+v531.v217 = v218.v219(215, 50, 50)
+v531.v198 = 0.35
+v531.v220 = 0
+local v532 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v530)
+v532.v197 = v196.v187(1, -24, 0, 16)
+v532.v195 = v196.v187(0, 12, 1, -22)
+v532.v198 = 1
+v532.v234 = v4("return '\\v14\\v365\\v14\\v131\\v337\\v337\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v337\\v50\\v33\\v31\\v109\\v185\\v23\\v109\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v121\\v121\\v121\\v31\\v185\\v14\\v109\\v5\\v23\\v121\\v36\\v65\\v5\\v65\\v121\\v63\\v64\\v14\\v23\\v5\\v65\\v5\\v337\\v64\\v50\\v29\\v33\\v23\\v65\\v5'")()
+v532.v231 = v218.v219(45, 45, 45)
+v532.v228 = v201.v228.v370
+v532.v230 = 8
+v532.v232 = v201.v232.v233
+local v533 = {}
+local function v534(v255, v535)
+local v536 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v525)
+v536.v197 = v196.v187(0, 133, 0, 34)
+v536.v195 = v196.v187(0, 11, 0, v529)
+v529 = v529 + 39
+v536.v217 = v218.v219(13, 13, 13)
+v536.v220 = 0
+v536.v234 = v4("return '\\v121\\v121'")() .. (v535 or v278.v470(v255))
+v536.v231 = v218.v219(125, 125, 125)
+v536.v228 = v201.v228.v229
+v536.v230 = 11
+v536.v232 = v201.v232.v233
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v536).v222 = v208.v187(0, 2)
+local v537 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v536)
+v537.v47 = v4("return '\\v65\\v10\\v12\\v9\\v21\\v6\\v33\\v9\\v20\\v6'")()
+v537.v197 = v196.v187(0, 2, 0.65, 0)
+v537.v195 = v196.v187(0, 0, 0.175, 0)
+v537.v217 = v218.v219(215, 50, 50)
+v537.v220 = 0
+v537.v538 = false
+local v539 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v530)
+v539.v197 = v196.v187(1, 0, 1, 0)
+v539.v198 = 1
+v539.v538 = false
+v533[v255] = {v540 = v536, v541 = v539, v542 = v537}
+v536.v496:v308(function()
+if not v539.v538 then
+v22:v241(v536, v242.v187(0.12), {v217 = v218.v219(20, 20, 20)}):v247()
+end
+end)
+v536.v497:v308(function()
+if not v539.v538 then
+v22:v241(v536, v242.v187(0.12), {v217 = v218.v219(13, 13, 13)}):v247()
+end
+end)
+v536.v453:v308(function()
+v392()
+for v138, v543 in v135(v533) do
+v543.v541.v538 = false
+v543.v540.v217 = v218.v219(13, 13, 13)
+v543.v540.v231 = v218.v219(125, 125, 125)
+if v543.v542 then v543.v542.v538 = false end
+end
+v539.v538 = true
+v536.v217 = v218.v219(45, 12, 12)
+v536.v231 = v218.v219(245, 245, 245)
+v537.v538 = true
+end)
+return v539
+end
+local v544 = v534(v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")(), v4("return '\\v262\\v263\\v520\\v546\\v121\\v121\\v31\\v185\\v257\\v547\\v50\\v31\\v64'")())
+local v548 = v534(v4("return '\\v74\\v11\\v16\\v75\\v30'")(), v4("return '\\v519\\v549\\v520\\v550\\v551\\v520\\v121\\v121\\v74\\v65\\v5\\v63\\v14'")())
+local v552 = v534(v4("return '\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v6\\v30'")(), v4("return '\\v262\\v263\\v553\\v547\\v121\\v121\\v23\\v109\\v33\\v109\\v36\\v64\\v5\\v23\\v109\\v14'")())
+local v554 = v534(v4("return '\\v36\\v6\\v12\\v30'")(), v4("return '\\v262\\v263\\v555\\v556\\v121\\v121\\v36\\v109\\v23\\v14'")())
+local v557 = v534(v4("return '\\v42\\v9\\v30\\v19\\v11\\v8'")(), v4("return '\\v262\\v263\\v558\\v559\\v550\\v551\\v520\\v121\\v121\\v42\\v31\\v14\\v29\\v65\\v33'")())
+local v560 = v534(v4("return '\\v64\\v19\\v12\\v16\\v15\\v30'")(), v4("return '\\v519\\v561\\v562\\v550\\v551\\v520\\v121\\v121\\v64\\v29\\v23\\v5\\v64\\v14'")())
+local v563 = v534(v4("return '\\v78\\v9\\v8\\v8'")(), v4("return '\\v262\\v263\\v429\\v523\\v121\\v121\\v78\\v31\\v33\\v33'")())
+local v391 = v534(v4("return '\\v50\\v34\\v11\\v12'")(), v4("return '\\v262\\v263\\v429\\v430\\v121\\v121\\v50\\v26\\v65\\v23'")())
+v534(v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v13\\v15\\v16\\v11'")(), v4("return '\\v262\\v263\\v553\\v564\\v121\\v121\\v50\\v65\\v33\\v50\\v29\\v33\\v65\\v39\\v64\\v5\\v65'")())
+v533[v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")()].v541.v538 = true
+v533[v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")()].v540.v217 = v218.v219(45, 12, 12)
+v533[v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")()].v540.v231 = v218.v219(245, 245, 245)
+v533[v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")()].v542.v538 = true
+v49:v143(v4("return '\\v29\\v31'")(), v28.v565:v308(function(v566, v567)
+if not v567 and v566.v568 == v201.v568.v569 and v506.v191 then
+v506.v570 = not v506.v570
+end
+end))
+function v89:v152()
+local v543 = v533[v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v13\\v15\\v16\\v11'")()] and v533[v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v13\\v15\\v16\\v11'")()].v541
+if not v543 then return end
+local v476 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v543)
+v476.v197 = v196.v187(1, -20, 1, -10)
+v476.v195 = v196.v187(0, 10, 0, 5)
+v476.v198 = 1
+v476.v220 = 0
+v476.v416 = 4
+v476.v417 = v218.v219(110, 20, 20)
+v476.v413 = v196.v187(0, 0, 0, 0)
+local v199 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v476)
+v199.v207 = v208.v187(0, 7)
+v199.v422 = v201.v422.v423
+v199:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v476.v413 = v196.v187(0, 0, 0, v199.v445.v325 + 18)
+end)
+local v467 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v476)
+v467.v423 = 1
+v467.v197 = v196.v187(1, -6, 0, 42)
+v467.v217 = v218.v219(9, 9, 9)
+v467.v220 = 0
+v467.v234 = v4("return '\\v121\\v121\\v262\\v263\\v553\\v564\\v121\\v50\\v65\\v33\\v50\\v29\\v33\\v65\\v39\\v64\\v5\\v65\\v121\\v337\\v337\\v121\\v63\\v109\\v39\\v31\\v65\\v121\\v39\\v109\\v121\\v182\\v65\\v185\\v26\\v64\\v14'")()
+v467.v231 = v218.v219(235, 235, 235)
+v467.v228 = v201.v228.v359
+v467.v230 = 12
+v467.v232 = v201.v232.v233
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v467).v222 = v208.v187(0, 4)
+local v571 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v467)
+v571.v224 = v218.v219(55, 55, 55)
+local v572 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v476)
+v572.v423 = 2
+v572.v197 = v196.v187(1, -6, 0, 34)
+v572.v217 = v218.v219(10, 10, 12)
+v572.v220 = 0
+v572.v234 = v4("return '\\v65\\v185\\v65\\v33\\v31\\v14\\v65\\v185\\v39\\v64\\v67\\v67\\v67\\v121\\v337\\v337\\v121\\v65\\v121\\v63\\v109\\v39\\v31\\v65\\v121\\v74\\v31\\v50\\v65\\v121\\v63\\v65\\v31\\v14\\v121\\v36\\v5\\v109\\v50\\v31\\v14\\v65\\v121\\v50\\v64\\v63\\v121\\v64\\v121\\v23\\v109\\v63\\v36\\v64'")()
+v572.v231 = v218.v219(135, 135, 135)
+v572.v228 = v201.v228.v237
+v572.v230 = 12
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v572).v222 = v208.v187(0, 4)
+local function v573(v574, v575)
+return v46.v291(v44, v574, v575)
+end
+local function v576(v283)
+return v46.v282(v283, 2)
+end
+local function v577(v177, v578)
+local v216 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v476)
+v216.v423 = v578
+v216.v197 = v196.v187(1, -6, 0, 88)
+v216.v217 = v218.v219(10, 10, 12)
+v216.v220 = 0
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v216).v222 = v208.v187(0, 4)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v216)
+v223.v224 = v218.v219(42, 42, 42)
+v223.v225 = 1
+local v542 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v216)
+v542.v197 = v196.v187(0, 3, 1, 0)
+v542.v217 = v218.v219(190, 30, 30)
+v542.v220 = 0
+local v116 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v116.v197 = v196.v187(1, -24, 0, 25)
+v116.v195 = v196.v187(0, 14, 0, 7)
+v116.v198 = 1
+v116.v234 = v177
+v116.v231 = v218.v219(235, 235, 235)
+v116.v228 = v201.v228.v229
+v116.v230 = 14
+v116.v232 = v201.v232.v233
+local v579 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v579.v197 = v196.v187(1, -28, 0, 48)
+v579.v195 = v196.v187(0, 14, 0, 31)
+v579.v198 = 1
+v579.v234 = v4("return '\\v63\\v31\\v185\\v29\\v23\\v64\\v121\\v121\\v68\\v580\\v20\\v26\\v64\\v5\\v65\\v121\\v121\\v68\\v121\\v121\\v121\\v121\\v450\\v121\\v121\\v121\\v121\\v39\\v31\\v65\\v121\\v121\\v68\\v121\\v121\\v121\\v121\\v450\\v121\\v121\\v121\\v121\\v14\\v109\\v63\\v65\\v185\\v65\\v121\\v121\\v68'")()
+v579.v231 = v218.v219(165, 165, 165)
+v579.v228 = v201.v228.v229
+v579.v230 = 14
+v579.v232 = v201.v232.v233
+v579.v239 = v201.v239.v240
+return v579
+end
+local v581 = {
+v582 = v577(v4("return '\\v262\\v263\\v429\\v583\\v121\\v74\\v64\\v5\\v257\\v258\\v65'")(), 3),
+v584 = v577(v4("return '\\v262\\v263\\v549\\v585\\v550\\v551\\v520\\v121\\v39\\v29\\v5\\v65\\v96\\v31\\v33\\v31\\v39\\v65\\v39\\v109'")(), 4),
+v586 = v577(v4("return '\\v519\\v561\\v585\\v121\\v65\\v182\\v31\\v33\\v31\\v39\\v65\\v39\\v109'")(), 5),
+v587 = v577(v4("return '\\v262\\v263\\v265\\v588\\v121\\v5\\v109\\v185\\v65\\v14\\v50\\v31\\v63\\v109\\v185\\v23\\v64\\v14'")(), 6)
 }
-
-function WorkerDiagnosticModule:Start()
-    return Core:StartWorker("DiagnosticHeartbeat", function(isAlive)
-        while isAlive() do
-            task.wait(0.25)
-        end
-    end)
+local v589 = {
+v582 = v573(v4("return '\\v63\\v19\\v30\\v10\\v8\\v6'")(), v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")()),
+v584 = v573(v4("return '\\v39\\v19\\v16\\v11\\v40\\v9\\v8\\v9\\v12\\v37'")()),
+v586 = v573(v4("return '\\v65\\v17\\v9\\v8\\v9\\v12\\v37'")(), v4("return '\\v14\\v7\\v6\\v6\\v13'")()),
+v587 = v573(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")(), v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")())
+}
+local v590 = {
+v582 = 0,
+v584 = 0,
+v586 = 0,
+v587 = 0
+}
+local v275 = v70.v71()
+local function v591(v592)
+v592 = v286.v593(0, v286.v290(v592))
+local v594 = v286.v290(v592 / 3600)
+local v595 = v286.v290((v592 % 3600) / 60)
+local v596 = v592 % 60
+return v278.v279(v4("return '\\v280\\v68\\v66\\v13\\v34\\v121\\v280\\v68\\v66\\v13\\v75\\v121\\v280\\v68\\v66\\v13\\v30'")(), v594, v595, v596)
 end
-
-function WorkerDiagnosticModule:Stop()
-    return Core:StopWorker("DiagnosticHeartbeat")
+local function v597(v598, v599, v276)
+local v600 = v276 > 0 and (v599 / v276) or 0
+v598.v234 = v278.v279(
+v4("return '\\v63\\v31\\v185\\v29\\v23\\v64\\v121\\v121\\v280\\v30\\v580\\v20\\v26\\v64\\v5\\v65\\v121\\v121\\v280\\v30\\v121\\v121\\v121\\v121\\v450\\v121\\v121\\v121\\v121\\v39\\v31\\v65\\v121\\v121\\v280\\v30\\v121\\v121\\v121\\v121\\v450\\v121\\v121\\v121\\v121\\v14\\v109\\v63\\v65\\v185\\v65\\v121\\v121\\v280\\v30'")(),
+v576(v600 * 60),
+v576(v600 * 3600),
+v576(v600 * 86400),
+v576(v600 * 604800)
+)
 end
-
-Core:RegisterModule("WorkerDiagnostic", WorkerDiagnosticModule)
-
--- Módulos reais do arquivo único. O Chat é registrado de forma lazy dentro da UI.
-Core:RegisterModule("Utils", Utils)
-Core:RegisterModule("UI", UI)
-Core:RegisterModule("Farms", Farms)
-Core:RegisterModule("Teleports", Teleports)
-Core:RegisterModule("Pets", Pets)
-Core:RegisterModule("Visual", Visual)
-Core:RegisterModule("Kill", Kill)
-Core:RegisterModule("Calculator", Calculator)
-Core:RegisterModule("System", System)
-
---==================================================
-
--- INICIAR HUB DIRETAMENTE // SEM SISTEMA DE KEY
-local __arasakaBootStart = os.clock()
-print("[ARASAKA][BOOT] Iniciando Hub sem sistema de key...")
-
-Core:SetRunning(true)
-
-local uiStart = os.clock()
-local uiOk, uiErr = Core:StartModule("UI")
-if not uiOk then
-    warn("[ARASAKA][MODULE:UI] Falha:", uiErr)
-    return
+v107.v124(function()
+while v49:v110() and v543.v191 do
+local v276 = v286.v593(0.001, v70.v71() - v275)
+v102(function()
+local v601 = {
+v582 = v573(v4("return '\\v63\\v19\\v30\\v10\\v8\\v6'")(), v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")()),
+v584 = v573(v4("return '\\v39\\v19\\v16\\v11\\v40\\v9\\v8\\v9\\v12\\v37'")()),
+v586 = v573(v4("return '\\v65\\v17\\v9\\v8\\v9\\v12\\v37'")(), v4("return '\\v14\\v7\\v6\\v6\\v13'")()),
+v587 = v573(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")(), v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")())
+}
+for v173, v112 in v135(v601) do
+local v602 = v112 - (v589[v173] or v112)
+if v602 > 0 then
+v590[v173] = (v590[v173] or 0) + v602
 end
-
-local uiElapsed = os.clock() - uiStart
-local totalElapsed = os.clock() - __arasakaBootStart
-
-print(string.format("[ARASAKA][BOOT] UI criada em %.3fs", uiElapsed))
-print(string.format("[ARASAKA][BOOT] TOTAL %.3fs", totalElapsed))
-Core:Notify("ARASAKA", "Sistema carregado e pronto para uso.")
+v589[v173] = v112
+end
+v597(v581.v582, v590.v582, v276)
+v597(v581.v584, v590.v584, v276)
+v597(v581.v586, v590.v586, v276)
+v597(v581.v587, v590.v587, v276)
+v572.v234 = v4("return '\\v23\\v109\\v63\\v36\\v64\\v121\\v65\\v185\\v65\\v33\\v31\\v14\\v65\\v39\\v64\\v121\\v337\\v337\\v121'")() .. v591(v276) .. v4("return '\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v121\\v121\\v121\\v63\\v109\\v39\\v31\\v65\\v121\\v5\\v109\\v65\\v33\\v121\\v39\\v65\\v121\\v14\\v109\\v14\\v14\\v65\\v64'")()
+end)
+v107.v108(1)
+end
+end)
+end
+v49:v140(v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v12\\v15\\v16'")(), v89)
+local v603, v604 = v49:v151(v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v12\\v15\\v16'")())
+if not v603 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v12\\v15\\v16\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v604) end
+v85.v86 = false
+v85.v87 = false
+function v85:v152()
+if v113.v86 or v113.v87 then
+return
+end
+v113.v87 = true
+v46.v273(v4("return '\\v50\\v26\\v65\\v23\\v388\\v33\\v65\\v364\\v365\\v388\\v31\\v185\\v31\\v23'")())
+local v125, v126 = v102(function()
+v85:v390(v391, v392)
+end)
+v46.v274(v4("return '\\v50\\v26\\v65\\v23\\v388\\v33\\v65\\v364\\v365\\v388\\v31\\v185\\v31\\v23'")())
+v113.v87 = false
+if v125 then
+v113.v86 = true
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v130\\v121\\v50\\v34\\v11\\v12\\v121\\v281\\v121\\v50\\v65\\v5\\v5\\v109\\v182\\v65\\v39\\v64'")())
+else
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v50\\v34\\v11\\v12\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v126)
+end
+end
+if v49 then
+v49:v140(v4("return '\\v50\\v34\\v11\\v12'")(), v85)
+end
+local function v605()
+if v85.v86 or v85.v87 then
+return
+end
+if v49 then
+local v606, v607 = v49:v151(v4("return '\\v50\\v34\\v11\\v12'")())
+if not v606 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v50\\v34\\v11\\v12\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v121\\v11\\v15\\v121\\v9\\v20\\v9\\v10\\v9\\v11\\v16\\v131'")(), v607)
+end
+else
+v85:v152()
+end
+end
+local v608
+v608 = v391:v479(v4("return '\\v42\\v9\\v30\\v9\\v40\\v8\\v6'")()):v308(function()
+if v391.v538 then
+v605()
+if v608 then
+v608:v149()
+v608 = nil
+end
+end
+end)
+if v49 then
+v49:v143(v4("return '\\v50\\v34\\v11\\v12\\v33\\v15\\v11\\v13\\v6\\v16'")(), v608)
+end
+function v85:v156()
+v49:v147(v4("return '\\v50\\v34\\v11\\v12\\v33\\v15\\v11\\v13\\v6\\v16'")())
+v49:v147(v4("return '\\v50\\v34\\v11\\v12'")())
+if v113.v399 then
+v102(function()
+if v113.v399.v609 then v113.v399:v609() end
+end)
+v113.v399 = nil
+end
+v113.v87 = false
+v113.v86 = false
+end
+if v391.v538 then
+v107.v610(v605)
+end
+function v77:v152()
+v46.v273(v4("return '\\v78\\v31\\v33\\v33\\v388\\v29\\v31'")())
+v113.v79 = v113.v79 or {
+v80 = nil,
+v81 = false,
+v82 = nil,
+v83 = {}
+}
+local v611 = {}
+local function v612()
+v611 = {}
+for v138, v613 in v139(v35:v614()) do
+if v613 ~= v44 then
+v107.v124(function()
+local v615 = false
+v102(function()
+v615 = v44:v616(v613.v411)
+end)
+v611[v613.v411] = v615
+end)
+end
+end
+end
+v612()
+v49:v143(v4("return '\\v78\\v9\\v8\\v8'")(), v35.v617:v308(function(v613)
+v107.v108(1)
+v102(function()
+v611[v613.v411] = v44:v616(v613.v411)
+end)
+end))
+v49:v143(v4("return '\\v78\\v9\\v8\\v8'")(), v35.v618:v308(function(v613)
+v611[v613.v411] = nil
+end))
+local v619 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v563)
+v619.v197 = v196.v187(1, -20, 1, -10)
+v619.v195 = v196.v187(0, 10, 0, 5)
+v619.v198 = 1
+v619.v220 = 0
+v619.v416 = 4
+v619.v417 = v218.v219(110, 20, 20)
+v619.v413 = v196.v187(0, 0, 0, 0)
+local v620 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v619)
+v620.v207 = v208.v187(0, 7)
+v620.v422 = v201.v422.v423
+v620:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v619.v413 = v196.v187(0, 0, 0, v620.v445.v325 + 18)
+end)
+local v621 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v619)
+v621.v423 = 1
+v621.v197 = v196.v187(1, -6, 0, 38)
+v621.v217 = v218.v219(9, 9, 9)
+v621.v220 = 0
+v621.v234 = v4("return '\\v121\\v121\\v262\\v263\\v429\\v523\\v121\\v50\\v64\\v185\\v23\\v5\\v64\\v33\\v109\\v121\\v78\\v31\\v33\\v33\\v121\\v337\\v337\\v121\\v14\\v31\\v14\\v23\\v109\\v63\\v65\\v121\\v39\\v109\\v121\\v65\\v33\\v42\\v64\\v14'")()
+v621.v231 = v218.v219(235, 235, 235)
+v621.v228 = v201.v228.v359
+v621.v230 = 12
+v621.v232 = v201.v232.v233
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v621).v222 = v208.v187(0, 4)
+local v622 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v621)
+v622.v224 = v218.v219(55, 55, 55)
+local function v623(v624, v578)
+return v46.v304(v619, {
+v423 = v578,
+v197 = v196.v187(1, -6, 0, 36),
+v217 = v218.v219(180, 30, 30),
+v220 = 0,
+v234 = v624,
+v231 = v218.v219(255, 255, 255),
+v228 = v201.v228.v229,
+v230 = 11,
+v222 = v208.v187(0, 5),
+})
+end
+local v625 = v623(v4("return '\\v78\\v31\\v33\\v33\\v121\\v23\\v64\\v39\\v64\\v14\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")(), 2)
+local v626 = v623(v4("return '\\v36\\v33\\v65\\v365\\v109\\v5\\v121\\v109\\v14\\v36\\v109\\v50\\v257\\v547\\v74\\v31\\v50\\v64\\v131\\v121\\v14\\v109\\v33\\v109\\v50\\v31\\v64\\v185\\v65\\v5\\v121\\v262\\v263\\v627\\v628'")(), 3)
+local v629 = v623(v4("return '\\v78\\v31\\v33\\v33\\v121\\v630\\v64\\v182\\v65\\v39\\v64\\v5\\v121\\v109\\v14\\v36\\v109\\v50\\v257\\v547\\v74\\v31\\v50\\v64\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")(), 4)
+local v631 = v623(v4("return '\\v109\\v39\\v31\\v23\\v65\\v5\\v121\\v109\\v632\\v50\\v33\\v29\\v14\\v257\\v633\\v109\\v14\\v121\\v262\\v263\\v549\\v585\\v550\\v551\\v520'")(), 5)
+local v634 = v623(v4("return '\\v78\\v31\\v33\\v33\\v121\\v50\\v64\\v63\\v121\\v109\\v632\\v50\\v33\\v29\\v14\\v257\\v259\\v64\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")(), 6)
+local v635 = v623(v4("return '\\v109\\v632\\v50\\v33\\v29\\v31\\v5\\v121\\v65\\v63\\v31\\v182\\v64\\v14\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")(), 7)
+local v636 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v619)
+v636.v423 = 8
+v636.v197 = v196.v187(1, -6, 0, 44)
+v636.v217 = v218.v219(10, 10, 12)
+v636.v220 = 0
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v65\\v182\\v29\\v65\\v5\\v39\\v65\\v185\\v39\\v64'")()
+v636.v231 = v218.v219(145, 145, 145)
+v636.v228 = v201.v228.v370
+v636.v230 = 12
+v636.v238 = true
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v636).v222 = v208.v187(0, 4)
+local v637
+local function v638()
+local v639 = v77.v79
+v625.v234 = v4("return '\\v78\\v31\\v33\\v33\\v121\\v23\\v64\\v39\\v64\\v14\\v131\\v121'")() .. (v639.v80 == v4("return '\\v11\\v8\\v8'")() and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v629.v234 = v4("return '\\v78\\v31\\v33\\v33\\v121\\v630\\v64\\v182\\v65\\v39\\v64\\v5\\v121\\v109\\v14\\v36\\v109\\v50\\v257\\v547\\v74\\v31\\v50\\v64\\v131\\v121'")() .. (v639.v80 == v4("return '\\v30\\v7\\v6\\v10\\v9\\v101\\v9\\v10'")() and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v634.v234 = v4("return '\\v78\\v31\\v33\\v33\\v121\\v50\\v64\\v63\\v121\\v109\\v632\\v50\\v33\\v29\\v14\\v257\\v259\\v64\\v131\\v121'")() .. (v639.v80 == v4("return '\\v6\\v120\\v10\\v8\\v19\\v13\\v6'")() and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v635.v234 = v4("return '\\v109\\v632\\v50\\v33\\v29\\v31\\v5\\v121\\v65\\v63\\v31\\v182\\v64\\v14\\v131\\v121'")() .. (v639.v81 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v626.v234 = v639.v82 and (v4("return '\\v65\\v33\\v42\\v64\\v131\\v121'")() .. v639.v82 .. v4("return '\\v121\\v262\\v263\\v627\\v628'")()) or v4("return '\\v36\\v33\\v65\\v365\\v109\\v5\\v121\\v109\\v14\\v36\\v109\\v50\\v257\\v547\\v74\\v31\\v50\\v64\\v131\\v121\\v14\\v109\\v33\\v109\\v50\\v31\\v64\\v185\\v65\\v5\\v121\\v262\\v263\\v627\\v628'")()
+end
+local function v640(v80)
+if v77.v79.v80 == v80 then
+v77.v79.v80 = nil
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v65\\v182\\v29\\v65\\v5\\v39\\v65\\v185\\v39\\v64'")()
+v49:v132(v4("return '\\v78\\v9\\v8\\v8\\v67\\v63\\v11\\v9\\v20'")())
+else
+v77.v79.v80 = v80
+if v637 then v637() end
+end
+v638()
+end
+local function v641(v642)
+local v639 = v77.v79
+if not v639.v80 or not v642 or v642 == v44 then return false end
+if v639.v81 and v611[v642.v411] == true then
+return false
+end
+if v639.v80 == v4("return '\\v30\\v7\\v6\\v10\\v9\\v101\\v9\\v10'")() then
+return v642.v47 == v639.v82
+elseif v639.v80 == v4("return '\\v6\\v120\\v10\\v8\\v19\\v13\\v6'")() then
+return not v639.v83[v642.v411]
+elseif v639.v80 == v4("return '\\v11\\v8\\v8'")() then
+return true
+end
+return false
+end
+local function v643()
+local v644 = v44.v645
+if not v644 then return nil end
+local v646 = v644:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+if not v646 then return nil end
+local v648 = v644:v184(v4("return '\\v36\\v19\\v20\\v10\\v34'")())
+if not v648 then
+local v649 = v44:v647(v4("return '\\v96\\v11\\v10\\v95\\v7\\v11\\v10\\v95'")()) or v44:v184(v4("return '\\v96\\v11\\v10\\v95\\v7\\v11\\v10\\v95'")())
+v648 = v649 and v649:v184(v4("return '\\v36\\v19\\v20\\v10\\v34'")())
+if v648 then v102(function() v646:v650(v648) end) end
+end
+return v648
+end
+local function v651(v642)
+if not v77.v79.v80 or not v49:v110() then return end
+local v652 = v44.v645
+local v653 = v642 and v642.v645
+if not v652 or not v653 then return end
+local v654 = v652:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+local v655 = v653:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+local v656 = v652:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")())
+local v657 = v653:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")())
+if not v654 or v654.v658 <= 0 or not v655 or v655.v658 <= 0 or not v656 or not v657 then return end
+v102(function()
+v656.v659 = v657.v659 * v659.v187(0, 0, 1)
+end)
+local v648 = v643()
+if v648 then v102(function() v648:v660() end) end
+local v661 = v500()
+if v661 then
+v102(function()
+v661:v662(v4("return '\\v7\\v19\\v20\\v10\\v34'")(), v4("return '\\v8\\v6\\v101\\v12\\v26\\v11\\v20\\v13'")())
+v661:v662(v4("return '\\v7\\v19\\v20\\v10\\v34'")(), v4("return '\\v16\\v9\\v17\\v34\\v12\\v26\\v11\\v20\\v13'")())
+end)
+end
+end
+v625.v453:v308(function()
+v392()
+v640(v4("return '\\v11\\v8\\v8'")())
+end)
+v629.v453:v308(function()
+v392()
+if not v77.v79.v82 then
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v14\\v109\\v33\\v109\\v50\\v31\\v64\\v185\\v109\\v121\\v29\\v63\\v121\\v36\\v33\\v65\\v365\\v109\\v5\\v121\\v36\\v5\\v31\\v63\\v109\\v31\\v5\\v64'")()
+return
+end
+v640(v4("return '\\v30\\v7\\v6\\v10\\v9\\v101\\v9\\v10'")())
+end)
+v634.v453:v308(function()
+v392()
+v640(v4("return '\\v6\\v120\\v10\\v8\\v19\\v13\\v6'")())
+end)
+v635.v453:v308(function()
+v392()
+v77.v79.v81 = not v77.v79.v81
+v612()
+v638()
+end)
+v626.v453:v308(function()
+v392()
+local v663 = {}
+for v138, v613 in v139(v35:v614()) do
+if v613 ~= v44 then
+v136.v137(v663, {v234 = v613.v664 .. v4("return '\\v121\\v665\\v442'")() .. v613.v47 .. v4("return '\\v666'")(), v299 = v613.v47})
+end
+end
+v136.v163(v663, function(v574,v575) return v278.v667(v574.v234) < v278.v667(v575.v234) end)
+if #v663 == 0 then
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v185\\v109\\v185\\v26\\v29\\v63\\v121\\v36\\v33\\v65\\v365\\v109\\v5\\v121\\v39\\v31\\v14\\v36\\v64\\v185\\v257\\v547\\v42\\v109\\v33'")()
+return
+end
+v456(v4("return '\\v14\\v6\\v8\\v6\\v10\\v9\\v15\\v20\\v11\\v16\\v121\\v11\\v8\\v21\\v15'")(), v663, function(v112)
+v77.v79.v82 = v112
+v638()
+v636.v234 = v4("return '\\v65\\v33\\v42\\v64\\v121\\v337\\v337\\v121\\v442'")() .. v235(v112)
+end)
+end)
+local function v668()
+local v213 = v311:v184(v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v109\\v120\\v10\\v8\\v19\\v30\\v9\\v15\\v20\\v388\\v182\\v19\\v9'")())
+if v213 then v213:v215() end
+local v183 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")(), v311)
+v183.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v9\\v8\\v8\\v109\\v120\\v10\\v8\\v19\\v30\\v9\\v15\\v20\\v388\\v182\\v19\\v9'")()
+v183.v190 = true
+v183.v188 = false
+v183.v189 = 7000
+local v669 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v183)
+v669.v197 = v196.v344(1,1)
+v669.v217 = v218.v187(0,0,0)
+v669.v198 = 0.3
+v669.v234 = v4("return ''")()
+v669.v462 = false
+local v670 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v183)
+v670.v193 = v194.v187(0.5,0.5)
+v670.v195 = v196.v344(0.5,0.5)
+v670.v197 = v196.v187(0,430,0,390)
+v670.v217 = v218.v219(7,7,7)
+v670.v220 = 0
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v670).v222 = v208.v187(0,5)
+local v671 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v670)
+v671.v224 = v218.v219(150,25,25)
+local v177 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v670)
+v177.v197 = v196.v187(1,-55,0,48)
+v177.v195 = v196.v187(0,16,0,5)
+v177.v198 = 1
+v177.v234 = v4("return '\\v262\\v263\\v549\\v585\\v550\\v551\\v520\\v121\\v109\\v632\\v50\\v33\\v29\\v14\\v257\\v633\\v109\\v14\\v121\\v337\\v337\\v121\\v185\\v257\\v259\\v64\\v121\\v65\\v23\\v65\\v50\\v65\\v5'")()
+v177.v231 = v218.v219(235,235,235)
+v177.v228 = v201.v228.v359
+v177.v230 = 14
+v177.v232 = v201.v232.v233
+local v672 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v670)
+v672.v197 = v196.v187(0,30,0,30)
+v672.v195 = v196.v187(1,-40,0,12)
+v672.v217 = v218.v219(25,12,12)
+v672.v234 = v4("return '\\v257\\v473'")()
+v672.v231 = v218.v219(220,60,60)
+v672.v228 = v201.v228.v229
+v672.v230 = 18
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v672).v222 = v208.v187(0,4)
+local v673 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v670)
+v673.v195 = v196.v187(0,14,0,58)
+v673.v197 = v196.v187(1,-28,1,-72)
+v673.v198 = 1
+v673.v220 = 0
+v673.v416 = 3
+v673.v413 = v196.v187()
+local v674 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v673)
+v674.v207 = v208.v187(0,5)
+v674:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v673.v413 = v196.v187(0,0,0,v674.v445.v325+10)
+end)
+local function v675() if v183 then v183:v215() end end
+v672.v453:v308(v675)
+v669.v453:v308(v675)
+for v138, v613 in v139(v35:v614()) do
+if v613 ~= v44 then
+local v676 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v673)
+v676.v197 = v196.v187(1,-5,0,38)
+v676.v217 = v218.v219(13,13,13)
+v676.v220 = 0
+v676.v228 = v201.v228.v229
+v676.v230 = 12
+v676.v231 = v218.v219(220,220,220)
+v676.v232 = v201.v232.v233
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v676).v222 = v208.v187(0,4)
+local function v677()
+local v678 = v77.v79.v83[v613.v411] == true
+v676.v234 = v4("return '\\v121\\v121\\v121'")() .. (v678 and v4("return '\\v519\\v679\\v558\\v121'")() or v4("return '\\v519\\v679\\v555\\v121'")()) .. v613.v664 .. v4("return '\\v121\\v665\\v442'")() .. v613.v47 .. v4("return '\\v666'")()
+v676.v217 = v678 and v218.v219(48,14,14) or v218.v219(13,13,13)
+end
+v677()
+v676.v453:v308(function()
+v392()
+v77.v79.v83[v613.v411] = not v77.v79.v83[v613.v411]
+v677()
+end)
+end
+end
+end
+v631.v453:v308(function()
+v392()
+v668()
+end)
+v637 = function()
+if not v77.v79.v80 then
+v49:v132(v4("return '\\v78\\v9\\v8\\v8\\v67\\v63\\v11\\v9\\v20'")())
+return
+end
+v49:v118(v4("return '\\v78\\v9\\v8\\v8\\v67\\v63\\v11\\v9\\v20'")(), function(v680)
+while v680() and v77.v79.v80 do
+local v681 = false
+for v138, v642 in v139(v35:v614()) do
+if not v680() or not v77.v79.v80 then break end
+if v641(v642) then
+v681 = true
+v636.v234 = v4("return '\\v65\\v23\\v65\\v50\\v65\\v185\\v39\\v64\\v121\\v337\\v337\\v121\\v442'")() .. v642.v47
+v651(v642)
+v107.v108(0.08)
+if not v77.v79.v80 then break end
+end
+end
+if not v77.v79.v80 then
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v65\\v182\\v29\\v65\\v5\\v39\\v65\\v185\\v39\\v64'")()
+elseif not v681 then
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v185\\v109\\v185\\v26\\v29\\v63\\v121\\v65\\v33\\v42\\v64\\v121\\v42\\v257\\v559\\v33\\v31\\v39\\v64'")()
+v107.v108(0.25)
+else
+v107.v108(0.03)
+end
+end
+if v636 and v636.v191 then
+v636.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v337\\v337\\v121\\v65\\v182\\v29\\v65\\v5\\v39\\v65\\v185\\v39\\v64'")()
+end
+end)
+end
+v638()
+v46.v274(v4("return '\\v78\\v31\\v33\\v33\\v388\\v29\\v31'")())
+end
+function v77:v156()
+v113.v79.v80 = nil
+v49:v132(v4("return '\\v78\\v9\\v8\\v8\\v67\\v63\\v11\\v9\\v20'")())
+v49:v147(v4("return '\\v78\\v9\\v8\\v8'")())
+end
+v49:v140(v4("return '\\v78\\v9\\v8\\v8'")(), v77)
+local v682, v683 = v49:v151(v4("return '\\v78\\v9\\v8\\v8'")())
+if not v682 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v78\\v9\\v8\\v8\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v683) end
+local v684 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v544)
+v684.v197 = v196.v187(1, -20, 0, 70)
+v684.v195 = v196.v187(0, 10, 0, 8)
+v684.v217 = v218.v219(9, 9, 9)
+v684.v220 = 0
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v684).v222 = v208.v187(0, 4)
+local v685 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v684)
+v685.v224 = v218.v219(42, 42, 42)
+local v686 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v684)
+v686.v197 = v196.v187(0, 3, 1, 0)
+v686.v217 = v218.v219(215, 50, 50)
+v686.v220 = 0
+local v687 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v684)
+v687.v197 = v196.v187(1, -32, 0, 25)
+v687.v195 = v196.v187(0, 17, 0, 11)
+v687.v198 = 1
+v687.v234 = v4("return '\\v96\\v109\\v63\\v62\\v42\\v31\\v185\\v39\\v64\\v121\\v39\\v109\\v121\\v42\\v64\\v33\\v23\\v65\\v121\\v337\\v337\\v121\\v442'")() .. v44.v47
+v687.v231 = v218.v219(245, 245, 245)
+v687.v228 = v201.v228.v359
+v687.v230 = 15
+v687.v232 = v201.v232.v233
+local v688 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v684)
+v688.v197 = v196.v187(1, -32, 0, 16)
+v688.v195 = v196.v187(0, 17, 0, 39)
+v688.v198 = 1
+v688.v234 = v4("return '\\v5\\v109\\v39\\v109\\v121\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v337\\v337\\v121\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v39\\v64\\v121\\v50\\v33\\v31\\v109\\v185\\v23\\v109\\v131\\v121\\v64\\v185\\v33\\v31\\v185\\v109'")()
+v688.v231 = v218.v219(145, 35, 35)
+v688.v228 = v201.v228.v370
+v688.v230 = 12
+v688.v232 = v201.v232.v233
+local v689 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v684)
+v689.v197 = v196.v187(0, 145, 0, 28)
+v689.v195 = v196.v187(1, -160, 0.5, -14)
+v689.v217 = v218.v219(18, 18, 18)
+v689.v220 = 0
+v689.v234 = v4("return '\\v519\\v473\\v520\\v121\\v121\\v14\\v109\\v14\\v14\\v257\\v259\\v64\\v121\\v65\\v23\\v31\\v42\\v65'")()
+v689.v231 = v218.v219(70, 210, 90)
+v689.v228 = v201.v228.v370
+v689.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v689).v222 = v208.v187(0, 3)
+local v690 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v544)
+v690.v197 = v196.v187(1, -20, 0, 205)
+v690.v195 = v196.v187(0, 10, 0, 88)
+v690.v198 = 1
+local v691 = v186.v187(v4("return '\\v29\\v31\\v182\\v16\\v9\\v13\\v33\\v11\\v37\\v15\\v19\\v12'")(), v690)
+v691.v692 = v196.v187(0.5, -6, 0, 96)
+v691.v693 = v196.v187(0, 8, 0, 8)
+v691.v422 = v201.v422.v423
+local function v694(v457, v695, v578)
+local v216 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v690)
+v216.v423 = v578
+v216.v217 = v218.v219(10, 10, 10)
+v216.v220 = 0
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v216).v222 = v208.v187(0, 4)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v216)
+v223.v224 = v218.v219(35, 35, 35)
+local v226 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v216)
+v226.v197 = v196.v187(0, 2, 0, 52)
+v226.v195 = v196.v187(0, 0, 0.5, -26)
+v226.v217 = v218.v219(150, 28, 28)
+v226.v220 = 0
+local v696 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v696.v197 = v196.v187(0, 30, 0, 30)
+v696.v195 = v196.v187(0, 12, 0, 13)
+v696.v217 = v218.v219(22, 10, 10)
+v696.v220 = 0
+v696.v234 = v695
+v696.v230 = 15
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v696).v222 = v208.v187(0, 3)
+local v177 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v177.v197 = v196.v187(1, -56, 0, 16)
+v177.v195 = v196.v187(0, 50, 0, 14)
+v177.v198 = 1
+v177.v234 = v278.v470(v457)
+v177.v231 = v218.v219(105, 105, 105)
+v177.v228 = v201.v228.v370
+v177.v230 = 12
+v177.v232 = v201.v232.v233
+local v112 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v216)
+v112.v197 = v196.v187(1, -56, 0, 27)
+v112.v195 = v196.v187(0, 50, 0, 32)
+v112.v198 = 1
+v112.v234 = v4("return '\\v50\\v65\\v5\\v5\\v109\\v182\\v65\\v185\\v39\\v64\\v67\\v67\\v67'")()
+v112.v231 = v218.v219(235, 235, 235)
+v112.v228 = v201.v228.v229
+v112.v230 = 16
+v112.v232 = v201.v232.v233
+v112.v443 = true
+return v112
+end
+local v697 = v694(v4("return '\\v74\\v15\\v16\\v10\\v11'")(), v4("return '\\v262\\v263\\v429\\v583'")(), 1)
+local v698 = v694(v4("return '\\v39\\v19\\v16\\v11\\v40\\v9\\v8\\v9\\v13\\v11\\v13\\v6'")(), v4("return '\\v262\\v263\\v549\\v585'")(), 2)
+local v699 = v694(v4("return '\\v65\\v17\\v9\\v8\\v9\\v13\\v11\\v13\\v6'")(), v4("return '\\v519\\v561\\v585'")(), 3)
+local v700 = v694(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")(), v4("return '\\v262\\v263\\v265\\v588\\v550\\v551\\v520'")(), 4)
+local v701 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v544)
+v701.v197 = v196.v187(1, -20, 0, 67)
+v701.v195 = v196.v187(0, 10, 0, 304)
+v701.v217 = v218.v219(8, 8, 8)
+v701.v220 = 0
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v701).v222 = v208.v187(0, 4)
+local v702 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v701)
+v702.v224 = v218.v219(35, 35, 35)
+local v703 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v701)
+v703.v197 = v196.v187(0, 35, 0, 35)
+v703.v195 = v196.v187(0, 12, 0.5, -17)
+v703.v217 = v218.v219(22, 10, 10)
+v703.v220 = 0
+v703.v234 = v4("return '\\v519\\v473\\v704'")()
+v703.v231 = v218.v219(215, 50, 50)
+v703.v230 = 17
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v703).v222 = v208.v187(0, 3)
+local v705 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v701)
+v705.v197 = v196.v187(0.5, 0, 0, 15)
+v705.v195 = v196.v187(0, 58, 0, 12)
+v705.v198 = 1
+v705.v234 = v4("return '\\v23\\v109\\v63\\v36\\v64\\v121\\v39\\v109\\v121\\v14\\v109\\v14\\v14\\v65\\v64'")()
+v705.v231 = v218.v219(105, 105, 105)
+v705.v228 = v201.v228.v370
+v705.v230 = 8
+v705.v232 = v201.v232.v233
+local v706 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v701)
+v706.v197 = v196.v187(0.6, 0, 0, 24)
+v706.v195 = v196.v187(0, 58, 0, 29)
+v706.v198 = 1
+v706.v234 = v4("return '\\v68\\v68\\v34\\v121\\v68\\v68\\v75\\v121\\v68\\v68\\v30'")()
+v706.v231 = v218.v219(235, 235, 235)
+v706.v228 = v201.v228.v229
+v706.v230 = 13
+v706.v232 = v201.v232.v233
+local v707 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v701)
+v707.v197 = v196.v187(0, 190, 0, 18)
+v707.v195 = v196.v187(1, -202, 0.5, -9)
+v707.v198 = 1
+v707.v234 = v4("return '\\v14\\v365\\v14\\v131\\v337\\v337\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v337\\v50\\v33\\v31\\v109\\v185\\v23\\v109\\v580\\v20\\v31\\v39\\v131\\v337\\v337'")() .. v235(v44.v411)
+v707.v231 = v218.v219(70, 70, 70)
+v707.v228 = v201.v228.v370
+v707.v230 = 7
+v707.v232 = v201.v232.v206
+local v708 = { v582 = nil, v584 = nil, v586 = nil, v587 = nil }
+local function v709(v710, v711)
+return v46.v291(v44, v710, v711)
+end
+v708.v582 = v709(v4("return '\\v63\\v19\\v30\\v10\\v8\\v6'")(), v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")())
+v708.v584 = v709(v4("return '\\v39\\v19\\v16\\v11\\v40\\v9\\v8\\v9\\v12\\v37'")())
+v708.v586 = v709(v4("return '\\v65\\v17\\v9\\v8\\v9\\v12\\v37'")(), v4("return '\\v14\\v7\\v6\\v6\\v13'")())
+v708.v587 = v709(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")(), v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")())
+v49:v118(v4("return '\\v29\\v31\\v67\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13\\v14\\v12\\v11\\v12\\v30'")(), function(v680)
+while v680() do
+if v533[v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")()] and v533[v4("return '\\v31\\v20\\v257\\v545\\v10\\v9\\v15'")()].v541.v538 then
+v102(function()
+local v712 = v709(v4("return '\\v63\\v19\\v30\\v10\\v8\\v6'")(), v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")())
+local v713 = v709(v4("return '\\v39\\v19\\v16\\v11\\v40\\v9\\v8\\v9\\v12\\v37'")())
+local v714 = v709(v4("return '\\v65\\v17\\v9\\v8\\v9\\v12\\v37'")(), v4("return '\\v14\\v7\\v6\\v6\\v13'")())
+local v715 = v709(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")(), v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")())
+local v716 = v712 - (v708.v582 or v712)
+local v717 = v713 - (v708.v584 or v713)
+local v718 = v714 - (v708.v586 or v714)
+local v719 = v715 - (v708.v587 or v715)
+v697.v234 = v278.v279(v4("return '\\v280\\v30\\v121\\v438\\v101\\v15\\v20\\v12\\v121\\v10\\v15\\v8\\v15\\v16\\v281\\v720\\v440\\v504\\v68\\v101\\v101\\v504\\v68\\v720\\v441\\v665\\v721\\v280\\v30\\v666\\v438\\v337\\v101\\v15\\v20\\v12\\v441'")(), v282(v712), v282(v716))
+v698.v234 = v278.v279(v4("return '\\v280\\v30\\v121\\v438\\v101\\v15\\v20\\v12\\v121\\v10\\v15\\v8\\v15\\v16\\v281\\v720\\v440\\v504\\v68\\v101\\v101\\v504\\v68\\v720\\v441\\v665\\v721\\v280\\v30\\v666\\v438\\v337\\v101\\v15\\v20\\v12\\v441'")(), v282(v713), v282(v717))
+v699.v234 = v278.v279(v4("return '\\v280\\v30\\v121\\v438\\v101\\v15\\v20\\v12\\v121\\v10\\v15\\v8\\v15\\v16\\v281\\v720\\v440\\v504\\v68\\v101\\v101\\v504\\v68\\v720\\v441\\v665\\v721\\v280\\v30\\v666\\v438\\v337\\v101\\v15\\v20\\v12\\v441'")(), v282(v714), v282(v718))
+v700.v234 = v278.v279(v4("return '\\v280\\v30\\v121\\v438\\v101\\v15\\v20\\v12\\v121\\v10\\v15\\v8\\v15\\v16\\v281\\v720\\v440\\v504\\v68\\v101\\v101\\v504\\v68\\v720\\v441\\v665\\v721\\v280\\v30\\v666\\v438\\v337\\v101\\v15\\v20\\v12\\v441'")(), v282(v715), v282(v719))
+local v276 = v70.v499() - v498
+local v722 = v286.v290(v276 / 3600)
+local v723 = v286.v290((v276 % 3600) / 60)
+local v724 = v276 % 60
+v706.v234 = v278.v279(v4("return '\\v280\\v68\\v66\\v13\\v34\\v121\\v280\\v68\\v66\\v13\\v75\\v121\\v280\\v68\\v66\\v13\\v30'")(), v722, v723, v724)
+end)
+end
+v107.v108(1)
+end
+end)
+function v73:v152()
+v46.v273(v4("return '\\v74\\v65\\v5\\v63\\v14\\v388\\v29\\v31'")())
+local v725 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v548)
+v725.v197 = v196.v187(1, -20, 1, -10)
+v725.v195 = v196.v187(0, 10, 0, 5)
+v725.v198 = 1
+v725.v416 = 4
+local v726 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v725)
+v726.v207 = v208.v187(0, 6)
+v726.v422 = v201.v422.v423
+v726:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v725.v413 = v196.v187(0, 0, 0, v726.v445.v325 + 20)
+end)
+local function v727(v433, v578)
+local v540 = v46.v304(v725, {
+v423 = v578,
+v197 = v196.v187(1, -6, 0, 32),
+v217 = v218.v219(14, 14, 14),
+v220 = 0,
+v234 = v433 .. v4("return '\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")(),
+v231 = v218.v219(205, 205, 205),
+v228 = v201.v228.v229,
+v230 = 12,
+v232 = v201.v232.v233,
+v222 = v208.v187(0, 2),
+})
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v540)
+v223.v224 = v218.v219(42, 42, 42)
+v223.v225 = 1
+v540.v496:v308(function()
+v22:v241(v540, v242.v187(0.12), {v217 = v218.v219(35, 10, 10)}):v247()
+v22:v241(v223, v242.v187(0.12), {v224 = v218.v219(215, 50, 50)}):v247()
+end)
+v540.v497:v308(function()
+v22:v241(v540, v242.v187(0.12), {v217 = v218.v219(14, 14, 14)}):v247()
+v22:v241(v223, v242.v187(0.12), {v224 = v218.v219(42, 42, 42)}):v247()
+end)
+return v540
+end
+local v728, v729, v730, v731 = false, false, false, false
+local v732 = false
+local v733 = false
+local v734 = false
+local v735 = 0
+local v736 = false
+local v737
+local v738
+local v739
+local v740
+local v741
+local v742
+local v743 = function() end
+local function v744(v433, v578)
+local v745 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v725)
+v745.v423 = v578
+v745.v197 = v196.v187(1, -6, 0, 24)
+v745.v198 = 1
+v745.v234 = v433
+v745.v231 = v218.v219(215, 50, 50)
+v745.v228 = v201.v228.v229
+v745.v230 = 12
+v745.v232 = v201.v232.v233
+return v745
+end
+local v746, v747, v748 = nil, nil, nil
+local v749 = 60
+local v750 = {}
+local v751 = {}
+local v752 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v26\\v19\\v40\\v388\\v36\\v6\\v12\\v30\\v50\\v15\\v20\\v101\\v9\\v17\\v388'")() .. v44.v411 .. v4("return '\\v67\\v753\\v30\\v15\\v20'")()
+local function v754()
+if v755 then
+v102(function()
+local v756 = {
+v757 = v750,
+v758 = v751
+}
+v755(v752, v25:v759(v756))
+end)
+end
+end
+local function v760()
+if v761 and v762 and v762(v752) then
+v102(function()
+local v763 = v761(v752)
+local v756 = v25:v764(v763)
+if v756 then
+if v756.v757 then v750 = v756.v757 end
+if v756.v758 then v751 = v756.v758 end
+end
+end)
+end
+end
+v760()
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v50\\v15\\v20\\v101\\v9\\v17\\v65\\v19\\v12\\v15\\v30\\v11\\v21\\v6'")(), function(v680)
+while v680() do
+v107.v108(60)
+if v680() then v754() end
+end
+end)
+local function v765()
+local v766 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")())
+local v767 = {}
+if v766 then
+for v138, v768 in v139(v766:v211()) do
+if v768:v212(v4("return '\\v74\\v15\\v8\\v13\\v6\\v16'")()) then
+for v138, v769 in v139(v768:v211()) do
+local v770 = v769.v47
+v767[v770] = (v767[v770] or 0) + 1
+end
+end
+end
+end
+return v767
+end
+local function v771()
+local v772 = v765()
+local v773 = {}
+for v116, v138 in v135(v772) do
+v136.v137(v773, v116)
+end
+v136.v163(v773)
+return v773
+end
+local function v774()
+local v766 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")())
+if not v766 then return end
+for v138, v768 in v135(v766:v211()) do
+if v768:v212(v4("return '\\v74\\v15\\v8\\v13\\v6\\v16'")()) then
+for v138, v769 in v135(v768:v211()) do
+v102(function() v1.v775.v776:v662(v4("return '\\v19\\v20\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v769) end)
+end
+end
+end
+v107.v108(0.01)
+end
+local function v778(v779)
+v774()
+local v766 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")())
+if not v766 then return end
+local v780 = {}
+for v781 = 1, 9 do
+local v782 = v779[v781]
+if v782 and v782 ~= v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")() then
+v780[v782] = (v780[v782] or 0) + 1
+end
+end
+local v783 = {}
+for v782, v784 in v135(v780) do
+v783[v782] = 0
+for v138, v768 in v139(v766:v211()) do
+if v768:v212(v4("return '\\v74\\v15\\v8\\v13\\v6\\v16'")()) then
+for v138, v785 in v139(v768:v211()) do
+if v785.v47 == v782 and v783[v782] < v784 then
+v102(function() v1.v775.v776:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v785) end)
+v783[v782] = v783[v782] + 1
+v107.v108(0.03)
+end
+if v783[v782] >= v784 then break end
+end
+end
+if v783[v782] >= v784 then break end
+end
+end
+end
+v744(v4("return '\\v337\\v337\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v36\\v109\\v5\\v14\\v64\\v185\\v65\\v33\\v31\\v364\\v65\\v39\\v64'")(), 1)
+local v786 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v15\\v120'")(), v725)
+v786.v423 = 2
+v786.v197 = v196.v187(1, -6, 0, 32)
+v786.v217 = v218.v219(14, 14, 14)
+v786.v220 = 0
+v786.v427 = v4("return '\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v63\\v109\\v23\\v65\\v121\\v519\\v523\\v265\\v121\\v13\\v9\\v17\\v9\\v12\\v6\\v121\\v11\\v121\\v75\\v6\\v12\\v11'")()
+v786.v234 = v4("return ''")()
+v786.v231 = v218.v219(235, 235, 235)
+v786.v787 = v218.v219(110, 110, 110)
+v786.v228 = v201.v228.v229
+v786.v230 = 12
+v786.v426 = false
+v786.v232 = v201.v232.v233
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v786).v222 = v208.v187(0, 2)
+local v788 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v786)
+v788.v224 = v218.v219(42, 42, 42)
+v788.v225 = 1
+v786.v454:v308(function()
+local v789 = v249(v786.v234)
+if v789 and v789 > 0 then
+v735 = v286.v290(v789)
+v786.v234 = v235(v735)
+else
+v786.v234 = v4("return ''")()
+end
+end)
+v737 = v727(v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v23\\v65\\v5\\v182\\v109\\v23'")(), 3)
+local v790 = v727(v4("return '\\v65\\v29\\v23\\v64\\v121\\v74\\v65\\v5\\v63\\v121\\v96\\v64\\v14\\v14\\v121\\v519\\v561\\v265\\v550\\v551\\v520'")(), 4)
+local v791 = v727(v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v36\\v14\\v121\\v66\\v632\\v121\\v665\\v14\\v64\\v121\\v74\\v64\\v5\\v50\\v65\\v666\\v121\\v262\\v263\\v520\\v792\\v550\\v551\\v520'")(), 5)
+local v793 = v727(v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v36\\v14\\v121\\v66\\v632\\v121\\v721\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v262\\v263\\v520\\v792\\v550\\v551\\v520\\v262\\v263\\v265\\v588'")(), 6)
+local v794 = v727(v4("return '\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v36\\v65\\v50\\v78\\v121\\v64\\v42\\v109\\v5\\v33\\v64\\v5\\v39\\v121\\v262\\v263\\v558\\v558'")(), 7)
+local v795 = v727(v4("return '\\v74\\v65\\v5\\v63\\v121\\v64\\v36\\v121\\v665\\v289\\v289\\v121\\v36\\v109\\v23\\v14\\v666\\v121\\v262\\v263\\v429\\v627'")(), 8)
+do
+local v796 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v15\\v120'")(), v725)
+v796.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v74\\v11\\v16\\v75\\v64\\v7\\v5\\v6\\v7\\v30\\v96\\v15\\v120'")()
+v796.v423 = 9
+v796.v197 = v196.v187(1, -6, 0, 32)
+v796.v217 = v218.v219(14, 14, 14)
+v796.v220 = 0
+v796.v427 = v4("return '\\v74\\v65\\v5\\v63\\v121\\v64\\v36\\v121\\v519\\v523\\v265\\v121\\v5\\v109\\v36\\v14\\v121\\v36\\v64\\v5\\v121\\v50\\v31\\v50\\v33\\v64\\v121\\v665\\v36\\v65\\v39\\v5\\v65\\v64\\v131\\v121\\v289\\v666'")()
+v796.v234 = v4("return ''")()
+v796.v231 = v218.v219(235, 235, 235)
+v796.v787 = v218.v219(110, 110, 110)
+v796.v228 = v201.v228.v229
+v796.v230 = 11
+v796.v426 = false
+v796.v232 = v201.v232.v233
+v796:v797(v4("return '\\v5\\v6\\v7\\v30\\v36\\v6\\v16\\v50\\v37\\v10\\v8\\v6'")(), 1)
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v796).v222 = v208.v187(0, 2)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v796)
+v223.v224 = v218.v219(42, 42, 42)
+v223.v225 = 1
+v796.v454:v308(function()
+local v112 = v249(v796.v234)
+if v112 and v112 >= 1 then
+v112 = v286.v593(1, v286.v290(v112))
+v796:v797(v4("return '\\v5\\v6\\v7\\v30\\v36\\v6\\v16\\v50\\v37\\v10\\v8\\v6'")(), v112)
+v796.v234 = v235(v112)
+else
+v796:v797(v4("return '\\v5\\v6\\v7\\v30\\v36\\v6\\v16\\v50\\v37\\v10\\v8\\v6'")(), 1)
+v796.v234 = v4("return ''")()
+end
+end)
+end
+local v798 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v725)
+v798.v423 = 10
+v798.v197 = v196.v187(1, -6, 0, 32)
+v798.v217 = v218.v219(215, 50, 50)
+v798.v234 = v4("return '\\v50\\v64\\v185\\v74\\v31\\v182\\v29\\v5\\v65\\v5\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v519\\v561\\v562\\v550\\v551\\v520'")()
+v798.v231 = v218.v219(255, 255, 255)
+v798.v228 = v201.v228.v229
+v798.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v798).v222 = v208.v187(0, 6)
+local v799 = v727(v4("return '\\v50\\v29\\v14\\v23\\v64\\v63\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v65\\v29\\v23\\v64\\v121\\v262\\v263\\v265\\v588'")(), 11)
+local v800 = v727(v4("return '\\v23\\v5\\v65\\v42\\v65\\v5\\v121\\v33\\v64\\v50\\v65\\v33\\v121\\v262\\v263\\v553\\v547'")(), 12)
+local function v801()
+local v389 = v311:v184(v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v50\\v15\\v20\\v101\\v9\\v17\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v388\\v182\\v19\\v9'")())
+if v389 then v389:v215() end
+local v802 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")(), v311)
+v802.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v50\\v15\\v20\\v101\\v9\\v17\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v388\\v182\\v19\\v9'")()
+v802.v190 = true
+v802.v188 = false
+v802.v189 = 5000
+v802.v315 = v201.v315.v316
+local v461 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v802)
+v461.v197 = v196.v187(1, 0, 1, 0)
+v461.v217 = v218.v219(0, 0, 0)
+v461.v198 = 0.28
+v461.v220 = 0
+v461.v234 = v4("return ''")()
+v461.v462 = false
+local v463 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v802)
+v463.v197 = v196.v187(0, 500, 0, 440)
+v463.v195 = v196.v187(0.5, -250, 0.5, -220)
+v463.v217 = v218.v219(6, 6, 6)
+v463.v220 = 0
+v463.v464, v463.v465 = true, true
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v463).v222 = v208.v187(0, 4)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v463)
+v223.v224 = v218.v219(150, 25, 25)
+v223.v225 = 1
+local v466 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v466.v197 = v196.v187(1, 0, 0, 3)
+v466.v217 = v218.v219(215, 50, 50)
+v466.v220 = 0
+local v467 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v467.v197 = v196.v187(1, 0, 0, 58)
+v467.v195 = v196.v187(0, 0, 0, 3)
+v467.v217 = v218.v219(9, 9, 9)
+v467.v220 = 0
+local v468 = v186.v187(v4("return '\\v31\\v75\\v11\\v17\\v6\\v33\\v11\\v40\\v6\\v8'")(), v467)
+v468.v197 = v196.v187(0, 30, 0, 30)
+v468.v195 = v196.v187(0, 14, 0.5, -15)
+v468.v198 = 1
+v468.v352 = v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v289\\v61\\v66\\v61\\v338\\v339\\v66\\v66\\v340\\v338\\v341\\v66\\v341\\v341\\v342'")()
+v468.v354 = v201.v354.v355
+local v469 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v467)
+v469.v197 = v196.v187(1, -90, 0, 22)
+v469.v195 = v196.v187(0, 52, 0, 8)
+v469.v198 = 1
+v469.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v337\\v337\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v50\\v64\\v185\\v74\\v31\\v182'")()
+v469.v231 = v218.v219(235, 235, 235)
+v469.v228 = v201.v228.v359
+v469.v230 = 13
+v469.v232 = v201.v232.v233
+local v471 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v467)
+v471.v197 = v196.v187(1, -90, 0, 14)
+v471.v195 = v196.v187(0, 52, 0, 31)
+v471.v198 = 1
+v471.v234 = v4("return '\\v50\\v64\\v5\\v36\\v64\\v5\\v65\\v23\\v31\\v64\\v185\\v121\\v337\\v337\\v121\\v36\\v109\\v23\\v121\\v33\\v64\\v65\\v39\\v64\\v29\\v23\\v121\\v63\\v65\\v23\\v5\\v31\\v632'")()
+v471.v231 = v218.v219(155, 35, 35)
+v471.v228 = v201.v228.v370
+v471.v230 = 8
+v471.v232 = v201.v232.v233
+local v472 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v463)
+v472.v197 = v196.v187(0, 28, 0, 28)
+v472.v195 = v196.v187(1, -39, 0.5, -14)
+v472.v217 = v218.v219(15, 15, 15)
+v472.v220 = 0
+v472.v234 = v4("return '\\v257\\v473'")()
+v472.v231 = v218.v219(215, 50, 50)
+v472.v228 = v201.v228.v229
+v472.v230 = 16
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v472).v222 = v208.v187(0, 4)
+v472.v453:v308(function() v802:v215() end)
+v461.v453:v308(function() v802:v215() end)
+local v475 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v475.v197 = v196.v187(1, -24, 0, 1)
+v475.v195 = v196.v187(0, 12, 0, 65)
+v475.v217 = v218.v219(38, 38, 38)
+v475.v220 = 0
+local v803 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v463)
+v803.v197 = v196.v187(1, -24, 0, 18)
+v803.v195 = v196.v187(0, 12, 0, 72)
+v803.v198 = 1
+v803.v234 = v4("return '\\v337\\v337\\v121\\v14\\v33\\v64\\v23\\v121\\v63\\v65\\v23\\v5\\v31\\v632\\v121\\v121\\v121\\v121\\v23\\v5\\v65\\v31\\v185\\v31\\v185\\v182\\v121\\v337\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26'")()
+v803.v231 = v218.v219(90, 90, 90)
+v803.v228 = v201.v228.v370
+v803.v230 = 8
+v803.v232 = v201.v232.v233
+local v804 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v463)
+v804.v197 = v196.v187(1, -24, 1, -125)
+v804.v195 = v196.v187(0, 12, 0, 94)
+v804.v198 = 1
+v804.v416 = 4
+local v805 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v804)
+v805.v207 = v208.v187(0, 6)
+v805:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v804.v413 = v196.v187(0, 0, 0, v805.v445.v325 + 10)
+end)
+local function v806(v807, v808)
+local v809 = v765()
+local v810 = {}
+for v811, v116 in v135(v807) do
+if v811 ~= v808 and v116 and v116 ~= v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")() then
+v810[v116] = (v810[v116] or 0) + 1
+end
+end
+local v812 = {v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")()}
+for v116, v813 in v135(v809) do
+local v814 = v810[v116] or 0
+if v814 < v813 then
+v136.v137(v812, v116)
+end
+end
+v136.v163(v812, function(v574, v575)
+if v574 == v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")() then return true end
+if v575 == v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")() then return false end
+return v574 < v575
+end)
+return v812
+end
+for v379 = 1, 9 do
+local v815 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v804)
+v815.v197 = v196.v187(1, -6, 0, 30)
+v815.v217 = v218.v219(10, 10, 10)
+v815.v220 = 0
+local v816 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")(), v815)
+v816.v224 = v218.v219(28, 28, 28)
+v816.v225 = 1
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v815).v222 = v208.v187(0, 4)
+local v817 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v815)
+v817.v197 = v196.v187(0.48, 0, 1, 0)
+v817.v217 = v218.v219(14, 14, 14)
+v817.v220 = 0
+v817.v234 = v4("return '\\v23\\v16\\v67\\v121\\v14'")() .. v379 .. v4("return '\\v131\\v121'")() .. (v750[v379] or v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")())
+v817.v231 = v218.v219(220, 220, 220)
+v817.v228 = v201.v228.v229
+v817.v230 = 12
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v817).v222 = v208.v187(0, 4)
+v817.v496:v308(function()
+v817.v217 = v218.v219(34, 9, 9)
+end)
+v817.v497:v308(function()
+v817.v217 = v218.v219(14, 14, 14)
+end)
+v817.v453:v308(function()
+v392()
+local v818 = v806(v750, v379)
+v456(v4("return '\\v14\\v8\\v15\\v12\\v121'")() .. v379 .. v4("return '\\v121\\v62\\v121\\v23\\v9\\v75\\v6\\v121\\v23\\v16\\v6\\v9\\v20\\v15'")(), v818, function(v819)
+v750[v379] = v819
+v817.v234 = v4("return '\\v23\\v16\\v67\\v121\\v14'")() .. v379 .. v4("return '\\v131\\v121'")() .. v819
+end)
+end)
+local v820 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v815)
+v820.v197 = v196.v187(0.48, 0, 1, 0)
+v820.v195 = v196.v187(0.52, 0, 0, 0)
+v820.v217 = v218.v219(14, 14, 14)
+v820.v220 = 0
+v820.v234 = v4("return '\\v5\\v40\\v67\\v121\\v14'")() .. v379 .. v4("return '\\v131\\v121'")() .. (v751[v379] or v4("return '\\v185\\v6\\v20\\v34\\v19\\v75'")())
+v820.v231 = v218.v219(220, 220, 220)
+v820.v228 = v201.v228.v229
+v820.v230 = 12
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v820).v222 = v208.v187(0, 4)
+v820.v496:v308(function()
+v820.v217 = v218.v219(34, 9, 9)
+end)
+v820.v497:v308(function()
+v820.v217 = v218.v219(14, 14, 14)
+end)
+v820.v453:v308(function()
+v392()
+local v818 = v806(v751, v379)
+v456(v4("return '\\v14\\v8\\v15\\v12\\v121'")() .. v379 .. v4("return '\\v121\\v62\\v121\\v23\\v9\\v75\\v6\\v121\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")(), v818, function(v819)
+v751[v379] = v819
+v820.v234 = v4("return '\\v5\\v40\\v67\\v121\\v14'")() .. v379 .. v4("return '\\v131\\v121'")() .. v819
+end)
+end)
+end
+local v821 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v463)
+v821.v197 = v196.v187(1, -24, 0, 34)
+v821.v195 = v196.v187(0, 12, 1, -46)
+v821.v217 = v218.v219(150, 28, 28)
+v821.v220 = 0
+v821.v234 = v4("return '\\v14\\v65\\v33\\v42\\v65\\v5\\v121\\v822\\v121\\v31\\v185\\v31\\v50\\v31\\v65\\v5\\v121\\v74\\v65\\v5\\v63\\v121\\v262\\v263\\v429\\v556'")()
+v821.v231 = v218.v219(255, 255, 255)
+v821.v228 = v201.v228.v229
+v821.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v821).v222 = v208.v187(0, 6)
+v821.v453:v308(function()
+v392()
+v754()
+v802:v215()
+v734 = true
+v799.v234 = v4("return '\\v50\\v29\\v14\\v23\\v64\\v63\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v65\\v29\\v23\\v64\\v131\\v121\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")()
+v799.v217 = v218.v219(40, 160, 40)
+if v739 then v739() end
+v743()
+end)
+end
+v738 = function()
+if not v736 or v735 <= 0 then
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v11\\v16\\v17\\v6\\v12\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")())
+return
+end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v11\\v16\\v17\\v6\\v12\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")(), function(v680)
+while v680() and v736 and v735 > 0 do
+local v823 = v44:v184(v4("return '\\v8\\v6\\v11\\v13\\v6\\v16\\v30\\v12\\v11\\v12\\v30'")())
+local v824 = v823 and v823:v184(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")())
+if v824 then
+local v825 = v501()
+if v824.v299 >= v735 then
+v736 = false
+v737.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v23\\v65\\v5\\v182\\v109\\v23\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v737.v217 = v218.v219(14, 14, 14)
+break
+elseif v825 then
+v102(function() v825:v826(v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34\\v5\\v6\\v777\\v19\\v6\\v30\\v12'")()) end)
+end
+end
+v107.v108(0.1)
+end
+end)
+end
+v737.v453:v308(function()
+v392()
+if v735 <= 0 then return end
+v736 = not v736
+v737.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v23\\v65\\v5\\v182\\v109\\v23\\v131\\v121'")() .. (v736 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v737.v217 = v736 and v218.v219(40, 120, 40) or v218.v219(14, 14, 14)
+if v736 then v738() else v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v11\\v16\\v17\\v6\\v12\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")()) end
+end)
+v798.v453:v308(function()
+v392()
+v801()
+end)
+v739 = function()
+if not v734 then
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v50\\v19\\v30\\v12\\v15\\v75\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")())
+return
+end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v50\\v19\\v30\\v12\\v15\\v75\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")(), function(v680)
+local v827 = v4("return ''")()
+while v680() and v734 do
+local v823 = v44:v184(v4("return '\\v8\\v6\\v11\\v13\\v6\\v16\\v30\\v12\\v11\\v12\\v30'")())
+local v824 = v823 and v823:v184(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")())
+local v828 = v823 and v823:v184(v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")())
+if v824 and v828 then
+local v829 = 5000 + (v824.v299 * 2550)
+local v830 = v44.v831 == v201.v831.v832 and 6 or 12
+if v827 ~= v4("return '\\v12\\v16\\v11\\v9\\v20'")() then
+v778(v750)
+v827 = v4("return '\\v12\\v16\\v11\\v9\\v20'")()
+end
+while v680() and v734 and v828.v299 < v829 do
+local v661 = v500()
+if v661 then
+for v138 = 1, v830 do v661:v662(v4("return '\\v16\\v6\\v7'")()) end
+end
+v107.v108(0.01)
+end
+if v680() and v734 and v828.v299 >= v829 then
+if v827 ~= v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34'")() then
+v778(v751)
+v827 = v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34'")()
+end
+v107.v108(0.05)
+local v833 = v824.v299
+local v825 = v501()
+repeat
+if v825 then v102(function() v825:v826(v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34\\v5\\v6\\v777\\v19\\v6\\v30\\v12'")()) end) end
+v107.v108(0.1)
+until v824.v299 > v833 or not v734 or not v680()
+end
+end
+v107.v108(0.5)
+end
+end)
+end
+v799.v453:v308(function()
+v392()
+v734 = not v734
+v799.v234 = v4("return '\\v50\\v29\\v14\\v23\\v64\\v63\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v65\\v29\\v23\\v64\\v131\\v121'")() .. (v734 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v799.v217 = v734 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v734 then v739() else v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v50\\v19\\v30\\v12\\v15\\v75\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")()) end
+v743()
+end)
+v740 = function()
+if not v729 then
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v5\\v6\\v7\\v30'")())
+return
+end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v5\\v6\\v7\\v30'")(), function(v680)
+while v680() and v729 do
+local v661 = v500()
+if v661 then
+for v138 = 1, 4 do v102(function() v661:v662(v4("return '\\v16\\v6\\v7'")()) end) end
+v27.v834:v253()
+else
+v107.v108(0.05)
+end
+end
+end)
+end
+v791.v453:v308(function()
+v392()
+v729 = not v729
+v791.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v36\\v14\\v121\\v66\\v632\\v121\\v665\\v14\\v64\\v121\\v74\\v64\\v5\\v50\\v65\\v666\\v131\\v121'")() .. (v729 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v791.v217 = v729 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v729 then v740() else v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v5\\v6\\v7\\v30'")()) end
+v743()
+end)
+v741 = function()
+if not v730 then
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v29\\v20\\v9\\v101\\v9\\v6\\v13'")())
+return
+end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v29\\v20\\v9\\v101\\v9\\v6\\v13'")(), function(v680)
+local v835 = 0
+while v680() and v730 do
+local v661 = v500()
+local v825 = v501()
+if v661 then
+for v138 = 1, 4 do v102(function() v661:v662(v4("return '\\v16\\v6\\v7'")()) end) end
+if v825 and (v836() - v835 >= 1) then
+v102(function() v825:v826(v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34\\v5\\v6\\v777\\v19\\v6\\v30\\v12'")()) end)
+v835 = v836()
+end
+v27.v834:v253()
+else
+v107.v108(0.05)
+end
+end
+end)
+end
+v793.v453:v308(function()
+v392()
+v730 = not v730
+v793.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v5\\v109\\v36\\v14\\v121\\v66\\v632\\v121\\v721\\v121\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v131\\v121'")() .. (v730 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v793.v217 = v730 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v730 then v741() else v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v29\\v20\\v9\\v101\\v9\\v6\\v13'")()) end
+v743()
+end)
+;(function()
+local function v837()
+local v838 = v44:v184(v4("return '\\v8\\v6\\v11\\v13\\v6\\v16\\v30\\v12\\v11\\v12\\v30'")())
+local v839 = v838 and (v838:v184(v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")()) or v838:v184(v4("return '\\v63\\v19\\v30\\v10\\v8\\v6'")()))
+return v839 and v249(v839.v299) or 0
+end
+local function v840()
+local v644 = v44.v645
+local v646 = v644 and v644:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+local v649 = v44:v184(v4("return '\\v96\\v11\\v10\\v95\\v7\\v11\\v10\\v95'")())
+if not v644 or not v646 then return end
+local v841 = v644:v184(v4("return '\\v106\\v6\\v9\\v17\\v34\\v12'")())
+if not v841 and v649 then
+v841 = v649:v184(v4("return '\\v106\\v6\\v9\\v17\\v34\\v12'")())
+end
+if not v841 then
+for v138, v541 in v139({v644, v649}) do
+if v541 then
+for v138, v210 in v139(v541:v211()) do
+if v210:v212(v4("return '\\v23\\v15\\v15\\v8'")()) and v278.v268(v278.v667(v210.v47), v4("return '\\v24\\v6\\v9\\v17\\v34\\v12'")(), 1, true) then
+v841 = v210
+break
+end
+end
+end
+if v841 then break end
+end
+end
+if v841 and v841:v212(v4("return '\\v23\\v15\\v15\\v8'")()) and v841.v191 ~= v644 then
+v102(function() v646:v650(v841) end)
+v107.v108()
+end
+local v661 = v500()
+if v661 then
+for v138 = 1, 8 do
+v102(function() v661:v662(v4("return '\\v16\\v6\\v7'")()) end)
+end
+end
+end
+v743 = function()
+local v842 = v729 or v730 or v734
+if not v842 then
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v16\\v11\\v9\\v20\\v9\\v20\\v17\\v106\\v11\\v12\\v10\\v34\\v13\\v15\\v17'")())
+return
+end
+if v49:v133(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v16\\v11\\v9\\v20\\v9\\v20\\v17\\v106\\v11\\v12\\v10\\v34\\v13\\v15\\v17'")()) then return end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v16\\v11\\v9\\v20\\v9\\v20\\v17\\v106\\v11\\v12\\v10\\v34\\v13\\v15\\v17'")(), function(v680)
+local v589 = v837()
+while v680() and (v729 or v730 or v734) do
+local v276 = 0
+while v276 < 5 and v680() and (v729 or v730 or v734) do
+v107.v108(0.25)
+v276 += 0.25
+end
+if not v680() then break end
+local v601 = v837()
+if v601 <= v589 then v840() end
+v589 = v837()
+end
+end)
+end
+end)()
+local function v843()
+local v766 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")())
+if not v766 then return end
+for v138, v768 in v135(v766:v211()) do
+if v768:v212(v4("return '\\v74\\v15\\v8\\v13\\v6\\v16'")()) then
+for v138, v769 in v135(v768:v211()) do
+v102(function() v1.v775.v776:v662(v4("return '\\v19\\v20\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v769) end)
+end
+end
+end
+v107.v108(0.01)
+end
+local function v844()
+v843()
+local v845 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")()) and v44.v766:v184(v4("return '\\v29\\v20\\v9\\v777\\v19\\v6'")())
+if not v845 then return end
+local v846, v847, v848 = {}, {}, {}
+for v138, v769 in v139(v845:v211()) do
+if v769.v47 == v4("return '\\v64\\v75\\v6\\v17\\v11\\v121\\v64\\v21\\v6\\v16\\v8\\v15\\v16\\v13'")() then v136.v137(v846, v769)
+elseif v769.v47 == v4("return '\\v14\\v24\\v9\\v101\\v12\\v121\\v14\\v11\\v75\\v19\\v16\\v11\\v9'")() then v136.v137(v847, v769)
+elseif v769.v47 == v4("return '\\v36\\v15\\v24\\v6\\v16\\v10\\v15\\v16\\v6\\v121\\v26\\v15\\v19\\v20\\v13'")() then v136.v137(v848, v769) end
+end
+local v849, v850, v851 = 0, 0, 9
+for v379 = #v846, 1, -1 do
+if v849 < v851 and v850 < 100 then
+v102(function() v1.v775.v776:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v136.v214(v846, v379)) end)
+v850 += 20; v849 += 1
+end
+end
+for v379 = #v847, 1, -1 do
+if v849 < v851 and v850 < 100 then
+v102(function() v1.v775.v776:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v136.v214(v847, v379)) end)
+v850 += 15; v849 += 1
+end
+end
+if v850 >= 100 then
+for v379 = #v848, 1, -1 do
+if v849 < v851 then
+v102(function() v1.v775.v776:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v136.v214(v848, v379)) end)
+v849 += 1
+end
+end
+end
+end
+local function v852()
+v843()
+local v845 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")()) and v44.v766:v184(v4("return '\\v29\\v20\\v9\\v777\\v19\\v6'")())
+if not v845 then return end
+local v853, v854 = {}, {}
+for v138, v769 in v139(v845:v211()) do
+if v769.v47 == v4("return '\\v23\\v9\\v12\\v11\\v20\\v9\\v19\\v75\\v121\\v26\\v37\\v13\\v16\\v11'")() then v136.v137(v853, v769)
+elseif v769.v47 == v4("return '\\v23\\v16\\v9\\v40\\v11\\v8\\v121\\v64\\v21\\v6\\v16\\v8\\v15\\v16\\v13'")() then v136.v137(v854, v769) end
+end
+local v849, v851 = 0, 9
+for v138, v769 in v139(v853) do
+if v849 < v851 then
+v102(function() v1.v775.v776:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v769) end)
+v849 += 1
+end
+end
+for v138, v769 in v139(v854) do
+if v849 < v851 then
+v102(function() v1.v775.v776:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v769) end)
+v849 += 1
+end
+end
+end
+v742 = function()
+if not v732 then
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v64\\v21\\v6\\v16\\v8\\v15\\v16\\v13'")())
+return
+end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v64\\v21\\v6\\v16\\v8\\v15\\v16\\v13'")(), function(v680)
+while v680() and v732 do
+v844()
+local v823 = v44:v184(v4("return '\\v8\\v6\\v11\\v13\\v6\\v16\\v30\\v12\\v11\\v12\\v30'")())
+local v824 = v823 and v823:v184(v4("return '\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v30'")())
+local v828 = v823 and v823:v184(v4("return '\\v14\\v12\\v16\\v6\\v20\\v17\\v12\\v34'")())
+if v824 and v828 then
+local v829 = 5000 + (v824.v299 * 2550)
+local v830 = v44.v831 == v201.v831.v832 and 6 or 12
+while v680() and v732 and v828.v299 < v829 do
+local v661 = v500()
+if v661 then
+for v138 = 1, v830 do v661:v662(v4("return '\\v16\\v6\\v7'")()) end
+end
+v107.v108(0.01)
+end
+if v680() and v732 and v828.v299 >= v829 then
+v852()
+v107.v108(0.01)
+local v833 = v824.v299
+local v825 = v501()
+repeat
+if v825 then v102(function() v825:v826(v4("return '\\v16\\v6\\v40\\v9\\v16\\v12\\v34\\v5\\v6\\v777\\v19\\v6\\v30\\v12'")()) end) end
+v107.v108(0.01)
+until v824.v299 > v833 or not v732 or not v680()
+end
+end
+v107.v108(0.01)
+end
+end)
+end
+v794.v453:v308(function()
+v392()
+v732 = not v732
+v794.v234 = v4("return '\\v5\\v109\\v96\\v31\\v5\\v23\\v26\\v121\\v36\\v65\\v50\\v78\\v121\\v64\\v42\\v109\\v5\\v33\\v64\\v5\\v39\\v131\\v121'")() .. (v732 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v794.v217 = v732 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v732 then v742() else v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v64\\v21\\v6\\v16\\v8\\v15\\v16\\v13'")()) end
+end)
+local v733 = false
+local function v855()
+local v766 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")())
+local v856 = v766 and v766:v184(v4("return '\\v5\\v11\\v16\\v6'")())
+local v775 = v1:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")())
+local v857 = v775 and v775:v184(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12\\v109\\v21\\v6\\v20\\v12'")())
+if not v856 or not v857 then return 0 end
+local v858 = {}
+for v138, v769 in v139(v856:v211()) do
+if v769.v47 == v4("return '\\v5\\v11\\v16\\v6\\v121\\v96\\v15\\v30\\v30\\v121\\v36\\v6\\v12'")() then
+v136.v137(v858, v769)
+end
+end
+local v849 = 0
+for v379 = #v858, 1, -1 do
+if v849 >= 11 or not v733 or not v49:v110() then
+break
+end
+local v769 = v858[v379]
+v102(function()
+v857:v662(v4("return '\\v6\\v777\\v19\\v9\\v7\\v36\\v6\\v12'")(), v769)
+end)
+v849 += 1
+v107.v108(0.03)
+end
+return v849
+end
+local function v859()
+v733 = false
+v860 = false
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v74\\v11\\v16\\v75\\v64\\v7'")())
+end
+local function v861()
+if v49:v133(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v74\\v11\\v16\\v75\\v64\\v7'")()) then return end
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v74\\v11\\v16\\v75\\v64\\v7'")(), function(v680)
+while v680() and v733 do
+local v661 = v500()
+if v661 then
+local v862 = v725:v184(v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v74\\v11\\v16\\v75\\v64\\v7\\v5\\v6\\v7\\v30\\v96\\v15\\v120'")())
+local v863 = v286.v593(1, v286.v290(v249(v862 and v862:v864(v4("return '\\v5\\v6\\v7\\v30\\v36\\v6\\v16\\v50\\v37\\v10\\v8\\v6'")())) or 1))
+for v138 = 1, v863 do
+if not v680() or not v733 then break end
+v102(function() v661:v662(v4("return '\\v16\\v6\\v7'")()) end)
+end
+v27.v834:v253()
+else
+v27.v834:v253()
+end
+end
+end)
+end
+v795.v453:v308(function()
+v392()
+if v733 then
+v859()
+v795.v234 = v4("return '\\v74\\v65\\v5\\v63\\v121\\v64\\v36\\v121\\v665\\v289\\v289\\v121\\v36\\v109\\v23\\v14\\v666\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v795.v217 = v218.v219(14, 14, 14)
+else
+v733 = true
+v860 = false
+v795.v234 = v4("return '\\v74\\v65\\v5\\v63\\v121\\v64\\v36\\v121\\v665\\v289\\v289\\v121\\v36\\v109\\v23\\v14\\v666\\v131\\v121\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")()
+v795.v217 = v218.v219(40, 160, 40)
+v861()
+end
+end)
+local function v865()
+local v866 = v44.v645
+if not v866 then return nil end
+local v646 = v866:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+if v646 and v646.v658 > 0 then
+local v867 = v866:v184(v4("return '\\v36\\v19\\v20\\v10\\v34'")())
+if not v867 then
+local v868 = v44.v869:v184(v4("return '\\v36\\v19\\v20\\v10\\v34'")())
+if v868 then v646:v650(v868); return v868 end
+else return v867 end
+end
+return nil
+end
+local function v870()
+local v871 = v319:v184(v4("return '\\v96\\v15\\v30\\v30\\v50\\v34\\v6\\v30\\v12'")())
+if not v871 then return false end
+local v872 = v871:v873(v4("return '\\v36\\v16\\v15\\v120\\v9\\v75\\v9\\v12\\v37\\v36\\v16\\v15\\v75\\v7\\v12'")(), true)
+if v872 and v874 then
+v102(function()
+v874(v872)
+end)
+return true
+end
+return false
+end
+local function v875()
+local v303 = v319:v184(v4("return '\\v109\\v21\\v6\\v20\\v12\\v30'")())
+if not v303 then return nil end
+local v876 = v303:v184(v4("return '\\v96\\v15\\v30\\v30\\v65\\v16\\v6\\v20\\v11'")())
+if not v876 then return nil end
+local v877 = {v4("return '\\v96\\v15\\v30\\v30\\v289'")(), v4("return '\\v96\\v15\\v30\\v30\\v66'")(), v4("return '\\v96\\v15\\v30\\v30\\v61'")(), v4("return '\\v96\\v15\\v30\\v30\\v340'")(), v4("return '\\v96\\v15\\v30\\v30\\v504'")(), v4("return '\\v96\\v15\\v30\\v30\\v341'")(), v4("return '\\v96\\v15\\v30\\v30\\v5\\v11\\v9\\v20\\v40\\v15\\v24'")()}
+for v138, v878 in v139(v877) do
+local v879 = v876:v184(v878)
+if v879 then
+if v879:v212(v4("return '\\v63\\v15\\v13\\v6\\v8'")()) then
+local v646 = v879:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+if not v646 or v646.v658 > 0 then
+local v880 = v879.v881 or v879:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")()) or v879:v184(v4("return '\\v26\\v6\\v11\\v13'")()) or v879:v647(v4("return '\\v96\\v11\\v30\\v6\\v36\\v11\\v16\\v12'")())
+if v880 then
+return v880.v195
+end
+end
+elseif v879:v212(v4("return '\\v96\\v11\\v30\\v6\\v36\\v11\\v16\\v12'")()) then
+return v879.v195
+end
+end
+end
+local v882 = v876:v184(v4("return '\\v96\\v15\\v30\\v30\\v14\\v7\\v11\\v24\\v20'")()) or v876:v184(v4("return '\\v36\\v11\\v16\\v12'")()) or v876:v647(v4("return '\\v96\\v11\\v30\\v6\\v36\\v11\\v16\\v12'")())
+return v882 and v882.v195 or nil
+end
+local function v883(v884)
+if v884 then
+if not v748 then
+v748 = v27.v885:v308(function()
+if v44.v645 then
+for v138, v880 in v135(v44.v645:v886()) do
+if v880:v212(v4("return '\\v96\\v11\\v30\\v6\\v36\\v11\\v16\\v12'")()) and v880.v887 then v880.v887 = false end
+end
+end
+end)
+end
+elseif v748 then
+v748:v149()
+v748 = nil
+end
+end
+local v888 = nil
+local v889 = 0
+local function v890()
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v39\\v11\\v75\\v11\\v17\\v6'")())
+if v888 then
+v888:v149()
+v888 = nil
+end
+end
+local function v891()
+local v866 = v44.v645
+local v646 = v866 and v866:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+if not v646 then return end
+local v892 = v646.v658
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v39\\v11\\v75\\v11\\v17\\v6'")(), function(v680)
+while v680() and v728 and v646.v191 do
+v107.v108(5)
+if not v680() or not v728 or not v646.v191 then break end
+local v893 = v646.v658
+if v893 < v892 then
+v889 += 1
+v749 = 45 + (v889 * 2.5)
+end
+v892 = v893
+end
+end)
+end
+v790.v453:v308(function()
+v392()
+v728 = not v728
+if v728 then
+v749 = 45
+v889 = 0
+v890()
+v891()
+v888 = v44.v894:v308(function()
+if v728 then
+v107.v108(0.5)
+v891()
+end
+end)
+v790.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v74\\v65\\v5\\v63\\v121\\v96\\v64\\v14\\v14\\v131\\v121\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")()
+v790.v217 = v218.v219(40, 160, 40)
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v36\\v15\\v30\\v9\\v12\\v9\\v15\\v20'")(), function(v680)
+v883(true)
+while v680() and v728 do
+v870()
+local v866 = v44.v645
+local v895 = v866 and v866:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")())
+local v646 = v866 and v866:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+local v896 = v875()
+if v895 and v646 and v646.v658 > 0 and v896 then
+v895.v659 = v659.v187(v896 + v897.v187(0, v749, 0))
+v895.v898 = v897.v187(0, 0, 0)
+end
+v27.v834:v253()
+end
+v883(false)
+end)
+v49:v118(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v65\\v12\\v12\\v11\\v10\\v95'")(), function(v680)
+while v680() and v728 do
+local v866 = v44.v645
+local v646 = v866 and v866:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")())
+if v646 and v646.v658 > 0 then
+local v899 = v865()
+if v899 then v102(function() v899:v660() end) end
+local v661 = v500()
+if v661 then
+v661:v662(v4("return '\\v7\\v19\\v20\\v10\\v34'")(), v4("return '\\v8\\v6\\v101\\v12\\v26\\v11\\v20\\v13'")())
+v661:v662(v4("return '\\v7\\v19\\v20\\v10\\v34'")(), v4("return '\\v16\\v9\\v17\\v34\\v12\\v26\\v11\\v20\\v13'")())
+end
+end
+v27.v834:v253()
+end
+end)
+else
+v890()
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v36\\v15\\v30\\v9\\v12\\v9\\v15\\v20'")())
+v49:v132(v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v65\\v12\\v12\\v11\\v10\\v95'")())
+v883(false)
+v889 = 0
+v749 = 45
+v790.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v74\\v65\\v5\\v63\\v121\\v96\\v64\\v14\\v14\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v790.v217 = v218.v219(180, 30, 30)
+end
+end)
+v800.v453:v308(function()
+v392()
+v731 = not v731
+if v731 then
+local v866 = v44.v645
+local v895 = v866 and v866:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")())
+if v895 then
+v746 = v895.v659
+v800.v234 = v4("return '\\v23\\v5\\v65\\v42\\v65\\v5\\v121\\v33\\v64\\v50\\v65\\v33\\v131\\v121\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")()
+v800.v217 = v218.v219(40, 160, 40)
+if v747 then v747:v149() end
+v747 = v27.v900:v308(function()
+if not v731 or not v49:v110() then
+if v747 then v747:v149(); v747 = nil end
+return
+end
+local v644 = v44.v645
+local v901 = v644 and v644:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")())
+if v901 and v746 then
+v901.v659 = v746
+v901.v902 = v897.v187(0, 0, 0)
+v901.v903 = v897.v187(0, 0, 0)
+end
+end)
+else
+v731 = false
+end
+else
+if v747 then v747:v149(); v747 = nil end
+v746 = nil
+v800.v234 = v4("return '\\v23\\v5\\v65\\v42\\v65\\v5\\v121\\v33\\v64\\v50\\v65\\v33\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v800.v217 = v218.v219(180, 30, 30)
+end
+end)
+v46.v274(v4("return '\\v74\\v65\\v5\\v63\\v14\\v388\\v29\\v31'")())
+end
+function v73:v156()
+for v138, v904 in v139({
+v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v50\\v15\\v20\\v101\\v9\\v17\\v65\\v19\\v12\\v15\\v30\\v11\\v21\\v6'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v11\\v16\\v17\\v6\\v12\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v50\\v19\\v30\\v12\\v15\\v75\\v5\\v6\\v40\\v9\\v16\\v12\\v34'")(),
+v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v5\\v6\\v7\\v30'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v65\\v19\\v12\\v15\\v29\\v20\\v9\\v101\\v9\\v6\\v13'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v23\\v16\\v11\\v9\\v20\\v9\\v20\\v17\\v106\\v11\\v12\\v10\\v34\\v13\\v15\\v17'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v64\\v21\\v6\\v16\\v8\\v15\\v16\\v13'")(),
+v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v74\\v11\\v16\\v75\\v64\\v7'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v39\\v11\\v75\\v11\\v17\\v6'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v36\\v15\\v30\\v9\\v12\\v9\\v15\\v20'")(), v4("return '\\v74\\v11\\v16\\v75\\v30\\v67\\v96\\v15\\v30\\v30\\v65\\v12\\v12\\v11\\v10\\v95'")()
+}) do
+v49:v132(v904)
+end
+end
+v49:v140(v4("return '\\v74\\v11\\v16\\v75\\v30'")(), v73)
+local v905, v906 = v49:v151(v4("return '\\v74\\v11\\v16\\v75\\v30'")())
+if not v905 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v74\\v11\\v16\\v75\\v30\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v906) end
+function v88:v152()
+v46.v273(v4("return '\\v23\\v109\\v33\\v109\\v36\\v64\\v5\\v23\\v109\\v14\\v388\\v29\\v31'")())
+local v907 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v552)
+v907.v197 = v196.v187(1, -20, 1, -10)
+v907.v195 = v196.v187(0, 10, 0, 5)
+v907.v198 = 1
+v907.v416 = 4
+local v908 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v907)
+v908.v207 = v208.v187(0, 6)
+v908.v422 = v201.v422.v423
+v908:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v907.v413 = v196.v187(0, 0, 0, v908.v445.v325 + 20)
+end)
+local v909 = {
+{v4("return '\\v31\\v8\\v34\\v11\\v121\\v36\\v16\\v9\\v20\\v10\\v9\\v7\\v11\\v8'")(), v659.v187(16, 9, 133)},
+{v4("return '\\v63\\v19\\v30\\v10\\v8\\v6\\v121\\v78\\v9\\v20\\v17\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(-8665, 17, -5792)},
+{v4("return '\\v33\\v6\\v17\\v6\\v20\\v13\\v30\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(4516, 991, -3856)},
+{v4("return '\\v630\\v19\\v20\\v17\\v8\\v6\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(-8543, 6, 2400)},
+{v4("return '\\v31\\v20\\v101\\v6\\v16\\v20\\v11\\v8\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(-6759, 7, -1284)},
+{v4("return '\\v63\\v37\\v12\\v34\\v9\\v10\\v11\\v8\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(2250, 7, 1073)},
+{v4("return '\\v74\\v16\\v15\\v30\\v12\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(-2623, 7, -409)},
+{v4("return '\\v31\\v20\\v13\\v19\\v30\\v12\\v16\\v9\\v11\\v8\\v121\\v65\\v10\\v11\\v13\\v6\\v75\\v9\\v11'")(), v659.v187(-5414.23, 89.76, 4941.73)}
+}
+for v811, v910 in v139(v909) do
+local v911 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v907)
+v911.v423 = v811
+v911.v197 = v196.v187(1, -6, 0, 34)
+v911.v217 = v218.v219(28, 28, 28)
+v911.v234 = v4("return '\\v262\\v263\\v553\\v912\\v121'")() .. v910[1]
+v911.v231 = v218.v219(255, 255, 255)
+v911.v228 = v201.v228.v229
+v911.v230 = 13
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v911).v222 = v208.v187(0, 6)
+v911.v453:v308(function()
+v392()
+if v44.v645 and v44.v645:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")()) then
+v44.v645.v913.v659 = v910[2]
+end
+end)
+end
+v46.v274(v4("return '\\v23\\v109\\v33\\v109\\v36\\v64\\v5\\v23\\v109\\v14\\v388\\v29\\v31'")())
+end
+v49:v140(v4("return '\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v30'")(), v88)
+local v914, v915 = v49:v151(v4("return '\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v30'")())
+if not v914 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v30\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v915) end
+function v76:v152()
+v46.v273(v4("return '\\v36\\v109\\v23\\v14\\v388\\v29\\v31'")())
+local v916 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v554)
+v916.v197 = v196.v187(1, -20, 1, -10)
+v916.v195 = v196.v187(0, 10, 0, 5)
+v916.v198 = 1
+v916.v416 = 4
+local v917 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v916)
+v917.v207 = v208.v187(0, 5)
+v917.v422 = v201.v422.v423
+v917:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v916.v413 = v196.v187(0, 0, 0, v917.v445.v325 + 20)
+end)
+local function v918(v919, v578)
+local v920 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v916)
+v920.v423 = v578
+v920.v197 = v196.v187(1, 0, 0, 20)
+v920.v198 = 1
+v920.v234 = v919
+v920.v231 = v218.v219(215, 50, 50)
+v920.v228 = v201.v228.v229
+v920.v230 = 13
+v920.v232 = v201.v232.v233
+end
+local v921 = v1:v181(v4("return '\\v30\\v34\\v11\\v16\\v6\\v13'")(), 5) and v1.v922:v181(v4("return '\\v16\\v19\\v20\\v12\\v9\\v75\\v6'")(), 5)
+local v923 = v921 and v921:v181(v4("return '\\v10\\v36\\v6\\v12\\v14\\v34\\v15\\v7\\v74\\v15\\v8\\v13\\v6\\v16'")(), 5)
+local v924 = v1:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")()) and v1.v775:v184(v4("return '\\v10\\v36\\v6\\v12\\v14\\v34\\v15\\v7\\v5\\v6\\v75\\v15\\v12\\v6'")())
+local v925 = { v926 = nil, v927 = {} }
+local v928 = { v929 = nil, v930 = {} }
+local v931 = { v932 = nil }
+if v923 then
+for v138, v210 in v139(v923:v211()) do
+if v210:v864(v4("return '\\v31\\v30\\v36\\v15\\v24\\v6\\v16\\v29\\v7'")()) == true then v136.v137(v928.v930, v210.v47)
+else v136.v137(v925.v927, v210.v47) end
+end
+v136.v163(v925.v927)
+v136.v163(v928.v930)
+end
+v918(v4("return '\\v262\\v263\\v549\\v429\\v121\\v36\\v6\\v12\\v121\\v14\\v34\\v15\\v7\\v131'")(), 1)
+local v933 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v933.v423 = 2
+v933.v197 = v196.v187(1, -6, 0, 28)
+v933.v217 = v218.v219(25, 25, 25)
+v933.v234 = v4("return '\\v109\\v30\\v10\\v15\\v8\\v34\\v6\\v16\\v121\\v36\\v6\\v12\\v121\\v337\\v121\\v65\\v19\\v16\\v11\\v131\\v121\\v185\\v6\\v20\\v34\\v19\\v75'")()
+v933.v231 = v218.v219(220, 220, 220)
+v933.v228 = v201.v228.v229
+v933.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v933).v222 = v208.v187(0, 4)
+v933.v453:v308(function()
+v392()
+local v934 = {}
+for v138, v613 in v139(v925.v927) do v136.v137(v934, v613) end
+for v138, v574 in v139(v928.v930) do v136.v137(v934, v4("return '\\v129\\v65\\v19\\v16\\v11\\v130\\v121'")() .. v574) end
+v456(v4("return '\\v14\\v6\\v8\\v6\\v10\\v9\\v15\\v20\\v6\\v121\\v19\\v75\\v121\\v36\\v6\\v12\\v121\\v15\\v19\\v121\\v65\\v19\\v16\\v11'")(), v934, function(v819, v624)
+local v935 = v624:v936(v4("return '\\v280\\v129\\v65\\v19\\v16\\v11\\v280\\v130\\v121'")(), v4("return ''")())
+v925.v926 = v935
+v933.v234 = v4("return '\\v36\\v6\\v12\\v337\\v65\\v19\\v16\\v11\\v131\\v121'")() .. v935
+end)
+end)
+local v937 = false
+local v938 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v938.v423 = 3
+v938.v197 = v196.v187(1, -6, 0, 28)
+v938.v217 = v218.v219(180, 30, 30)
+v938.v234 = v4("return '\\v50\\v15\\v75\\v7\\v16\\v11\\v16\\v121\\v36\\v6\\v12\\v121\\v665\\v65\\v19\\v12\\v15\\v121\\v26\\v11\\v12\\v10\\v34\\v666\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v938.v231 = v218.v219(255, 255, 255)
+v938.v228 = v201.v228.v229
+v938.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v938).v222 = v208.v187(0, 4)
+v938.v453:v308(function()
+v392()
+v937 = not v937
+v938.v234 = v4("return '\\v50\\v15\\v75\\v7\\v16\\v11\\v16\\v121\\v36\\v6\\v12\\v121\\v665\\v65\\v19\\v12\\v15\\v121\\v26\\v11\\v12\\v10\\v34\\v666\\v131\\v121'")() .. (v937 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v938.v217 = v937 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v937 then
+v107.v124(function()
+while v937 and v49:v110() do
+if v925.v926 and v923 and v924 then
+local v939 = v923:v184(v925.v926)
+if v939 then v102(function() v924:v826(v939) end) end
+end
+v107.v108(0.01)
+end
+end)
+end
+end)
+;(function()
+local v940 = v1:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")()) and v1.v775:v184(v4("return '\\v15\\v7\\v6\\v20\\v50\\v16\\v37\\v30\\v12\\v11\\v8\\v5\\v6\\v75\\v15\\v12\\v6'")())
+local v941 = false
+local v942 = v4("return '\\v64\\v21\\v6\\v16\\v10\\v34\\v11\\v16\\v17\\v6\\v13\\v121\\v50\\v16\\v37\\v30\\v12\\v11\\v8'")()
+local v943 = 10
+local v944 = {
+[v4("return '\\v42\\v15\\v8\\v12\\v121\\v106\\v15\\v8\\v101'")()] = true,
+[v4("return '\\v14\\v34\\v11\\v16\\v13\\v121\\v39\\v16\\v11\\v17\\v15\\v20'")()] = true,
+[v4("return '\\v14\\v19\\v16\\v17\\v6\\v121\\v23\\v9\\v17\\v6\\v16'")()] = true,
+[v4("return '\\v50\\v15\\v16\\v6\\v121\\v182\\v15\\v8\\v6\\v75'")()] = true,
+[v4("return '\\v36\\v8\\v11\\v30\\v75\\v11\\v121\\v630\\v6\\v8\\v8\\v37'")()] = true,
+}
+local function v945()
+if not v940 then return false end
+local v946 = {}
+for v782, v884 in v135(v944) do
+if v884 then
+v946[v782] = true
+end
+end
+return v102(function()
+v940:v826(
+v4("return '\\v30\\v11\\v21\\v6\\v65\\v19\\v12\\v15\\v14\\v6\\v8\\v8'")(),
+v942,
+{
+v76 = v946,
+v570 = true,
+v947 = {}
+}
+)
+end)
+end
+v918(v4("return '\\v519\\v561\\v585\\v121\\v64\\v21\\v6\\v16\\v10\\v34\\v11\\v16\\v17\\v6\\v13\\v121\\v50\\v16\\v37\\v30\\v12\\v11\\v8\\v131'")(), 11)
+local v948 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v916)
+v948.v423 = 12
+v948.v197 = v196.v187(1, -6, 0, 32)
+v948.v217 = v218.v219(16, 16, 18)
+v948.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v14\\v109\\v33\\v33\\v121\\v337\\v337\\v121\\v75\\v11\\v16\\v777\\v19\\v6\\v121\\v11\\v7\\v6\\v20\\v11\\v30\\v121\\v15\\v30\\v121\\v7\\v6\\v12\\v30\\v121\\v777\\v19\\v6\\v121\\v13\\v6\\v30\\v6\\v753\\v11\\v121\\v6\\v120\\v10\\v8\\v19\\v9\\v16'")()
+v948.v231 = v218.v219(180, 180, 185)
+v948.v228 = v201.v228.v237
+v948.v230 = 10
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v948).v222 = v208.v187(0, 4)
+local v949 = {}
+local v950 = {v4("return '\\v42\\v15\\v8\\v12\\v121\\v106\\v15\\v8\\v101'")(), v4("return '\\v14\\v34\\v11\\v16\\v13\\v121\\v39\\v16\\v11\\v17\\v15\\v20'")(), v4("return '\\v14\\v19\\v16\\v17\\v6\\v121\\v23\\v9\\v17\\v6\\v16'")(), v4("return '\\v50\\v15\\v16\\v6\\v121\\v182\\v15\\v8\\v6\\v75'")(), v4("return '\\v36\\v8\\v11\\v30\\v75\\v11\\v121\\v630\\v6\\v8\\v8\\v37'")()}
+local function v951(v782)
+local v540 = v949[v782]
+if not v540 then return end
+local v884 = v944[v782] == true
+v540.v234 = v782 .. v4("return '\\v121\\v337\\v337\\v121\\v65\\v29\\v23\\v64\\v121\\v109\\v632\\v50\\v33\\v29\\v31\\v5\\v131\\v121'")() .. (v884 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v540.v217 = v884 and v218.v219(35, 115, 55) or v218.v219(95, 25, 30)
+end
+for v484, v782 in v139(v950) do
+local v540 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v540.v423 = 12 + v484
+v540.v197 = v196.v187(1, -6, 0, 27)
+v540.v231 = v218.v219(245, 245, 245)
+v540.v228 = v201.v228.v229
+v540.v230 = 10
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v540).v222 = v208.v187(0, 4)
+v949[v782] = v540
+v951(v782)
+v540.v453:v308(function()
+v392()
+v944[v782] = not v944[v782]
+v951(v782)
+v945()
+end)
+end
+local v952 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v952.v423 = 17.5
+v952.v197 = v196.v187(1, -6, 0, 30)
+v952.v217 = v218.v219(180, 30, 30)
+v952.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v65\\v96\\v5\\v31\\v5\\v121\\v64\\v42\\v109\\v5\\v50\\v26\\v65\\v5\\v182\\v109\\v39\\v121\\v120\\v289\\v68\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v952.v231 = v218.v219(255, 255, 255)
+v952.v228 = v201.v228.v229
+v952.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v952).v222 = v208.v187(0, 4)
+v952.v453:v308(function()
+v392()
+v941 = not v941
+v952.v234 = v4("return '\\v65\\v29\\v23\\v64\\v121\\v65\\v96\\v5\\v31\\v5\\v121\\v64\\v42\\v109\\v5\\v50\\v26\\v65\\v5\\v182\\v109\\v39\\v121\\v120\\v289\\v68\\v131\\v121'")() .. (v941 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v952.v217 = v941 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v941 then
+v945()
+v107.v124(function()
+while v941 and v49:v110() do
+if v940 then
+v102(function()
+v940:v826(v4("return '\\v15\\v7\\v6\\v20\\v50\\v16\\v37\\v30\\v12\\v11\\v8\\v96\\v19\\v8\\v95'")(), v942, v943)
+end)
+end
+v107.v108(0.01)
+end
+end)
+end
+end)
+end)()
+v918(v4("return '\\v262\\v263\\v260\\v430\\v121\\v109\\v21\\v15\\v8\\v19\\v257\\v260\\v257\\v261\\v15\\v121\\v65\\v19\\v12\\v15\\v75\\v257\\v585\\v12\\v9\\v10\\v11\\v131'")(), 18)
+local v953 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v953.v423 = 19
+v953.v197 = v196.v187(1, -6, 0, 28)
+v953.v217 = v218.v219(25, 25, 25)
+v953.v234 = v4("return '\\v109\\v30\\v10\\v15\\v8\\v34\\v6\\v16\\v121\\v36\\v6\\v12\\v121\\v7\\v337\\v121\\v109\\v21\\v15\\v8\\v19\\v9\\v16\\v131\\v121\\v185\\v6\\v20\\v34\\v19\\v75'")()
+v953.v231 = v218.v219(220, 220, 220)
+v953.v228 = v201.v228.v229
+v953.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v953).v222 = v208.v187(0, 4)
+v953.v453:v308(function()
+v392()
+local v954 = v771()
+if #v954 > 0 then
+v456(v4("return '\\v14\\v6\\v8\\v6\\v10\\v9\\v15\\v20\\v6\\v121\\v15\\v121\\v36\\v6\\v12\\v121\\v7\\v11\\v16\\v11\\v121\\v109\\v21\\v15\\v8\\v19\\v9\\v16'")(), v954, function(v819, v624)
+v925.v926 = v819
+v953.v234 = v4("return '\\v36\\v6\\v12\\v121\\v7\\v337\\v121\\v109\\v21\\v15\\v8\\v19\\v9\\v16\\v131\\v121'")() .. v819
+end)
+else
+v953.v234 = v4("return '\\v185\\v6\\v20\\v34\\v19\\v75\\v121\\v36\\v6\\v12\\v121\\v6\\v20\\v10\\v15\\v20\\v12\\v16\\v11\\v13\\v15\\v121\\v20\\v15\\v121\\v9\\v20\\v21\\v6\\v20\\v12\\v257\\v585\\v16\\v9\\v15\\v955'")()
+end
+end)
+local v956 = false
+local v957 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v957.v423 = 20
+v957.v197 = v196.v187(1, -6, 0, 28)
+v957.v217 = v218.v219(180, 30, 30)
+v957.v234 = v4("return '\\v65\\v19\\v12\\v15\\v121\\v109\\v21\\v15\\v8\\v19\\v9\\v16\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v957.v231 = v218.v219(255, 255, 255)
+v957.v228 = v201.v228.v229
+v957.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v957).v222 = v208.v187(0, 4)
+v957.v453:v308(function()
+v392()
+v956 = not v956
+v957.v234 = v4("return '\\v65\\v19\\v12\\v15\\v121\\v109\\v21\\v15\\v8\\v19\\v9\\v16\\v131\\v121'")() .. (v956 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v957.v217 = v956 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v956 then
+v107.v124(function()
+while v956 and v49:v110() do
+if v925.v926 and v1:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")()) and v1.v775:v184(v4("return '\\v7\\v6\\v12\\v109\\v21\\v15\\v8\\v21\\v6\\v109\\v21\\v6\\v20\\v12'")()) then
+v102(function() v1.v775.v958:v662(v4("return '\\v6\\v21\\v15\\v8\\v21\\v6\\v36\\v6\\v12'")(), v925.v926) end)
+end
+v107.v108(0.01)
+end
+end)
+end
+end)
+v918(v4("return '\\v262\\v263\\v959\\v960\\v121\\v23\\v16\\v15\\v10\\v11\\v30\\v121\\v65\\v19\\v12\\v15\\v75\\v257\\v585\\v12\\v9\\v10\\v11\\v30\\v131'")(), 21)
+local v961 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v961.v423 = 22
+v961.v197 = v196.v187(1, -6, 0, 28)
+v961.v217 = v218.v219(25, 25, 25)
+v961.v234 = v4("return '\\v109\\v30\\v10\\v15\\v8\\v34\\v6\\v16\\v121\\v630\\v15\\v17\\v11\\v13\\v15\\v16\\v131\\v121\\v185\\v6\\v20\\v34\\v19\\v75'")()
+v961.v231 = v218.v219(220, 220, 220)
+v961.v228 = v201.v228.v229
+v961.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v961).v222 = v208.v187(0, 4)
+v961.v453:v308(function()
+v392()
+local v962 = {}
+for v138, v613 in v139(v35:v614()) do
+if v613 ~= v44 then v136.v137(v962, {v234 = v613.v664 .. v4("return '\\v121\\v665\\v442'")() .. v613.v47 .. v4("return '\\v666'")(), v299 = v613}) end
+end
+if #v962 > 0 then
+v456(v4("return '\\v14\\v6\\v8\\v6\\v10\\v9\\v15\\v20\\v6\\v121\\v15\\v121\\v630\\v15\\v17\\v11\\v13\\v15\\v16'")(), v962, function(v819, v624)
+v931.v932 = v819
+v961.v234 = v4("return '\\v630\\v15\\v17\\v11\\v13\\v15\\v16\\v131\\v121'")() .. v624
+end)
+else
+v961.v234 = v4("return '\\v14\\v6\\v75\\v121\\v753\\v15\\v17\\v11\\v13\\v15\\v16\\v6\\v30\\v121\\v13\\v9\\v30\\v7\\v15\\v20\\v257\\v545\\v21\\v6\\v9\\v30\\v955'")()
+end
+end)
+local v963 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v963.v423 = 23
+v963.v197 = v196.v187(1, -6, 0, 28)
+v963.v217 = v218.v219(25, 25, 25)
+v963.v234 = v4("return '\\v109\\v30\\v10\\v15\\v8\\v34\\v6\\v16\\v121\\v36\\v6\\v12\\v121\\v7\\v337\\v121\\v23\\v16\\v15\\v10\\v11\\v131\\v121\\v185\\v6\\v20\\v34\\v19\\v75'")()
+v963.v231 = v218.v219(220, 220, 220)
+v963.v228 = v201.v228.v229
+v963.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v963).v222 = v208.v187(0, 4)
+v963.v453:v308(function()
+v392()
+local v954 = v771()
+if #v954 > 0 then
+v456(v4("return '\\v14\\v6\\v8\\v6\\v10\\v9\\v15\\v20\\v6\\v121\\v15\\v121\\v36\\v6\\v12\\v121\\v7\\v11\\v16\\v11\\v121\\v23\\v16\\v15\\v10\\v11'")(), v954, function(v819, v624)
+v925.v926 = v819
+v963.v234 = v4("return '\\v36\\v6\\v12\\v121\\v7\\v337\\v121\\v23\\v16\\v15\\v10\\v11\\v131\\v121'")() .. v819
+end)
+else
+v963.v234 = v4("return '\\v185\\v6\\v20\\v34\\v19\\v75\\v121\\v36\\v6\\v12\\v121\\v6\\v20\\v10\\v15\\v20\\v12\\v16\\v11\\v13\\v15\\v955'")()
+end
+end)
+local v964 = false
+local v965 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v916)
+v965.v423 = 24
+v965.v197 = v196.v187(1, -6, 0, 28)
+v965.v217 = v218.v219(180, 30, 30)
+v965.v234 = v4("return '\\v65\\v19\\v12\\v15\\v121\\v23\\v16\\v15\\v10\\v11\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v965.v231 = v218.v219(255, 255, 255)
+v965.v228 = v201.v228.v229
+v965.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v965).v222 = v208.v187(0, 4)
+v965.v453:v308(function()
+v392()
+v964 = not v964
+v965.v234 = v4("return '\\v65\\v19\\v12\\v15\\v121\\v23\\v16\\v15\\v10\\v11\\v131\\v121'")() .. (v964 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v965.v217 = v964 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v964 then
+v107.v124(function()
+while v964 and v49:v110() do
+if v931.v932 and v925.v926 then
+local v966 = v1:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")()) and v1.v775:v184(v4("return '\\v12\\v16\\v11\\v13\\v9\\v20\\v17\\v109\\v21\\v6\\v20\\v12'")())
+local v766 = v44:v184(v4("return '\\v7\\v6\\v12\\v30\\v74\\v15\\v8\\v13\\v6\\v16'")())
+if v966 and v766 then
+v102(function() v966:v662(v4("return '\\v30\\v6\\v20\\v13\\v23\\v16\\v11\\v13\\v6\\v5\\v6\\v777\\v19\\v6\\v30\\v12'")(), v931.v932) end)
+v107.v108(0.01)
+local v967 = 0
+for v138, v768 in v139(v766:v211()) do
+if v768:v212(v4("return '\\v74\\v15\\v8\\v13\\v6\\v16'")()) then
+for v138, v785 in v139(v768:v211()) do
+if not v964 then break end
+if v785.v47 == v925.v926 then
+v102(function() v966:v662(v4("return '\\v15\\v101\\v101\\v6\\v16\\v31\\v12\\v6\\v75'")(), v785) end)
+v967 += 1
+v107.v108(0.01)
+if v967 >= 10 then break end
+end
+end
+end
+if v967 >= 10 then break end
+end
+v107.v108(0.01)
+if v964 then v102(function() v966:v662(v4("return '\\v11\\v10\\v10\\v6\\v7\\v12\\v23\\v16\\v11\\v13\\v6'")()) end) end
+end
+end
+v107.v108(1)
+end
+end)
+end
+end)
+v46.v274(v4("return '\\v36\\v109\\v23\\v14\\v388\\v29\\v31'")())
+end
+v49:v140(v4("return '\\v36\\v6\\v12\\v30'")(), v76)
+local v968, v969 = v49:v151(v4("return '\\v36\\v6\\v12\\v30'")())
+if not v968 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v36\\v6\\v12\\v30\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v969) end
+function v84:v152()
+v46.v273(v4("return '\\v42\\v31\\v14\\v29\\v65\\v33\\v388\\v29\\v31'")())
+local v970, v971, v972, v973, v974, v975 = false, false, false, false, false, false
+local v976 = {
+v977 = v32.v977, v978 = v32.v978, v979 = v32.v979,
+v980 = v32.v980, v981 = v32.v981, v982 = v32.v982, v983 = v32.v983,
+v984 = v32.v984, v985 = v32.v985
+}
+local function v986(v298, v433, v987)
+local v540 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v298)
+v540.v197 = v196.v187(1, -20, 0, 30)
+v540.v195 = v196.v187(0, 10, 0, v987)
+v540.v217 = v218.v219(180, 30, 30)
+v540.v234 = v433 .. v4("return '\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v540.v231 = v218.v219(255, 255, 255)
+v540.v228 = v201.v228.v229
+v540.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v540).v222 = v208.v187(0, 6)
+return v540
+end
+local v988 = v986(v557, v4("return '\\v63\\v64\\v39\\v64\\v121\\v5\\v23\\v632\\v121\\v262\\v263\\v912\\v263'")(), 10)
+local v989 = v986(v557, v4("return '\\v42\\v31\\v96\\v109\\v121\\v65\\v63\\v96\\v31\\v109\\v185\\v23\\v109\\v121\\v721\\v121\\v63\\v109\\v23\\v109\\v64\\v5\\v109\\v14\\v121\\v262\\v263\\v912\\v912'")(), 45)
+local v990 = v986(v557, v4("return '\\v63\\v64\\v39\\v64\\v121\\v65\\v185\\v23\\v31\\v62\\v33\\v65\\v182\\v121\\v519\\v561\\v585'")(), 80)
+local v991 = v986(v557, v4("return '\\v63\\v64\\v39\\v64\\v121\\v23\\v109\\v5\\v5\\v64\\v5\\v121\\v262\\v263\\v992\\v551'")(), 115)
+local v993 = v986(v557, v4("return '\\v63\\v64\\v39\\v64\\v121\\v74\\v64\\v23\\v64\\v5\\v5\\v109\\v65\\v33\\v31\\v14\\v23\\v65\\v121\\v29\\v33\\v23\\v5\\v65\\v121\\v262\\v263\\v553\\v551'")(), 150)
+local v994 = v986(v557, v4("return '\\v63\\v64\\v39\\v64\\v121\\v23\\v109\\v33\\v65\\v121\\v36\\v5\\v109\\v23\\v65\\v121\\v262\\v263\\v995\\v959'")(), 185)
+v988.v453:v308(function()
+v392()
+v970 = not v970
+v988.v234 = v4("return '\\v63\\v64\\v39\\v64\\v121\\v5\\v23\\v632\\v131\\v121'")() .. (v970 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v988.v217 = v970 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v970 then
+v32.v983 = true; v32.v985 = 0.2
+v32.v979 = 3; v32.v982 = 14; v32.v984 = 41.5
+v32.v977 = v218.v219(150, 150, 150); v32.v978 = v218.v219(120, 120, 120)
+local v996 = v32:v647(v4("return '\\v14\\v19\\v20\\v5\\v11\\v37\\v30\\v109\\v101\\v101\\v6\\v10\\v12'")()) or v186.v187(v4("return '\\v14\\v19\\v20\\v5\\v11\\v37\\v30\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v996.v997 = 0.25; v996.v998 = 1
+local v999 = v32:v647(v4("return '\\v96\\v8\\v15\\v15\\v75\\v109\\v101\\v101\\v6\\v10\\v12'")()) or v186.v187(v4("return '\\v96\\v8\\v15\\v15\\v75\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v999.v997 = 1.2; v999.v197 = 24; v999.v1000 = 0.8
+local v1001 = v32:v647(v4("return '\\v96\\v8\\v19\\v16\\v109\\v101\\v101\\v6\\v10\\v12'")()) or v186.v187(v4("return '\\v96\\v8\\v19\\v16\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v1001.v197 = 4
+else
+v32.v983 = v976.v983; v32.v985 = v976.v985
+v32.v979 = v976.v979; v32.v982 = v976.v982
+v32.v984 = v976.v984; v32.v977 = v976.v977; v32.v978 = v976.v978
+for v138, v839 in v139(v32:v211()) do
+if v839:v212(v4("return '\\v14\\v19\\v20\\v5\\v11\\v37\\v30\\v109\\v101\\v101\\v6\\v10\\v12'")()) or v839:v212(v4("return '\\v96\\v8\\v15\\v15\\v75\\v109\\v101\\v101\\v6\\v10\\v12'")()) or v839:v212(v4("return '\\v96\\v8\\v19\\v16\\v109\\v101\\v101\\v6\\v10\\v12'")()) then v839:v215() end
+end
+end
+end)
+v989.v453:v308(function()
+v392()
+v971 = not v971
+v989.v234 = v4("return '\\v42\\v31\\v96\\v109\\v121\\v65\\v63\\v96\\v31\\v109\\v185\\v23\\v109\\v131\\v121'")() .. (v971 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v989.v217 = v971 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v971 then
+v32.v977 = v218.v219(80, 0, 120); v32.v978 = v218.v219(40, 0, 80); v32.v982 = 0
+v107.v124(function()
+while v971 and v49:v110() do
+local v595 = v186.v187(v4("return '\\v36\\v11\\v16\\v12'")(), v319)
+v595.v197 = v897.v187(2, 2, 2); v595.v195 = v44.v645 and v44.v645.v913.v195 + v897.v187(v286.v376(-100, 100), 100, v286.v376(-100, 100)) or v897.v187(0, 100, 0)
+v595.v224 = v218.v219(255, 0, 150); v595.v1002 = v201.v1002.v1003; v595.v898 = v897.v187(v286.v376(-20, 20), -50, v286.v376(-20, 20))
+v38:v1004(v595, 3)
+v107.v108(1)
+end
+end)
+else
+v32.v977 = v976.v977; v32.v978 = v976.v978; v32.v982 = v976.v982
+end
+end)
+v990.v453:v308(function()
+v392()
+v972 = not v972
+v990.v234 = v4("return '\\v63\\v64\\v39\\v64\\v121\\v65\\v185\\v23\\v31\\v62\\v33\\v65\\v182\\v131\\v121'")() .. (v972 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v990.v217 = v972 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v972 then
+for v138, v839 in v135(v319:v886()) do
+if v839:v212(v4("return '\\v96\\v11\\v30\\v6\\v36\\v11\\v16\\v12'")()) then v839.v1002 = v201.v1002.v1005
+elseif v839:v212(v4("return '\\v39\\v6\\v10\\v11\\v8'")()) or v839:v212(v4("return '\\v23\\v6\\v120\\v12\\v19\\v16\\v6'")()) then v839:v215() end
+end
+v32.v983 = false
+else
+v32.v983 = v976.v983
+end
+end)
+local v1006 = nil
+local v1007 = nil
+local v1008 = {}
+local v1009 = {}
+local v1010 = {}
+local v1011 = nil
+local v1012 = {v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v289\\v61\\v68\\v66\\v61\\v61\\v341\\v61\\v61\\v66\\v68\\v61\\v338\\v66\\v342'")(), v4("return '\\v16\\v40\\v120\\v11\\v30\\v30\\v6\\v12\\v9\\v13\\v131\\v337\\v337\\v289\\v61\\v340\\v338\\v504\\v338\\v342\\v61\\v340\\v340\\v289\\v342\\v504\\v66\\v61'")()}
+local function v1013(v385)
+if v385:v212(v4("return '\\v96\\v9\\v8\\v8\\v40\\v15\\v11\\v16\\v13\\v182\\v19\\v9'")()) or v385:v212(v4("return '\\v14\\v19\\v16\\v101\\v11\\v10\\v6\\v182\\v19\\v9'")()) then
+local v1014 = v385.v47:v667():v268(v4("return '\\v40\\v15\\v30\\v30'")()) or (v385:v647(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")()) and v385:v647(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")()).v234:v667():v268(v4("return '\\v40\\v15\\v30\\v30'")()))
+if not v1014 then
+if v1009[v385] == nil then
+v1009[v385] = v385.v570
+end
+v385.v570 = false
+end
+end
+end
+local function v1015()
+v1008 = {}
+v1009 = {}
+v1010 = {}
+for v138, v183 in v139(v44.v313:v211()) do
+if v183:v212(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")()) and v183.v47 ~= v387 and v183.v47 ~= v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v39\\v16\\v15\\v7\\v13\\v15\\v24\\v20\\v388\\v182\\v19\\v9'")() and v183.v47 ~= v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v50\\v15\\v20\\v101\\v9\\v17\\v5\\v6\\v40\\v9\\v16\\v12\\v34\\v388\\v182\\v19\\v9'")() and v183.v47 ~= v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v96\\v8\\v11\\v10\\v95\\v14\\v10\\v16\\v6\\v6\\v20\\v388\\v182\\v19\\v9'")() and v183.v47 ~= v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v78\\v6\\v37\\v23\\v9\\v75\\v6\\v16\\v388\\v182\\v19\\v9'")() then
+v1008[v183] = v183.v570
+v183.v570 = false
+end
+end
+for v138, v385 in v139(v319:v886()) do
+v1013(v385)
+end
+for v138, v1016 in v139(v2:v886()) do
+if v1016:v212(v4("return '\\v14\\v15\\v19\\v20\\v13'")()) and v1016 ~= v1011 and v1016 ~= v502 then
+v1010[v1016] = v1016.v505
+v1016.v505 = 0
+end
+end
+end
+local function v1017()
+for v183, v1018 in v135(v1008) do
+if v183 and v183.v191 then
+v183.v570 = v1018
+end
+end
+v1008 = {}
+for v385, v1018 in v135(v1009) do
+if v385 and v385.v191 then
+v385.v570 = v1018
+end
+end
+v1009 = {}
+for v1016, v1019 in v135(v1010) do
+if v1016 and v1016.v191 then
+v1016.v505 = v1019
+end
+end
+v1010 = {}
+end
+v991.v453:v308(function()
+v392()
+v973 = not v973
+v991.v234 = v4("return '\\v63\\v64\\v39\\v64\\v121\\v23\\v109\\v5\\v5\\v64\\v5\\v131\\v121'")() .. (v973 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v991.v217 = v973 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v973 then
+v1015()
+if v1006 then v1006:v149() end
+if v1007 then v1007:v149() end
+v1006 = v27.v900:v308(function()
+if not v973 then return end
+v32.v977 = v218.v219(100, 0, 0)
+v32.v978 = v218.v219(80, 0, 0)
+v32.v981 = v218.v219(15, 0, 0)
+v32.v980 = 120
+v32.v982 = 0
+end)
+v1007 = v319.v1020:v308(function(v1021)
+if v973 then
+v1013(v1021)
+end
+end)
+v107.v124(function()
+v107.v108(5)
+if v973 and v49:v110() then
+if v1011 then v1011:v215() end
+v1011 = v186.v187(v4("return '\\v14\\v15\\v19\\v20\\v13'")(), v18)
+v1011.v503 = v1012[v286.v376(1, #v1012)]
+v1011.v505 = 1
+v1011.v1022 = true
+v1011:v247()
+end
+end)
+else
+v1017()
+if v1006 then v1006:v149(); v1006 = nil end
+if v1007 then v1007:v149(); v1007 = nil end
+if v1011 then
+v1011:v156()
+v1011:v215()
+v1011 = nil
+end
+v32.v977 = v976.v977
+v32.v978 = v976.v978
+v32.v981 = v976.v981
+v32.v980 = v976.v980
+v32.v982 = v976.v982
+end
+end)
+local v1023 = {}
+local v1024 = nil
+local v1025 = {}
+local function v1026()
+local v1027 = v319:v886()
+local v1028 = 100
+local v165 = 0
+for v379 = 1, #v1027 do
+if not v974 or not v49:v110() then break end
+local v880 = v1027[v379]
+if v880:v212(v4("return '\\v96\\v11\\v30\\v6\\v36\\v11\\v16\\v12'")()) and v880.v197.v1029 > 4 then
+if not v880:v1030(v44.v645) and not v880.v191:v647(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13'")()) then
+if not v1025[v880] then
+v1025[v880] = {v1031 = v880.v1002, v1032 = v880.v1033}
+if v880.v1002 == v201.v1002.v1034 or v880.v1002 == v201.v1002.v1035 then
+v880.v1002 = v201.v1002.v1036
+elseif v880.v1002 == v201.v1002.v1037 then
+v880.v1002 = v201.v1002.v1037
+elseif v880.v1002 == v201.v1002.v1005 or v880.v1002 == v201.v1002.v1038 then
+v880.v1002 = v201.v1002.v1005
+end
+v880.v1033 = v286.v328(v880.v1033 + 0.05, 0, 0.3)
+end
+end
+end
+v165 += 1
+if v165 >= v1028 then
+v165 = 0
+v107.v108(0.01)
+end
+end
+end
+v993.v453:v308(function()
+v392()
+v974 = not v974
+v993.v234 = v4("return '\\v63\\v64\\v39\\v64\\v121\\v74\\v64\\v23\\v64\\v5\\v5\\v109\\v65\\v33\\v31\\v14\\v23\\v65\\v121\\v29\\v33\\v23\\v5\\v65\\v131\\v121'")() .. (v974 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v993.v217 = v974 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v974 then
+v32.v1039 = v201.v1039.v1040
+v32.v983 = true
+v32.v985 = 0.1
+v32.v979 = 2.2
+v32.v1041 = v218.v219(255, 245, 225)
+v32.v1042 = v218.v219(180, 200, 220)
+v32.v978 = v218.v219(110, 120, 130)
+v32.v977 = v218.v219(90, 95, 100)
+v32.v982 = 14.5
+v32.v984 = 35
+local v1043 = v186.v187(v4("return '\\v50\\v15\\v8\\v15\\v16\\v50\\v15\\v16\\v16\\v6\\v10\\v12\\v9\\v15\\v20\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v1043.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v388\\v50\\v50'")()
+v1043.v979 = 0.03
+v1043.v1044 = 0.18
+v1043.v1045 = 0.15
+v1043.v1046 = v218.v219(255, 252, 245)
+v136.v137(v1023, v1043)
+local v999 = v186.v187(v4("return '\\v96\\v8\\v15\\v15\\v75\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v999.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v388\\v96\\v8\\v15\\v15\\v75'")()
+v999.v997 = 0.35
+v999.v197 = 18
+v999.v1000 = 0.85
+v136.v137(v1023, v999)
+local v996 = v186.v187(v4("return '\\v14\\v19\\v20\\v5\\v11\\v37\\v30\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v996.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v388\\v14\\v19\\v20\\v5\\v11\\v37\\v30'")()
+v996.v997 = 0.12
+v996.v998 = 0.8
+v136.v137(v1023, v996)
+local v1047 = v186.v187(v4("return '\\v39\\v6\\v7\\v12\\v34\\v64\\v101\\v74\\v9\\v6\\v8\\v13\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v1047.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v388\\v39\\v15\\v74'")()
+v1047.v1048 = 0.15
+v1047.v1049 = 25
+v1047.v1050 = 30
+v1047.v1051 = 0
+v136.v137(v1023, v1047)
+local v1001 = v186.v187(v4("return '\\v96\\v8\\v19\\v16\\v109\\v101\\v101\\v6\\v10\\v12'")(), v32)
+v1001.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v388\\v63\\v15\\v12\\v9\\v15\\v20\\v96\\v8\\v19\\v16'")()
+v1001.v197 = 0
+v136.v137(v1023, v1001)
+v1024 = v27.v900:v308(function()
+if not v974 then return end
+local v644 = v44.v645
+local v895 = v644 and v644:v184(v4("return '\\v26\\v19\\v75\\v11\\v20\\v15\\v9\\v13\\v5\\v15\\v15\\v12\\v36\\v11\\v16\\v12'")())
+if v895 then
+local v1052 = v895.v902.v1029
+v1001.v197 = v286.v328((v1052 - 15) * 0.15, 0, 6)
+end
+end)
+v107.v124(function()
+while v974 and v49:v110() do
+v1026()
+v107.v108(60)
+end
+end)
+else
+if v1024 then v1024:v149(); v1024 = nil end
+for v138, v1053 in v139(v1023) do
+if v1053 and v1053.v191 then v1053:v215() end
+end
+v1023 = {}
+for v880, v1054 in v135(v1025) do
+if v880 and v880.v191 then
+v880.v1002 = v1054.v1031
+v880.v1033 = v1054.v1032
+end
+end
+v1025 = {}
+v32.v983 = v976.v983
+v32.v985 = v976.v985
+v32.v979 = v976.v979
+v32.v978 = v976.v978
+v32.v977 = v976.v977
+v32.v982 = v976.v982
+v32.v984 = v976.v984
+end
+end)
+local v1055 = nil
+v994.v453:v308(function()
+v392()
+v975 = not v975
+v994.v234 = v4("return '\\v63\\v64\\v39\\v64\\v121\\v23\\v109\\v33\\v65\\v121\\v36\\v5\\v109\\v23\\v65\\v131\\v121'")() .. (v975 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v994.v217 = v975 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+if v975 then
+if not v1055 then
+v1055 = v186.v187(v4("return '\\v14\\v10\\v16\\v6\\v6\\v20\\v182\\v19\\v9'")(), v311)
+v1055.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v96\\v8\\v11\\v10\\v95\\v14\\v10\\v16\\v6\\v6\\v20\\v388\\v182\\v19\\v9'")()
+v1055.v190 = true
+v1055.v189 = 100
+local v1056 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")(), v1055)
+v1056.v197 = v196.v187(1, 0, 1, 0)
+v1056.v217 = v218.v219(0, 0, 0)
+v1056.v220 = 0
+local v598 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")(), v1056)
+v598.v197 = v196.v187(1, 0, 0, 40)
+v598.v195 = v196.v187(0, 0, 0.02, 0)
+v598.v198 = 1
+v598.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v26\\v29\\v96\\v121\\v62\\v121\\v63\\v64\\v39\\v64\\v121\\v23\\v109\\v33\\v65\\v121\\v36\\v5\\v109\\v23\\v65\\v121\\v65\\v23\\v31\\v42\\v64\\v121\\v262\\v263\\v995\\v959'")()
+v598.v231 = v218.v219(215, 50, 50)
+v598.v228 = v201.v228.v229
+v598.v230 = 14
+end
+v1055.v570 = true
+else
+if v1055 then
+v1055.v570 = false
+end
+end
+end)
+v46.v274(v4("return '\\v42\\v31\\v14\\v29\\v65\\v33\\v388\\v29\\v31'")())
+end
+v49:v140(v4("return '\\v42\\v9\\v30\\v19\\v11\\v8'")(), v84)
+local v1057, v1058 = v49:v151(v4("return '\\v42\\v9\\v30\\v19\\v11\\v8'")())
+if not v1057 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v42\\v9\\v30\\v19\\v11\\v8\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1058) end
+function v90:v152()
+v46.v273(v4("return '\\v64\\v29\\v23\\v5\\v64\\v14\\v388\\v29\\v31'")())
+local v1059 = v186.v187(v4("return '\\v14\\v10\\v16\\v15\\v8\\v8\\v9\\v20\\v17\\v74\\v16\\v11\\v75\\v6'")(), v560)
+v1059.v197 = v196.v187(1, -20, 1, -10)
+v1059.v195 = v196.v187(0, 10, 0, 5)
+v1059.v198 = 1
+v1059.v416 = 4
+local v1060 = v186.v187(v4("return '\\v29\\v31\\v33\\v9\\v30\\v12\\v33\\v11\\v37\\v15\\v19\\v12'")(), v1059)
+v1060.v207 = v208.v187(0, 6)
+v1060.v422 = v201.v422.v423
+v1060:v479(v4("return '\\v65\\v40\\v30\\v15\\v8\\v19\\v12\\v6\\v50\\v15\\v20\\v12\\v6\\v20\\v12\\v14\\v9\\v480\\v6'")()):v308(function()
+v1059.v413 = v196.v187(0, 0, 0, v1060.v445.v325 + 20)
+end)
+local function v1061(v433, v578)
+local v540 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")(), v1059)
+v540.v423 = v578
+v540.v197 = v196.v187(1, -6, 0, 32)
+v540.v217 = v218.v219(180, 30, 30)
+v540.v234 = v433 .. v4("return '\\v131\\v121\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")()
+v540.v231 = v218.v219(255, 255, 255)
+v540.v228 = v201.v228.v229
+v540.v230 = 11
+v186.v187(v4("return '\\v29\\v31\\v50\\v15\\v16\\v20\\v6\\v16'")(), v540).v222 = v208.v187(0, 6)
+return v540
+end
+local v1062, v1063 = false, false
+local v1064 = v1061(v4("return '\\v182\\v31\\v5\\v65\\v5\\v121\\v5\\v64\\v33\\v109\\v23\\v65\\v121\\v262\\v263\\v627\\v1065'")(), 1)
+local v1066 = v1061(v4("return '\\v29\\v14\\v65\\v5\\v121\\v23\\v64\\v39\\v64\\v14\\v121\\v64\\v14\\v121\\v96\\v64\\v64\\v14\\v23\\v14\\v121\\v262\\v263\\v429\\v564'")(), 2)
+local v1067 = v1061(v4("return '\\v14\\v109\\v5\\v42\\v31\\v39\\v64\\v5\\v121\\v50\\v64\\v63\\v121\\v63\\v109\\v185\\v64\\v14\\v121\\v36\\v109\\v14\\v14\\v64\\v65\\v14\\v121\\v262\\v263\\v912\\v555'")(), 3)
+local v1068 = v1061(v4("return '\\v5\\v109\\v630\\v64\\v31\\v185\\v121\\v262\\v263\\v265\\v588'")(), 4)
+local v1069 = v1061(v4("return '\\v36\\v5\\v64\\v50\\v29\\v5\\v65\\v5\\v121\\v63\\v109\\v33\\v26\\v64\\v5\\v121\\v36\\v31\\v185\\v182\\v121\\v262\\v263\\v553\\v585'")(), 5)
+v1067.v234 = v4("return '\\v14\\v109\\v5\\v42\\v31\\v39\\v64\\v5\\v121\\v50\\v64\\v63\\v121\\v63\\v109\\v185\\v64\\v14\\v121\\v36\\v109\\v14\\v14\\v64\\v65\\v14\\v121\\v262\\v263\\v912\\v555'")()
+v1068.v234 = v4("return '\\v5\\v109\\v630\\v64\\v31\\v185\\v121\\v262\\v263\\v265\\v588'")()
+v1069.v234 = v4("return '\\v36\\v5\\v64\\v50\\v29\\v5\\v65\\v5\\v121\\v63\\v109\\v33\\v26\\v64\\v5\\v121\\v36\\v31\\v185\\v182\\v121\\v262\\v263\\v553\\v585'")()
+local v1070 = false
+local function v1071()
+if v1070 then return end
+v1070 = true
+local v1072 = v1067.v234
+v1067.v234 = v4("return '\\v36\\v5\\v64\\v50\\v29\\v5\\v65\\v185\\v39\\v64\\v121\\v14\\v109\\v5\\v42\\v31\\v39\\v64\\v5\\v67\\v67\\v67'")()
+v1067.v217 = v218.v219(125, 25, 25)
+v107.v124(function()
+local v1073 = nil
+local v1074 = v286.v1075
+local v1076 = nil
+for v138 = 1, 5 do
+local v404 = v4("return '\\v34\\v12\\v12\\v7\\v30\\v131\\v337\\v337\\v17\\v11\\v75\\v6\\v30\\v67\\v16\\v15\\v40\\v8\\v15\\v120\\v67\\v10\\v15\\v75\\v337\\v21\\v289\\v337\\v17\\v11\\v75\\v6\\v30\\v337'")() .. v235(v2.v1077)
+.. v4("return '\\v337\\v30\\v6\\v16\\v21\\v6\\v16\\v30\\v337\\v36\\v19\\v40\\v8\\v9\\v10\\v1078\\v30\\v15\\v16\\v12\\v64\\v16\\v13\\v6\\v16\\v281\\v65\\v30\\v10\\v822\\v8\\v9\\v75\\v9\\v12\\v281\\v289\\v68\\v68'")()
+if v1076 and v1076 ~= v4("return ''")() then
+v404 = v404 .. v4("return '\\v822\\v10\\v19\\v16\\v30\\v15\\v16\\v281'")() .. v25:v1079(v1076)
+end
+local v125, v1080 = v102(function()
+return v25:v764(v2:v1081(v404))
+end)
+if not v125 or v97(v1080) ~= v4("return '\\v12\\v11\\v40\\v8\\v6'")() then
+break
+end
+for v138, v1082 in v139(v1080.v756 or {}) do
+local v1083 = v249(v1082.v1083) or v286.v1075
+local v1084 = v249(v1082.v1084) or 0
+if v1082.v1085
+and v1082.v1085 ~= v2.v1086
+and v1083 < v1084
+and v1083 < v1074 then
+v1073 = v1082.v1085
+v1074 = v1083
+end
+end
+v1076 = v1080.v1087
+if not v1076 or v1076 == v4("return ''")() or v1074 == 0 then
+break
+end
+end
+if v1073 then
+v1067.v234 = v4("return '\\v109\\v185\\v23\\v5\\v65\\v185\\v39\\v64\\v121\\v337\\v337\\v121'")() .. v235(v1074) .. v4("return '\\v121\\v36\\v33\\v65\\v365\\v109\\v5\\v665\\v14\\v666'")()
+v107.v108(0.25)
+local v125 = v102(function()
+v43:v1088(v2.v1077, v1073, v44)
+end)
+if not v125 then
+v1067.v234 = v4("return '\\v74\\v65\\v33\\v26\\v65\\v121\\v65\\v64\\v121\\v23\\v5\\v64\\v50\\v65\\v5\\v121\\v14\\v109\\v5\\v42\\v31\\v39\\v64\\v5'")()
+v107.v108(1.5)
+end
+else
+v1067.v234 = v4("return '\\v185\\v109\\v185\\v26\\v29\\v63\\v121\\v14\\v109\\v5\\v42\\v31\\v39\\v64\\v5\\v121\\v109\\v185\\v50\\v64\\v185\\v23\\v5\\v65\\v39\\v64'")()
+v107.v108(1.5)
+end
+if v1067 and v1067.v191 then
+v1067.v234 = v1072
+v1067.v217 = v218.v219(180, 30, 30)
+end
+v1070 = false
+end)
+end
+v1067.v453:v308(function()
+v392()
+v1071()
+end)
+local v1089 = false
+local function v1090()
+if v1089 then
+return
+end
+v1089 = true
+v1069.v234 = v4("return '\\v36\\v5\\v64\\v50\\v29\\v5\\v65\\v185\\v39\\v64\\v121\\v63\\v109\\v33\\v26\\v64\\v5\\v121\\v50\\v64\\v185\\v109\\v632\\v65\\v64\\v67\\v67\\v67'")()
+v1069.v217 = v218.v219(125, 25, 25)
+v107.v108(0.25)
+local v1091, v1092 = v102(function()
+v43:v1093(v2.v1077, v44)
+end)
+if not v1091 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v121\\v20\\v15\\v121\\v75\\v11\\v12\\v10\\v34\\v75\\v11\\v95\\v9\\v20\\v17\\v131'")(), v1092)
+v1069.v234 = v4("return '\\v74\\v65\\v33\\v26\\v65\\v121\\v337\\v337\\v121\\v23\\v109\\v185\\v23\\v109\\v121\\v185\\v64\\v42\\v65\\v63\\v109\\v185\\v23\\v109'")()
+v1069.v217 = v218.v219(180, 30, 30)
+v1089 = false
+end
+end
+v1069.v453:v308(function()
+v392()
+v1090()
+end)
+v1068.v453:v308(function()
+v392()
+if v1068.v234 == v4("return '\\v5\\v109\\v109\\v185\\v23\\v5\\v65\\v185\\v39\\v64\\v67\\v67\\v67'")() then return end
+v1068.v234 = v4("return '\\v5\\v109\\v109\\v185\\v23\\v5\\v65\\v185\\v39\\v64\\v67\\v67\\v67'")()
+v1068.v217 = v218.v219(125, 25, 25)
+v107.v248(0.15, function()
+local v125 = v102(function()
+v43:v1088(v2.v1077, v2.v1086, v44)
+end)
+if not v125 and v1068 and v1068.v191 then
+v1068.v234 = v4("return '\\v74\\v65\\v33\\v26\\v65\\v121\\v185\\v64\\v121\\v5\\v109\\v630\\v64\\v31\\v185'")()
+v107.v108(1.5)
+if v1068 and v1068.v191 then
+v1068.v234 = v4("return '\\v5\\v109\\v630\\v64\\v31\\v185\\v121\\v262\\v263\\v265\\v588'")()
+v1068.v217 = v218.v219(180, 30, 30)
+end
+end
+end)
+end)
+v107.v124(function()
+while v49:v110() do
+if v1062 then
+local v775 = v1:v184(v4("return '\\v16\\v109\\v21\\v6\\v20\\v12\\v30'")())
+local v1094 = v775 and v775:v184(v4("return '\\v15\\v7\\v6\\v20\\v74\\v15\\v16\\v12\\v19\\v20\\v6\\v106\\v34\\v6\\v6\\v8\\v5\\v6\\v75\\v15\\v12\\v6'")())
+local v1095 = v1:v184(v4("return '\\v30\\v34\\v11\\v16\\v6\\v13'")()) and v1.v922:v184(v4("return '\\v10\\v11\\v12\\v11\\v8\\v15\\v17\\v30'")()) and v1.v922.v1096:v184(v4("return '\\v101\\v15\\v16\\v12\\v19\\v20\\v6\\v106\\v34\\v6\\v6\\v8\\v50\\v34\\v11\\v20\\v10\\v6\\v30'")()) and v1.v922.v1096.v1097:v184(v4("return '\\v74\\v15\\v16\\v12\\v19\\v20\\v6\\v121\\v106\\v34\\v6\\v6\\v8'")())
+if v1094 and v1095 then
+v102(function() v1094:v826(v4("return '\\v15\\v7\\v6\\v20\\v74\\v15\\v16\\v12\\v19\\v20\\v6\\v106\\v34\\v6\\v6\\v8'")(), v1095) end)
+end
+for v379 = 1, 10 do
+if not v1062 or not v49:v110() then break end
+v107.v108(0.1)
+end
+else
+v107.v108(0.1)
+end
+end
+end)
+v1064.v453:v308(function()
+v392()
+v1062 = not v1062
+v1064.v234 = v4("return '\\v182\\v31\\v5\\v65\\v5\\v121\\v5\\v64\\v33\\v109\\v23\\v65\\v131\\v121'")() .. (v1062 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v1064.v217 = v1062 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+end)
+local v1098 = { v4("return '\\v23\\v16\\v15\\v7\\v9\\v10\\v11\\v8\\v121\\v14\\v34\\v11\\v95\\v6'")(), v4("return '\\v109\\v20\\v6\\v16\\v17\\v37\\v121\\v14\\v34\\v11\\v95\\v6'")(), v4("return '\\v36\\v16\\v15\\v12\\v6\\v9\\v20\\v121\\v96\\v11\\v16'")(), v4("return '\\v23\\v64\\v29\\v182\\v26\\v121\\v96\\v11\\v16'")(), v4("return '\\v36\\v16\\v15\\v12\\v6\\v9\\v20\\v121\\v14\\v34\\v11\\v95\\v6'")(), v4("return '\\v29\\v33\\v23\\v5\\v65\\v121\\v14\\v34\\v11\\v95\\v6'")(), v4("return '\\v109\\v20\\v6\\v16\\v17\\v37\\v121\\v96\\v11\\v16'")() }
+local v1099 = { [v4("return '\\v23\\v16\\v15\\v7\\v9\\v10\\v11\\v8\\v121\\v14\\v34\\v11\\v95\\v6'")()] = v4("return '\\v12\\v16\\v15\\v7\\v9\\v10\\v11\\v8\\v14\\v34\\v11\\v95\\v6'")(), [v4("return '\\v109\\v20\\v6\\v16\\v17\\v37\\v121\\v14\\v34\\v11\\v95\\v6'")()] = v4("return '\\v6\\v20\\v6\\v16\\v17\\v37\\v14\\v34\\v11\\v95\\v6'")(), [v4("return '\\v36\\v16\\v15\\v12\\v6\\v9\\v20\\v121\\v96\\v11\\v16'")()] = v4("return '\\v7\\v16\\v15\\v12\\v6\\v9\\v20\\v96\\v11\\v16'")(), [v4("return '\\v23\\v64\\v29\\v182\\v26\\v121\\v96\\v11\\v16'")()] = v4("return '\\v12\\v15\\v19\\v17\\v34\\v96\\v11\\v16'")(), [v4("return '\\v36\\v16\\v15\\v12\\v6\\v9\\v20\\v121\\v14\\v34\\v11\\v95\\v6'")()] = v4("return '\\v7\\v16\\v15\\v12\\v6\\v9\\v20\\v14\\v34\\v11\\v95\\v6'")(), [v4("return '\\v29\\v33\\v23\\v5\\v65\\v121\\v14\\v34\\v11\\v95\\v6'")()] = v4("return '\\v19\\v8\\v12\\v16\\v11\\v14\\v34\\v11\\v95\\v6'")(), [v4("return '\\v109\\v20\\v6\\v16\\v17\\v37\\v121\\v96\\v11\\v16'")()] = v4("return '\\v6\\v20\\v6\\v16\\v17\\v37\\v96\\v11\\v16'")() }
+v107.v124(function()
+while v49:v110() do
+if v1063 then
+local v644 = v44.v645
+local v649 = v44:v184(v4("return '\\v96\\v11\\v10\\v95\\v7\\v11\\v10\\v95'")())
+local v661 = v500()
+for v138, v1100 in v139(v1098) do
+if not v1063 or not v49:v110() then break end
+local v648 = (v644 and v644:v184(v1100)) or (v649 and v649:v184(v1100))
+if v648 and v661 and v1099[v1100] then
+v102(function() v661:v662(v1099[v1100], v648) end)
+end
+end
+v107.v108(0.05)
+else
+v107.v108(0.1)
+end
+end
+end)
+v1066.v453:v308(function()
+v392()
+v1063 = not v1063
+v1066.v234 = v4("return '\\v29\\v14\\v65\\v5\\v121\\v23\\v64\\v39\\v64\\v14\\v121\\v64\\v14\\v121\\v96\\v64\\v64\\v14\\v23\\v14\\v131\\v121'")() .. (v1063 and v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")() or v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")())
+v1066.v217 = v1063 and v218.v219(40, 160, 40) or v218.v219(180, 30, 30)
+end)
+local function v1101(v433)
+v433 = v235(v433 or v4("return ''")())
+v433 = v433:v936(v4("return '\\v280\\v30\\v1102\\v131\\v280\\v30\\v1102\\v64\\v185\\v280\\v30\\v1102\\v262\\v263\\v263\\v264'")(), v4("return ''")())
+v433 = v433:v936(v4("return '\\v280\\v30\\v1102\\v131\\v280\\v30\\v1102\\v64\\v74\\v74\\v280\\v30\\v1102\\v262\\v263\\v265\\v266'")(), v4("return ''")())
+v433 = v433:v936(v4("return '\\v280\\v30\\v1102\\v64\\v185\\v280\\v30\\v1102\\v262\\v263\\v263\\v264'")(), v4("return ''")())
+v433 = v433:v936(v4("return '\\v280\\v30\\v1102\\v64\\v74\\v74\\v280\\v30\\v1102\\v262\\v263\\v265\\v266'")(), v4("return ''")())
+v433 = v433:v936(v4("return '\\v1103\\v280\\v30\\v721'")(), v4("return ''")()):v936(v4("return '\\v280\\v30\\v721\\v1104'")(), v4("return ''")())
+return v433 ~= v4("return ''")() and v433 or v4("return '\\v74\\v29\\v185\\v257\\v258\\v257\\v259\\v64'")()
+end
+local function v1105(v433)
+v433 = v235(v433 or v4("return ''")())
+if v433:v268(v4("return '\\v64\\v185\\v121\\v262\\v263\\v263\\v264'")(), 1, true) then return true end
+if v433:v268(v4("return '\\v64\\v74\\v74\\v121\\v262\\v263\\v265\\v266'")(), 1, true) then return false end
+return nil
+end
+local v1106 = v1107({}, {v1108 = v4("return '\\v95'")()})
+local function v1109(v1110)
+if not v1110:v212(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")()) or v1106[v1110] then return end
+v1106[v1110] = true
+local v1111 = v1110.v453:v308(function()
+local v1112 = v1110.v234
+local v1113 = v1105(v1112)
+v107.v610(function()
+if not v1110 or not v1110.v191 or not v49 then return end
+local v1114 = v1110.v234
+local v1115 = v1105(v1114)
+if v1115 ~= nil and v1115 ~= v1113 then
+v49:v254(v1101(v1114), v1115)
+return
+end
+local v470 = v278.v470(v1112 or v4("return ''")())
+local v1116 =
+v470:v268(v4("return '\\v23\\v109\\v33\\v109\\v36\\v64\\v5\\v23'")(), 1, true)
+or v470:v268(v4("return '\\v5\\v109\\v630\\v64\\v31\\v185'")(), 1, true)
+or v470:v268(v4("return '\\v14\\v109\\v5\\v42\\v31\\v39\\v64\\v5'")(), 1, true)
+or v470:v268(v4("return '\\v63\\v109\\v33\\v26\\v64\\v5\\v121\\v36\\v31\\v185\\v182'")(), 1, true)
+if v1116 then
+v49:v176(
+v1101(v1112),
+v4("return '\\v65\\v257\\v260\\v257\\v261\\v15\\v121\\v9\\v20\\v9\\v10\\v9\\v11\\v13\\v11\\v67'")(),
+2
+)
+end
+end)
+end)
+if v49 then
+v49:v143(v4("return '\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v10\\v15\\v6\\v30\\v29\\v20\\v9\\v21\\v6\\v16\\v30\\v11\\v9\\v30'")(), v1111)
+end
+end
+local function v1117()
+for v138, v1118 in v139(v506:v886()) do
+v1109(v1118)
+end
+local v1119 = v506.v1020:v308(function(v1118)
+if v1118:v212(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")()) then
+v107.v610(function()
+v1109(v1118)
+end)
+end
+end)
+if v49 then
+v49:v143(v4("return '\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v10\\v15\\v6\\v30\\v29\\v20\\v9\\v21\\v6\\v16\\v30\\v11\\v9\\v30'")(), v1119)
+end
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v185\\v64\\v23\\v31\\v74\\v31\\v50\\v65\\v257\\v258\\v257\\v633\\v109\\v14\\v130\\v121\\v23\\v15\\v13\\v11\\v30\\v121\\v11\\v30\\v121\\v101\\v19\\v20\\v257\\v260\\v257\\v1120\\v6\\v30\\v121\\v64\\v185\\v337\\v64\\v74\\v74\\v121\\v281\\v121\\v63\\v64\\v185\\v31\\v23\\v64\\v5\\v65\\v39\\v65\\v14'")())
+end
+v1117()
+local v1121 = {
+v47 = v4("return '\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13'")(),
+v53 = {},
+v86 = false
+}
+function v1121:v152()
+if v113.v86 then return end
+v113.v86 = true
+local v216 = v186.v187(v4("return '\\v74\\v16\\v11\\v75\\v6'")())
+v216.v47 = v4("return '\\v65\\v16\\v11\\v30\\v11\\v95\\v11\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13'")()
+v216.v191 = v544
+v216.v217 = v218.v219(7, 7, 7)
+v216.v220 = 0
+v216.v195 = v196.v187(0, 14, 0, 310)
+v216.v197 = v196.v187(1, -28, 0, 128)
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")())
+v223.v191 = v216
+v223.v224 = v218.v219(70, 18, 18)
+v223.v225 = 1
+local v177 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v177.v191 = v216
+v177.v198 = 1
+v177.v195 = v196.v187(0, 14, 0, 5)
+v177.v197 = v196.v187(1, -28, 0, 20)
+v177.v228 = v201.v228.v229
+v177.v230 = 13
+v177.v232 = v201.v232.v233
+v177.v231 = v218.v219(235, 235, 235)
+v177.v234 = v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v337\\v337\\v121\\v36\\v65\\v31\\v185\\v109\\v33\\v121\\v39\\v64\\v121\\v14\\v31\\v14\\v23\\v109\\v63\\v65'")()
+local v572 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v572.v191 = v216
+v572.v198 = 1
+v572.v195 = v196.v187(0, 16, 0, 34)
+v572.v197 = v196.v187(1, -32, 0, 86)
+v572.v228 = v201.v228.v370
+v572.v230 = 11
+v572.v232 = v201.v232.v233
+v572.v239 = v201.v239.v240
+v572.v231 = v218.v219(155, 155, 155)
+v572.v238 = true
+local v1122, v1123, v1124 = 0, 0, 0
+local function v1125(v1126)
+v1126 = v286.v593(0, v286.v290(v1126))
+local v594 = v286.v290(v1126 / 3600)
+local v595 = v286.v290((v1126 % 3600) / 60)
+local v596 = v1126 % 60
+return v278.v279(v4("return '\\v280\\v68\\v66\\v13\\v131\\v280\\v68\\v66\\v13\\v131\\v280\\v68\\v66\\v13'")(), v594, v595, v596)
+end
+local function v1127()
+if not v49 then return end
+local v168 = v49:v162()
+local v1128 = {}
+for v138, v255 in v139(v168) do
+local v1129 = ({
+v1130 = v4("return '\\v63\\v6\\v75\\v257\\v1131\\v16\\v9\\v11\\v121\\v13\\v15\\v121\\v14\\v9\\v30\\v12\\v6\\v75\\v11'")(),
+v1132 = v4("return '\\v50\\v9\\v10\\v8\\v15\\v121\\v13\\v15\\v121\\v26\\v19\\v40'")(),
+v1133 = v4("return '\\v23\\v6\\v30\\v12\\v6\\v121\\v13\\v6\\v121\\v50\\v9\\v10\\v8\\v15'")()
+})[v255] or v255
+v136.v137(v1128, v1129)
+end
+local v1134 = #v1128 > 0 and v136.v1135(v1128, v4("return '\\v1136\\v121'")()) or v4("return '\\v185\\v109\\v185\\v26\\v29\\v63'")()
+local v1137 = #v35:v614()
+local v1084 = v35.v1138
+v572.v234 = v278.v279(
+v4("return '\\v42\\v109\\v5\\v14\\v65\\v64\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v280\\v30\\v580\\v20\\v23\\v109\\v63\\v36\\v64\\v121\\v65\\v23\\v31\\v42\\v64\\v121\\v121\\v337\\v337\\v121\\v280\\v30\\v580\\v20\\v74\\v36\\v14\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v280\\v13\\v580\\v20\\v630\\v64\\v182\\v65\\v39\\v64\\v5\\v109\\v14\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v280\\v13\\v121\\v337\\v121\\v280\\v13\\v580\\v20\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v280\\v13\\v121\\v129\\v280\\v30\\v130\\v580\\v20\\v50\\v64\\v185\\v109\\v632\\v64\\v109\\v14\\v121\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v280\\v13\\v580\\v20\\v50\\v26\\v65\\v23\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v121\\v337\\v337\\v121\\v280\\v30'")(),
+v235(v49.v60),
+v1125(v70.v71() - v49.v69),
+v1124,
+v1137,
+v1084,
+#v168,
+v1134,
+v49:v164(),
+(v49.v51.v85 and v49.v52.v85) and v4("return '\\v50\\v65\\v5\\v5\\v109\\v182\\v65\\v39\\v64'")() or v4("return '\\v109\\v63\\v121\\v109\\v14\\v36\\v109\\v5\\v65'")()
+)
+end
+local v483 = v27.v900:v308(function(v1139)
+v1122 += 1
+v1123 += v1139
+if v1123 >= 0.5 then
+v1124 = v286.v290((v1122 / v1123) + 0.5)
+v1122 = 0
+v1123 = 0
+v1127()
+end
+end)
+if v49 then
+v49:v143(v4("return '\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13'")(), v483)
+else
+v136.v137(v113.v53, v483)
+end
+v1127()
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v130\\v121\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13\\v121\\v281\\v121\\v63\\v31\\v182\\v5\\v65\\v39\\v64'")())
+end
+function v1121:v156()
+if v49 then
+v49:v147(v4("return '\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13'")())
+end
+for v138, v145 in v139(v113.v53) do
+v102(function() v145:v149() end)
+end
+v136.v1140(v113.v53)
+end
+if v49 then
+v49:v140(v4("return '\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13'")(), v1121)
+local v1141, v1142 = v49:v151(v4("return '\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13'")())
+if not v1141 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1142)
+end
+else
+v1121:v152()
+end
+local v1143 = {
+v47 = v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")(),
+v53 = {}
+}
+function v1143:v152()
+if v113.v86 then return end
+v113.v86 = true
+local v177 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v177.v47 = v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v63\\v11\\v20\\v11\\v17\\v6\\v16\\v23\\v9\\v12\\v8\\v6'")()
+v177.v191 = v560
+v177.v198 = 1
+v177.v197 = v196.v187(1, -24, 0, 24)
+v177.v195 = v196.v187(0, 12, 0, 238)
+v177.v228 = v201.v228.v229
+v177.v230 = 14
+v177.v232 = v201.v232.v233
+v177.v231 = v218.v219(210, 210, 210)
+v177.v234 = v4("return '\\v14\\v31\\v14\\v23\\v109\\v63\\v65\\v121\\v337\\v337\\v121\\v182\\v109\\v5\\v109\\v185\\v50\\v31\\v65\\v39\\v64\\v5\\v121\\v39\\v109\\v121\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14'")()
+local v1144 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v33\\v11\\v40\\v6\\v8'")())
+v1144.v47 = v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v63\\v11\\v20\\v11\\v17\\v6\\v16\\v14\\v12\\v11\\v12\\v19\\v30'")()
+v1144.v191 = v560
+v1144.v198 = 1
+v1144.v197 = v196.v187(1, -24, 0, 34)
+v1144.v195 = v196.v187(0, 12, 0, 262)
+v1144.v228 = v201.v228.v370
+v1144.v230 = 11
+v1144.v238 = true
+v1144.v232 = v201.v232.v233
+v1144.v239 = v201.v239.v240
+v1144.v231 = v218.v219(145, 145, 145)
+v1144.v234 = v4("return '\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14\\v121\\v337\\v337\\v121\\v185\\v109\\v185\\v26\\v29\\v63\\v121\\v65\\v23\\v31\\v42\\v64'")()
+local v1145 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")())
+v1145.v47 = v4("return '\\v63\\v11\\v30\\v12\\v6\\v16\\v14\\v12\\v15\\v7\\v96\\v19\\v12\\v12\\v15\\v20'")()
+v1145.v191 = v560
+v1145.v197 = v196.v187(1, -24, 0, 34)
+v1145.v195 = v196.v187(0, 12, 0, 298)
+v1145.v217 = v218.v219(45, 8, 8)
+v1145.v220 = 0
+v1145.v228 = v201.v228.v229
+v1145.v230 = 13
+v1145.v231 = v218.v219(255, 90, 90)
+v1145.v234 = v4("return '\\v36\\v65\\v5\\v65\\v5\\v121\\v23\\v64\\v39\\v64\\v14\\v121\\v64\\v14\\v121\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14'")()
+local v223 = v186.v187(v4("return '\\v29\\v31\\v14\\v12\\v16\\v15\\v95\\v6'")())
+v223.v191 = v1145
+v223.v224 = v218.v219(120, 25, 25)
+v223.v225 = 1
+local v1146 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")())
+v1146.v47 = v4("return '\\v185\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v23\\v15\\v17\\v17\\v8\\v6'")()
+v1146.v191 = v560
+v1146.v197 = v196.v187(1, -24, 0, 32)
+v1146.v195 = v196.v187(0, 12, 0, 338)
+v1146.v217 = v218.v219(12, 12, 12)
+v1146.v220 = 0
+v1146.v228 = v201.v228.v229
+v1146.v230 = 13
+v1146.v231 = v218.v219(185, 185, 185)
+local function v1147()
+local v884 = v49 and v49:v174(v4("return '\\v20\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v30'")(), true)
+v1146.v234 = v4("return '\\v185\\v64\\v23\\v31\\v74\\v31\\v50\\v65\\v257\\v258\\v257\\v633\\v109\\v14\\v121\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v121\\v337\\v337\\v121'")() .. (v884 and v4("return '\\v64\\v185'")() or v4("return '\\v64\\v74\\v74'")())
+end
+local v1148 = v1146.v453:v308(function()
+if not v49 then return end
+local v1149 = not v49:v174(v4("return '\\v20\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v30'")(), true)
+v49:v172(v4("return '\\v20\\v15\\v12\\v9\\v101\\v9\\v10\\v11\\v12\\v9\\v15\\v20\\v30'")(), v1149)
+v1147()
+end)
+if v49 then
+v49:v143(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")(), v1148)
+end
+v1147()
+local v1150 = v186.v187(v4("return '\\v23\\v6\\v120\\v12\\v96\\v19\\v12\\v12\\v15\\v20'")())
+v1150.v47 = v4("return '\\v50\\v15\\v75\\v7\\v11\\v10\\v12\\v14\\v12\\v11\\v12\\v19\\v30\\v23\\v15\\v17\\v17\\v8\\v6'")()
+v1150.v191 = v560
+v1150.v197 = v196.v187(1, -24, 0, 32)
+v1150.v195 = v196.v187(0, 12, 0, 376)
+v1150.v217 = v218.v219(12, 12, 12)
+v1150.v220 = 0
+v1150.v228 = v201.v228.v229
+v1150.v230 = 12
+v1150.v231 = v218.v219(185, 185, 185)
+local function v1151()
+local v256 = v49 and v49:v174(v4("return '\\v10\\v15\\v75\\v7\\v11\\v10\\v12\\v14\\v12\\v11\\v12\\v19\\v30'")(), false)
+v1150.v234 = v4("return '\\v14\\v23\\v65\\v23\\v29\\v14\\v121\\v50\\v64\\v63\\v36\\v65\\v50\\v23\\v64\\v121\\v337\\v337\\v121'")() .. (v256 and v4("return '\\v64\\v185'")() or v4("return '\\v64\\v74\\v74'")())
+end
+local v1152 = v1150.v453:v308(function()
+if not v49 then return end
+local v1153 = not v49:v174(v4("return '\\v10\\v15\\v75\\v7\\v11\\v10\\v12\\v14\\v12\\v11\\v12\\v19\\v30'")(), false)
+v49:v172(v4("return '\\v10\\v15\\v75\\v7\\v11\\v10\\v12\\v14\\v12\\v11\\v12\\v19\\v30'")(), v1153)
+v1151()
+end)
+if v49 then
+v49:v143(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")(), v1152)
+end
+v1151()
+local function v1127()
+if not v91 then
+v1144.v234 = v4("return '\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14\\v121\\v337\\v337\\v121\\v50\\v64\\v185\\v23\\v5\\v64\\v33\\v109\\v121\\v64\\v74\\v74\\v33\\v31\\v185\\v109'")()
+return
+end
+local v160 = v91:v1154()
+local v122 = {}
+for v116, v572 in v135(v160) do
+if v572.v122 then
+v136.v137(v122, v116)
+end
+end
+v136.v163(v122)
+local v1155 = 0
+if v49 then
+for v138, v148 in v135(v49.v53) do
+v1155 += #v148
+end
+end
+local v1156 = v49 and v49:v174(v4("return '\\v10\\v15\\v75\\v7\\v11\\v10\\v12\\v14\\v12\\v11\\v12\\v19\\v30'")(), false)
+if v1156 then
+v1144.v234 = v4("return '\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14\\v121\\v337\\v337\\v121'")() .. v235(#v122)
+.. v4("return '\\v121\\v121\\v121\\v450\\v121\\v121\\v121\\v50\\v64\\v185\\v109\\v632\\v257\\v633\\v109\\v14\\v121\\v337\\v337\\v121'")() .. v235(v1155)
+elseif #v122 == 0 then
+v1144.v234 = v4("return '\\v36\\v5\\v64\\v50\\v109\\v14\\v14\\v64\\v14\\v121\\v337\\v337\\v121\\v68\\v121\\v121\\v121\\v450\\v121\\v121\\v121\\v50\\v64\\v185\\v109\\v632\\v257\\v633\\v109\\v14\\v121\\v337\\v337\\v121'")() .. v235(v1155)
+else
+v1144.v234 = v4("return '\\v65\\v23\\v31\\v42\\v64\\v14\\v121\\v337\\v337\\v121'")() .. v136.v1135(v122, v4("return '\\v121\\v450\\v121'")())
+.. v4("return '\\v121\\v121\\v121\\v337\\v337\\v121\\v50\\v64\\v185\\v109\\v632\\v257\\v633\\v109\\v14\\v121'")() .. v235(v1155)
+end
+end
+local v1157 = v1145.v453:v308(function()
+if v392 then
+v102(v392)
+end
+if v91 then
+v91:v1158()
+end
+v1127()
+end)
+if v49 then
+v49:v143(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")(), v1157)
+else
+v136.v137(v113.v53, v1157)
+end
+local v276 = 0
+local v1159 = v27.v834:v308(function(v1139)
+v276 += v1139
+if v276 >= 0.5 then
+v276 = 0
+v1127()
+end
+end)
+if v49 then
+v49:v143(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")(), v1159)
+else
+v136.v137(v113.v53, v1159)
+end
+v1127()
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v130\\v121\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8\\v121\\v281\\v121\\v63\\v31\\v182\\v5\\v65\\v39\\v64'")())
+end
+function v1143:v156()
+if v49 then
+v49:v147(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")())
+end
+for v138, v145 in v139(v113.v53) do
+v102(function()
+v145:v149()
+end)
+end
+v136.v1140(v113.v53)
+end
+if v49 then
+v49:v140(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")(), v1143)
+local v1160, v1161 = v49:v151(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8'")())
+if not v1160 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v36\\v11\\v20\\v6\\v8\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1161)
+end
+else
+v1143:v152()
+end
+v46.v274(v4("return '\\v64\\v29\\v23\\v5\\v64\\v14\\v388\\v29\\v31'")())
+end
+v49:v140(v4("return '\\v14\\v37\\v30\\v12\\v6\\v75'")(), v90)
+local v1162, v1163 = v49:v151(v4("return '\\v14\\v37\\v30\\v12\\v6\\v75'")())
+if not v1162 then v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v14\\v37\\v30\\v12\\v6\\v75\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1163) end
+local v1164 = { v47 = v4("return '\\v14\\v37\\v30\\v12\\v6\\v75\\v29\\v31'")() }
+function v1164:v152()
+local v1165 = false
+local v1166 = v196.v187(0, 820, 0, 520)
+local v1167 = v196.v187(0, 420, 0, 52)
+local v1168 = 52
+local v1169 = 49
+local v1170 = nil
+local v1171 = 0
+local function v1172(v1173)
+if v1173 then
+v525.v538 = false
+v530.v538 = false
+v475.v538 = false
+v512.v538 = false
+v513.v538 = false
+v517.v538 = false
+v521.v538 = false
+v531.v538 = false
+v532.v538 = false
+v514.v197 = v196.v187(1, 0, 0, v1169)
+v514.v195 = v196.v187(0, 0, 0, 3)
+v515.v197 = v196.v187(0, 26, 0, 26)
+v515.v195 = v196.v187(0, 16, 0.5, -13)
+v516.v195 = v196.v187(0, 51, 0, 5)
+v516.v197 = v196.v187(0, 180, 0, 24)
+v516.v230 = 17
+v518.v197 = v196.v187(0, 130, 0, 7)
+v518.v195 = v196.v187(1, -175, 0, 7)
+v518.v230 = 12
+v522.v197 = v196.v187(0, 28, 0, 28)
+v522.v195 = v196.v187(1, -36, 0.5, -14)
+else
+v514.v197 = v196.v187(1, 0, 0, v1168)
+v514.v195 = v196.v187(0, 0, 0, 3)
+v515.v197 = v196.v187(0, 30, 0, 30)
+v515.v195 = v196.v187(0, 17, 0.5, -15)
+v516.v195 = v196.v187(0, 57, 0, 8)
+v516.v197 = v196.v187(0, 300, 0, 23)
+v516.v230 = 18
+v518.v197 = v196.v187(0, 150, 0, 20)
+v518.v195 = v196.v187(1, -205, 0, 9)
+v518.v230 = 12
+v522.v197 = v196.v187(0, 30, 0, 30)
+v522.v195 = v196.v187(1, -38, 0.5, -15)
+v525.v538 = true
+v530.v538 = true
+v475.v538 = true
+v512.v538 = true
+v513.v538 = true
+v517.v538 = true
+v521.v538 = true
+v531.v538 = true
+v532.v538 = true
+end
+end
+v522.v453:v308(function()
+v392()
+v1165 = not v1165
+v1171 = v1171 + 1
+local v1174 = v1171
+if v1170 then
+v102(function() v1170:v1175() end)
+v1170 = nil
+end
+if v1165 then
+v1172(true)
+end
+local v1176 = v1165 and v1167 or v1166
+v1170 = v22:v241(
+v509,
+v242.v187(0.3, v201.v243.v374, v201.v245.v246),
+{v197 = v1176}
+)
+v1170:v247()
+if not v1165 then
+v1170.v252:v1177(function()
+if v1174 == v1171 and not v1165 then
+v1172(false)
+end
+end)
+end
+v522.v234 = v1165 and v4("return '\\v721'")() or v4("return '\\v519\\v523\\v265'")()
+end)
+end
+if v49 then
+v49:v140(v4("return '\\v14\\v37\\v30\\v12\\v6\\v75\\v29\\v31'")(), v1164)
+local v1178, v1179 = v49:v151(v4("return '\\v14\\v37\\v30\\v12\\v6\\v75\\v29\\v31'")())
+if not v1178 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v14\\v37\\v30\\v12\\v6\\v75\\v29\\v31\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1179)
+end
+else
+v1164:v152()
+end
+end
+function v72:v156()
+v49:v132(v4("return '\\v29\\v31\\v67\\v39\\v11\\v30\\v34\\v40\\v15\\v11\\v16\\v13\\v14\\v12\\v11\\v12\\v30'")())
+v49:v147(v4("return '\\v50\\v34\\v11\\v12\\v33\\v15\\v11\\v13\\v6\\v16'")())
+v49:v147(v4("return '\\v29\\v31'")())
+if v113.v507 then
+v102(function() v113.v507:v215() end)
+v113.v507 = nil
+end
+end
+v91 = {
+v47 = v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v50\\v15\\v20\\v12\\v16\\v15\\v8'")()
+}
+function v91:v1158()
+v49:v114()
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v65\\v14\\v23\\v109\\v5\\v121\\v14\\v23\\v64\\v36\\v130\\v121\\v23\\v15\\v13\\v15\\v30\\v121\\v15\\v30\\v121\\v7\\v16\\v15\\v10\\v6\\v30\\v30\\v15\\v30\\v121\\v17\\v6\\v16\\v6\\v20\\v10\\v9\\v11\\v13\\v15\\v30\\v121\\v101\\v15\\v16\\v11\\v75\\v121\\v6\\v20\\v10\\v6\\v16\\v16\\v11\\v13\\v15\\v30\\v67'")())
+end
+function v91:v1154()
+return v49:v159()
+end
+v49:v140(v4("return '\\v36\\v16\\v15\\v10\\v6\\v30\\v30\\v50\\v15\\v20\\v12\\v16\\v15\\v8'")(), v91)
+local v1180 = {
+v47 = v4("return '\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37'")()
+}
+function v1180:v154()
+if v49:v133(v4("return '\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37'")()) then
+return true
+end
+return v49:v118(v4("return '\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37'")(), function(v680)
+while v680() do
+local v276 = 0
+while v276 < 30 and v680() do
+v107.v108(0.25)
+v276 += 0.25
+end
+if not v680() then
+break
+end
+v102(function()
+v1181(v4("return '\\v10\\v15\\v19\\v20\\v12'")())
+end)
+end
+end)
+end
+function v1180:v156()
+return v49:v132(v4("return '\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37'")())
+end
+v49:v140(v4("return '\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37'")(), v1180)
+local v1182, v1183 = v49:v151(v4("return '\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37'")())
+if not v1182 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1183)
+else
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v130\\v121\\v50\\v15\\v16\\v6\\v63\\v6\\v75\\v15\\v16\\v37\\v121\\v281\\v121\\v63\\v31\\v182\\v5\\v65\\v39\\v64'")())
+end
+local v1184 = {
+v47 = v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")()
+}
+function v1184:v154()
+if v49:v133(v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")()) then
+return true
+end
+return v49:v118(v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")(), function(v680)
+while v680() do
+v107.v108(0.25)
+if not v49:v110() then
+local v134 = {}
+for v904 in v135(v49.v55) do
+if v904 ~= v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")() then
+v136.v137(v134, v904)
+end
+end
+for v138, v904 in v139(v134) do
+v49:v132(v904)
+end
+break
+end
+end
+end)
+end
+function v1184:v156()
+return v49:v132(v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")())
+end
+v49:v140(v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")(), v1184)
+local v1185, v1186 = v49:v151(v4("return '\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6'")())
+if not v1185 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1186)
+else
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v130\\v121\\v26\\v19\\v40\\v33\\v9\\v101\\v6\\v10\\v37\\v10\\v8\\v6\\v121\\v281\\v121\\v63\\v31\\v182\\v5\\v65\\v39\\v64'")())
+end
+local v1187 = {
+v47 = v4("return '\\v106\\v15\\v16\\v95\\v6\\v16\\v39\\v9\\v11\\v17\\v20\\v15\\v30\\v12\\v9\\v10'")()
+}
+function v1187:v154()
+return v49:v118(v4("return '\\v39\\v9\\v11\\v17\\v20\\v15\\v30\\v12\\v9\\v10\\v26\\v6\\v11\\v16\\v12\\v40\\v6\\v11\\v12'")(), function(v680)
+while v680() do
+v107.v108(0.25)
+end
+end)
+end
+function v1187:v156()
+return v49:v132(v4("return '\\v39\\v9\\v11\\v17\\v20\\v15\\v30\\v12\\v9\\v10\\v26\\v6\\v11\\v16\\v12\\v40\\v6\\v11\\v12'")())
+end
+v49:v140(v4("return '\\v106\\v15\\v16\\v95\\v6\\v16\\v39\\v9\\v11\\v17\\v20\\v15\\v30\\v12\\v9\\v10'")(), v1187)
+v49:v140(v4("return '\\v29\\v12\\v9\\v8\\v30'")(), v46)
+v49:v140(v4("return '\\v29\\v31'")(), v72)
+v49:v140(v4("return '\\v74\\v11\\v16\\v75\\v30'")(), v73)
+v49:v140(v4("return '\\v23\\v6\\v8\\v6\\v7\\v15\\v16\\v12\\v30'")(), v88)
+v49:v140(v4("return '\\v36\\v6\\v12\\v30'")(), v76)
+v49:v140(v4("return '\\v42\\v9\\v30\\v19\\v11\\v8'")(), v84)
+v49:v140(v4("return '\\v78\\v9\\v8\\v8'")(), v77)
+v49:v140(v4("return '\\v50\\v11\\v8\\v10\\v19\\v8\\v11\\v12\\v15\\v16'")(), v89)
+v49:v140(v4("return '\\v14\\v37\\v30\\v12\\v6\\v75'")(), v90)
+local v1188 = v70.v71()
+v277(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v96\\v64\\v64\\v23\\v130\\v121\\v31\\v20\\v9\\v10\\v9\\v11\\v20\\v13\\v15\\v121\\v26\\v19\\v40\\v121\\v30\\v6\\v75\\v121\\v30\\v9\\v30\\v12\\v6\\v75\\v11\\v121\\v13\\v6\\v121\\v95\\v6\\v37\\v67\\v67\\v67'")())
+v49:v111(true)
+local v1189 = v70.v71()
+local v1190, v1191 = v49:v151(v4("return '\\v29\\v31'")())
+if not v1190 then
+v128(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v63\\v64\\v39\\v29\\v33\\v109\\v131\\v29\\v31\\v130\\v121\\v74\\v11\\v8\\v34\\v11\\v131'")(), v1191)
+return
+end
+local v1192 = v70.v71() - v1189
+local v1193 = v70.v71() - v1188
+v277(v278.v279(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v96\\v64\\v64\\v23\\v130\\v121\\v29\\v31\\v121\\v10\\v16\\v9\\v11\\v13\\v11\\v121\\v6\\v75\\v121\\v280\\v67\\v61\\v101\\v30'")(), v1192))
+v277(v278.v279(v4("return '\\v129\\v65\\v5\\v65\\v14\\v65\\v78\\v65\\v130\\v129\\v96\\v64\\v64\\v23\\v130\\v121\\v23\\v64\\v23\\v65\\v33\\v121\\v280\\v67\\v61\\v101\\v30'")(), v1193))
+v49:v176(v4("return '\\v65\\v5\\v65\\v14\\v65\\v78\\v65'")(), v4("return '\\v14\\v9\\v30\\v12\\v6\\v75\\v11\\v121\\v10\\v11\\v16\\v16\\v6\\v17\\v11\\v13\\v15\\v121\\v6\\v121\\v7\\v16\\v15\\v20\\v12\\v15\\v121\\v7\\v11\\v16\\v11\\v121\\v19\\v30\\v15\\v67'")())
