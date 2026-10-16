@@ -75,16 +75,16 @@ repeat task.wait() until game:IsLoaded()
 local ok, source = pcall(function()
     return game:HttpGet(%q)
 end)
-if ok and type(source) == "string" and #source > 0 then
+if ok and type(source) == "\115\116\114\105\110\103" and #source > 0 then
     local fn, compileError = loadstring(source)
     if fn then
         local ran, runError = pcall(fn)
-        if not ran then warn("[ARASAKA GRATIS][REJOIN] Erro ao reiniciar:", runError) end
+        if not ran then warn("\091\065\082\065\083\065\075\065\032\071\082\065\084\073\083\093\091\082\069\074\079\073\078\093\032\069\114\114\111\032\097\111\032\114\101\105\110\105\099\105\097\114\058", runError) end
     else
-        warn("[ARASAKA GRATIS][REJOIN] Script invalido:", compileError)
+        warn("\091\065\082\065\083\065\075\065\032\071\082\065\084\073\083\093\091\082\069\074\079\073\078\093\032\083\099\114\105\112\116\032\105\110\118\097\108\105\100\111\058", compileError)
     end
 else
-    warn("[ARASAKA GRATIS][REJOIN] Falha ao obter script:", source)
+    warn("\091\065\082\065\083\065\075\065\032\071\082\065\084\073\083\093\091\082\069\074\079\073\078\093\032\070\097\108\104\097\032\097\111\032\111\098\116\101\114\032\115\099\114\105\112\116\058", source)
 end
 ]], ARS_REJOIN_SCRIPT_URL)
     local ok, err = pcall(queue, nextCode)
@@ -3658,10 +3658,10 @@ function UI:Start()
         local HWINames = {"\070\114\097\110\107\101\110\098\114\117\116\101", "\080\117\109\112\107\105\110\032\084\105\116\097\110", "\071\114\105\109\032\082\101\097\112\101\114", "\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"}
         -- Perfis fixos do evento, sem edicao por UI ou preferencias antigas.
         local HWProfiles = {
-            ["\070\114\097\110\107\101\110\098\114\117\116\101"] = {height=75},
-            ["\080\117\109\112\107\105\110\032\084\105\116\097\110"] = {height=75},
-            ["\071\114\105\109\032\082\101\097\112\101\114"] = {height=75},
-            ["\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"] = {height=75},
+            ["\070\114\097\110\107\101\110\098\114\117\116\101"] = {height=60},
+            ["\080\117\109\112\107\105\110\032\084\105\116\097\110"] = {height=60},
+            ["\071\114\105\109\032\082\101\097\112\101\114"] = {height=60},
+            ["\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"] = {height=60},
         }
         -- Gratuito permanente: sem prazo de 24 horas nem exigencia de key/UID.
         -- Nenhum servidor externo libera ou bloqueia o evento.
@@ -4104,6 +4104,25 @@ function UI:Start()
                 or Core:IsWorkerRunning("\070\097\114\109\115\046\066\111\115\115\065\116\116\097\099\107")
                 or Core:IsWorkerRunning("\069\110\099\104\097\110\116\109\101\110\116\115\046\065\117\116\111\081\117\101\115\116")
         end
+        local function hwBossHealth(part)
+            if not part or not part.Parent then return nil end
+            local obj = part
+            while obj and obj ~= workspace do
+                if obj:IsA("\077\111\100\101\108") then
+                    local h = obj:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
+                    if h then return h.Health end
+                    for _, key in ipairs({"\072\101\097\108\116\104", "\072\080", "\067\117\114\114\101\110\116\072\101\097\108\116\104", "\066\111\115\115\072\101\097\108\116\104"}) do
+                        local v = obj:FindFirstChild(key)
+                        if v and (v:IsA("\078\117\109\098\101\114\086\097\108\117\101") or v:IsA("\073\110\116\086\097\108\117\101")) then return v.Value end
+                        local a = obj:GetAttribute(key)
+                        if type(a) == "\110\117\109\098\101\114" then return a end
+                    end
+                    break
+                end
+                obj = obj.Parent
+            end
+            return nil
+        end
         local function hwEquipPunch(ch, hum)
             local equipped = ch:FindFirstChild("\080\117\110\099\104")
             if equipped and equipped:IsA("\084\111\111\108") then return equipped end
@@ -4244,7 +4263,8 @@ function UI:Start()
                 local hwLastServerCheck = os.clock()
                 local eventExtraHeight = 0
                 local eventLastHealth = nil
-                local eventHealthHumanoid = nil
+                local eventHealthTick = nil
+                local eventHealthBoss = nil
                 local activeBossPart = nil
                 local activeOffsetY = nil
                 local movementConnection = RunService.Heartbeat:Connect(function()
@@ -4290,6 +4310,8 @@ function UI:Start()
                         lastName = nil
                         eventExtraHeight = 0
                         eventLastHealth = nil
+                        eventHealthTick = nil
+                        eventHealthBoss = nil
                         hwOrbitAngle = 0
                         hwOrbitLastTick = os.clock()
                         task.wait(0.8)
@@ -4322,21 +4344,28 @@ function UI:Start()
                             lastName = name
                             eventExtraHeight = 0
                             eventLastHealth = nil
+                        eventHealthTick = nil
+                        eventHealthBoss = nil
                             hwOrbitAngle = 0
                             hwOrbitLastTick = os.clock()
                             hwStatus("\065\099\105\109\097\032\100\111\032\098\111\115\115\058\032" .. name .. "\032\047\047\032\097\108\116\117\114\097\032" .. HWProfiles[name].height)
                         end
                         local ch, hum, root = hwCharacter()
                         if hum and hum.Health > 0 and root and part and part.Parent then
-                            -- Subida progressiva: +5 studs ao receber dano, como no Auto Boss normal.
-                            if hum ~= eventHealthHumanoid then
-                                eventHealthHumanoid = hum
-                                eventLastHealth = hum.Health
+                            local now = os.clock()
+                            local bossHealth = hwBossHealth(part)
+                            if eventHealthBoss ~= part then
+                                eventHealthBoss = part
+                                eventLastHealth = bossHealth
+                                eventHealthTick = now
                                 eventExtraHeight = 0
-                            elseif eventLastHealth and hum.Health < eventLastHealth then
-                                eventExtraHeight = math.min(eventExtraHeight + 5, 250)
+                            elseif eventHealthTick and now - eventHealthTick >= 5 then
+                                if bossHealth == nil or eventLastHealth == nil or bossHealth >= eventLastHealth - 0.001 then
+                                    eventExtraHeight = math.max(-HWProfiles[name].height, eventExtraHeight - 2.5)
+                                end
+                                eventLastHealth = bossHealth
+                                eventHealthTick = now
                             end
-                            eventLastHealth = hum.Health
                             local profile = HWProfiles[name]
                             activeOffsetY = profile.height + eventExtraHeight
                             activeBossPart = part
@@ -4641,7 +4670,7 @@ function UI:Start()
             local perSecond = s.gain / math.max(0.001, s.activeTime)
 
             s.label.Text = string.format(
-                "\077\073\078\085\084\079\032\032\037\115\n\072\079\082\065\032\032\037\115\032\032\032\032\124\032\032\032\032\068\073\065\032\032\037\115\032\032\032\032\124\032\032\032\032\083\069\077\065\078\065\032\032\037\115",
+                "MINUTO  %s\nHORA  %s    |    DIA  %s    |    SEMANA  %s",
                 nice(perSecond * 60),
                 nice(perSecond * 3600),
                 nice(perSecond * 86400),
@@ -5321,7 +5350,7 @@ function UI:Start()
     sessionCode.Size = UDim2.new(0, 190, 0, 18)
     sessionCode.Position = UDim2.new(1, -202, 0.5, -9)
     sessionCode.BackgroundTransparency = 1
-    sessionCode.Text = "\083\089\083\058\047\047\065\082\065\083\065\075\065\047\067\076\073\069\078\084\069\n\073\068\058\047\047" .. tostring(player.UserId)
+    sessionCode.Text = "SYS://ARASAKA/CLIENTE\nID://" .. tostring(player.UserId)
     sessionCode.TextColor3 = Color3.fromRGB(70, 70, 70)
     sessionCode.Font = Enum.Font.Code
     sessionCode.TextSize = 7
@@ -9217,7 +9246,7 @@ function UI:Start()
             local playersNow = #Players:GetPlayers()
             local maxPlayers = Players.MaxPlayers
             info.Text = string.format(
-                "\086\069\082\083\065\079\032\032\047\047\032\037\115\n\084\069\077\080\079\032\065\084\073\086\079\032\032\047\047\032\037\115\n\070\080\083\032\032\047\047\032\037\100\032\032\032\032\074\079\071\065\068\079\082\069\083\032\032\047\047\032\037\100\047\037\100\n\080\082\079\067\069\083\083\079\083\032\032\047\047\032\037\100\032\101\109\032\101\120\101\099\117\099\097\111\n\067\079\078\069\088\079\069\083\032\032\047\047\032\037\100\n\067\072\065\084\032\032\047\047\032\037\115",
+                "VERSAO  // %s\nTEMPO ATIVO  // %s\nFPS  // %d    JOGADORES  // %d/%d\nPROCESSOS  // %d em execucao\nCONEXOES  // %d\nCHAT  // %s",
                 tostring(Core.Version),
                 formatUptime(os.clock() - Core.StartedAt),
                 fpsValue,
