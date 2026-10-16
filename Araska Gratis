@@ -3317,6 +3317,27 @@ function UI:Start()
         uiScale.Scale = 1
     end
     uiScale.Parent = screenGui
+    -- Recalcula a escala em alteracoes de resolucao/orientacao do dispositivo.
+    local function updateResponsiveScale()
+        if not UserInputService.TouchEnabled then return end
+        local cam = workspace.CurrentCamera
+        if not cam then return end
+        local vp = cam.ViewportSize
+        local nextScale = math.clamp(math.min(vp.X / 820, vp.Y / 520) * 0.94, 0.42, 0.82)
+        if math.abs(uiScale.Scale - nextScale) > 0.001 then
+            uiScale.Scale = nextScale
+        end
+    end
+    local function watchCamera(cam)
+        if cam then
+            Core:TrackConnection("\085\073", cam:GetPropertyChangedSignal("\086\105\101\119\112\111\114\116\083\105\122\101"):Connect(updateResponsiveScale))
+        end
+        task.defer(updateResponsiveScale)
+    end
+    watchCamera(workspace.CurrentCamera)
+    Core:TrackConnection("\085\073", workspace:GetPropertyChangedSignal("\067\117\114\114\101\110\116\067\097\109\101\114\097"):Connect(function()
+        watchCamera(workspace.CurrentCamera)
+    end))
 
     -- INTERFACE PRINCIPAL V4 / CLAREZA E CONTRASTE
     local frame = Instance.new("\070\114\097\109\101", screenGui)
@@ -3690,7 +3711,8 @@ function UI:Start()
             if not HWWrap.Parent then return end
             local total = HWLayout.AbsoluteContentSize.Y
             -- AbsoluteContentSize inclui os controles e o espaçador final.
-            local needed = math.max(total + 40, HWWrap.AbsoluteSize.Y + 1)
+            local mobileScale = math.max(0.05, uiScale.Scale)
+            local needed = math.max(total / mobileScale + 40, HWWrap.AbsoluteSize.Y / mobileScale + 1)
             local wanted = UDim2.fromOffset(0, math.ceil(needed))
             if HWWrap.CanvasSize ~= wanted then
                 HWWrap.CanvasSize = wanted
@@ -4619,7 +4641,7 @@ function UI:Start()
             local perSecond = s.gain / math.max(0.001, s.activeTime)
 
             s.label.Text = string.format(
-                "MINUTO  %s\nHORA  %s    |    DIA  %s    |    SEMANA  %s",
+                "\077\073\078\085\084\079\032\032\037\115\n\072\079\082\065\032\032\037\115\032\032\032\032\124\032\032\032\032\068\073\065\032\032\037\115\032\032\032\032\124\032\032\032\032\083\069\077\065\078\065\032\032\037\115",
                 nice(perSecond * 60),
                 nice(perSecond * 3600),
                 nice(perSecond * 86400),
@@ -5299,7 +5321,7 @@ function UI:Start()
     sessionCode.Size = UDim2.new(0, 190, 0, 18)
     sessionCode.Position = UDim2.new(1, -202, 0.5, -9)
     sessionCode.BackgroundTransparency = 1
-    sessionCode.Text = "SYS://ARASAKA/CLIENTE\nID://" .. tostring(player.UserId)
+    sessionCode.Text = "\083\089\083\058\047\047\065\082\065\083\065\075\065\047\067\076\073\069\078\084\069\n\073\068\058\047\047" .. tostring(player.UserId)
     sessionCode.TextColor3 = Color3.fromRGB(70, 70, 70)
     sessionCode.Font = Enum.Font.Code
     sessionCode.TextSize = 7
@@ -9195,7 +9217,7 @@ function UI:Start()
             local playersNow = #Players:GetPlayers()
             local maxPlayers = Players.MaxPlayers
             info.Text = string.format(
-                "VERSAO  // %s\nTEMPO ATIVO  // %s\nFPS  // %d    JOGADORES  // %d/%d\nPROCESSOS  // %d em execucao\nCONEXOES  // %d\nCHAT  // %s",
+                "\086\069\082\083\065\079\032\032\047\047\032\037\115\n\084\069\077\080\079\032\065\084\073\086\079\032\032\047\047\032\037\115\n\070\080\083\032\032\047\047\032\037\100\032\032\032\032\074\079\071\065\068\079\082\069\083\032\032\047\047\032\037\100\047\037\100\n\080\082\079\067\069\083\083\079\083\032\032\047\047\032\037\100\032\101\109\032\101\120\101\099\117\099\097\111\n\067\079\078\069\088\079\069\083\032\032\047\047\032\037\100\n\067\072\065\084\032\032\047\047\032\037\115",
                 tostring(Core.Version),
                 formatUptime(os.clock() - Core.StartedAt),
                 fpsValue,
@@ -9462,9 +9484,10 @@ function UI:Start()
     local systemOk, systemErr = Core:StartModule("\083\121\115\116\101\109")
     if not systemOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\083\121\115\116\101\109\093\032\070\097\108\104\097\058", systemErr) end
 
-    -- ARASAKA GRATIS / ROLAGEM GLOBAL V4
-    -- Corrige todas as listas (Halloween, Teleportes, Visual, Outros, etc.).
-    -- O tamanho do canvas acompanha UIListLayout/UIGridLayout APOS ajustes de mobile.
+    -- ARASAKA GRATIS / ROLAGEM GLOBAL V5 (RESPONSIVA)
+    -- AbsoluteContentSize e AbsoluteSize consideram UIScale, enquanto os
+    -- offsets do CanvasSize usam as unidades locais da interface.
+    -- A V4 misturava as duas medidas e encurtava o scroll no mobile.
     local scrollManaged = setmetatable({}, {__mode = "\107"})
     local function manageScroll(scroll)
         if not scroll:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") or scrollManaged[scroll] then return end
@@ -9477,32 +9500,59 @@ function UI:Start()
         scroll.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
         scroll.ScrollBarThickness = UserInputService.TouchEnabled and 7 or 5
         scroll.ScrollBarImageColor3 = Color3.fromRGB(236, 64, 88)
+
+        local function localScale()
+            local scale = 1
+            local node = scroll
+            while node and node ~= screenGui do
+                for _, child in ipairs(node:GetChildren()) do
+                    if child:IsA("\085\073\083\099\097\108\101") then
+                        scale = scale * math.max(0.05, child.Scale)
+                    end
+                end
+                node = node.Parent
+            end
+            -- UIScale principal fica dentro do ScreenGui.
+            scale = scale * math.max(0.05, uiScale.Scale)
+            return math.max(0.05, scale)
+        end
+
+        local updating = false
         local pending = false
+        local schedule
         local function refresh()
             if not scroll.Parent then return end
+            local scale = localScale()
+            local viewport = scroll.AbsoluteSize.Y / scale
             local extent = 0
             local layout = scroll:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116")
                 or scroll:FindFirstChildOfClass("\085\073\071\114\105\100\076\097\121\111\117\116")
                 or scroll:FindFirstChildOfClass("\085\073\084\097\098\108\101\076\097\121\111\117\116")
             if layout then
-                extent = layout.AbsoluteContentSize.Y
+                extent = layout.AbsoluteContentSize.Y / scale
             else
-                -- Algumas abas usam posicionamento manual, sem UIListLayout.
+                -- Para conteudo posicionado manualmente, usar posicoes
+                -- convertidas ao espaco local, com o scroll atual compensado.
                 for _, child in ipairs(scroll:GetChildren()) do
                     if child:IsA("\071\117\105\079\098\106\101\099\116") and child.Visible then
-                        local top = child.Position.Y.Scale * scroll.AbsoluteSize.Y
-                            + child.Position.Y.Offset
-                        local bottom = top + child.AbsoluteSize.Y
-                        if bottom > extent then extent = bottom end
+                        local top = child.Position.Y.Scale * viewport + child.Position.Y.Offset
+                        local bottom = top + child.AbsoluteSize.Y / scale
+                        extent = math.max(extent, bottom)
                     end
                 end
             end
-            local pad = UserInputService.TouchEnabled and 108 or 32
-            local required = math.max(0, math.ceil(extent + pad))
-            local goal = UDim2.fromOffset(0, required)
-            if scroll.CanvasSize ~= goal then scroll.CanvasSize = goal end
+            -- Reserva uma margem real e constante apos a ultima funcao.
+            -- Nunca deixar um canvas menor que a janela visivel.
+            local pad = UserInputService.TouchEnabled and 76 or 28
+            local required = math.max(viewport + 1, extent + pad)
+            local goal = UDim2.fromOffset(0, math.ceil(required))
+            if scroll.CanvasSize ~= goal then
+                updating = true
+                scroll.CanvasSize = goal
+                updating = false
+            end
         end
-        local function schedule()
+        schedule = function()
             if pending then return end
             pending = true
             task.defer(function()
@@ -9510,30 +9560,29 @@ function UI:Start()
                 refresh()
             end)
         end
+
+        Core:TrackConnection("\085\073", scroll:GetPropertyChangedSignal("\067\097\110\118\097\115\083\105\122\101"):Connect(function()
+            -- Reaplica o valor certo se um modulo legado escrever CanvasSize.
+            if not updating then schedule() end
+        end))
         Core:TrackConnection("\085\073", scroll:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(schedule))
         Core:TrackConnection("\085\073", scroll:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(schedule))
-        local layout = scroll:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116")
-            or scroll:FindFirstChildOfClass("\085\073\071\114\105\100\076\097\121\111\117\116")
-            or scroll:FindFirstChildOfClass("\085\073\084\097\098\108\101\076\097\121\111\117\116")
-        if layout then
-            Core:TrackConnection("\085\073", layout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(schedule))
-        end
+        Core:TrackConnection("\085\073", uiScale:GetPropertyChangedSignal("\083\099\097\108\101"):Connect(schedule))
         local seen = setmetatable({}, {__mode = "\107"})
         local function trackChild(child)
-            if not child:IsA("\071\117\105\079\098\106\101\099\116") or seen[child] then return end
-            seen[child] = true
-            Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(schedule))
-            Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(schedule))
-            if not layout then
+            if child:IsA("\085\073\076\105\115\116\076\097\121\111\117\116") or child:IsA("\085\073\071\114\105\100\076\097\121\111\117\116") or child:IsA("\085\073\084\097\098\108\101\076\097\121\111\117\116") then
+                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(schedule))
+            elseif child:IsA("\085\073\083\099\097\108\101") then
+                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\083\099\097\108\101"):Connect(schedule))
+            elseif child:IsA("\071\117\105\079\098\106\101\099\116") and not seen[child] then
+                seen[child] = true
+                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(schedule))
+                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(schedule))
                 Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\080\111\115\105\116\105\111\110"):Connect(schedule))
             end
         end
         for _, child in ipairs(scroll:GetChildren()) do trackChild(child) end
         Core:TrackConnection("\085\073", scroll.ChildAdded:Connect(function(child)
-            if child:IsA("\085\073\076\105\115\116\076\097\121\111\117\116") or child:IsA("\085\073\071\114\105\100\076\097\121\111\117\116") or child:IsA("\085\073\084\097\098\108\101\076\097\121\111\117\116") then
-                -- Layouts criados depois do frame são observados pela atualização.
-                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(schedule))
-            end
             trackChild(child)
             schedule()
         end))
@@ -9546,28 +9595,18 @@ function UI:Start()
     Core:TrackConnection("\085\073", contentArea.DescendantAdded:Connect(function(item)
         if item:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") then task.defer(manageScroll, item) end
     end))
-    -- Recalcula ao abrir abas; também cobre conteúdo criado após inicialização.
+    -- Quando uma aba é aberta, os tamanhos absolutos tornam-se atuais.
     for _, tab in pairs(abas) do
         Core:TrackConnection("\085\073", tab.container:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(function()
             if tab.container.Visible then
                 task.defer(function()
                     for _, item in ipairs(tab.container:GetDescendants()) do
-                        if item:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") then
-                            manageScroll(item)
-                            -- Propriedades dos filhos ativam o recálculo.
-                            local layout = item:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116")
-                                or item:FindFirstChildOfClass("\085\073\071\114\105\100\076\097\121\111\117\116")
-                            if layout then
-                                local pad = UserInputService.TouchEnabled and 108 or 32
-                                item.CanvasSize = UDim2.fromOffset(0, math.ceil(layout.AbsoluteContentSize.Y + pad))
-                            end
-                        end
+                        if item:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") then manageScroll(item) end
                     end
                 end)
             end
         end))
     end
-
 
     --==================================================
         -- MODULE // SYSTEM UI
