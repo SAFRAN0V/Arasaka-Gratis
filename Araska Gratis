@@ -1,6 +1,6 @@
-
-
-
+-- ARASAKA GRATIS // STANDALONE 1.0.1 + AVISO DE BOSS AO DISCORD
+-- Base: ARASAKA_GRATIS_FIX_75_45_PLUS5.lua
+-- Preparado para ObscuraVM. Render utilizado somente para avisos de boss.
 local ReplicatedStorage = game:GetService("\082\101\112\108\105\099\097\116\101\100\083\116\111\114\097\103\101")
 local SoundService = game:GetService("\083\111\117\110\100\083\101\114\118\105\099\101")
 local TweenService = game:GetService("\084\119\101\101\110\083\101\114\118\105\099\101")
@@ -15,7 +15,7 @@ local TeleportService = game:GetService("\084\101\108\101\112\111\114\116\083\10
 
 local player = Players.LocalPlayer
 
-
+-- Preferencias exclusivas desta versao de teste.
 local ARS_PREF_PATH = "\065\114\097\115\097\107\097\095\071\114\097\116\105\115\095\083\116\097\110\100\097\108\111\110\101\095" .. tostring(player.UserId) .. "\046\106\115\111\110"
 local ARS_PREF = { saveEnabled = true, autoRejoin = false, bossNormal = false,
     bossHalloween = false, halloweenSelected = {},
@@ -38,7 +38,7 @@ local function arsLoadPrefs()
     end)
 end
 arsLoadPrefs()
-
+-- Halloween fixo nesta versão: ignorar valores antigos salvos.
 ARS_PREF.eventHeight = 100
 ARS_PREF.eventLeft = 25
 ARS_PREF.normalHeight = 45
@@ -55,10 +55,10 @@ for _, item in ipairs({
 }) do
     ARS_PREF[item[1]] = arsBossNumber(ARS_PREF[item[1]],item[2],item[3],item[4])
 end
-
+-- So reexecuta apos teleport se o executor suportar, sem afetar outros scripts.
 local ARS_REJOIN_SCRIPT_URL = "\104\116\116\112\115\058\047\047\114\097\119\046\103\105\116\104\117\098\117\115\101\114\099\111\110\116\101\110\116\046\099\111\109\047\083\065\070\082\065\078\048\086\047\065\114\097\115\097\107\097\045\071\114\097\116\105\115\047\114\101\102\115\047\104\101\097\100\115\047\109\097\105\110\047\065\114\097\115\107\097\037\050\048\071\114\097\116\105\115"
 local function arsQueueAfterTeleport()
-    
+    -- API oferecida pelo executor; so existe enquanto ele mantem a sessao ativa.
     local queue = queue_on_teleport
     if type(queue) ~= "\102\117\110\099\116\105\111\110" and type(syn) == "\116\097\098\108\101" then
         queue = syn.queue_on_teleport
@@ -94,10 +94,10 @@ end
     return ok
 end
 
-
-
-
-
+--==================================================
+-- ARASAKA HUB V3 // SINGLE-FILE MODULAR ARCHITECTURE
+-- Um único .lua, porém cada domínio vive em seu próprio módulo/tabela.
+--==================================================
 local Utils = { Name = "\085\116\105\108\115", PerfMarks = {} }
 local Core = {
     Name = "\067\111\114\101",
@@ -113,8 +113,8 @@ local Core = {
 }
 local UI = { Name = "\085\073" }
 
-
-
+-- ARASAKA INTERNATIONAL / UI I18N V2
+-- Local translations only: no external requests or extra polling loops.
 local ArasakaI18n = {
     Language = "\112\116", Active = false,
     Sources = setmetatable({}, {__mode = "\107"}),
@@ -2124,14 +2124,14 @@ local function normalizedLanguage(value)
     for _, lang in ipairs(LANGUAGE_ORDER) do
         if lang == base then return base end
     end
-    return "\101\110" 
+    return "\101\110" -- Unsupported Roblox locales receive English interface where translated.
 end
 local okLocale, robloxLocale = pcall(function()
     return LocalizationService.RobloxLocaleId
 end)
 ArasakaI18n.Language = normalizedLanguage(okLocale and robloxLocale or "\112\116")
 
-
+-- Case-insensitive matching includes common Portuguese accented capitals.
 local FOLD_ACCENTS = {
     ["\195\129"]="\195\161", ["\195\128"]="\195\160", ["\195\130"]="\195\162", ["\195\131"]="\195\163",
     ["\195\137"]="\195\169", ["\195\138"]="\195\170", ["\195\141"]="\195\173", ["\195\147"]="\195\179",
@@ -2153,7 +2153,7 @@ local function translateText(original, language)
     if language == "\112\116" or type(original) ~= "\115\116\114\105\110\103" or #original == 0 then
         return original
     end
-    
+    -- Protect user content and rich-text markup; never translate editable TextBoxes.
     if #original > 350 or original:find("\060\102\111\110\116", 1, true) or original:find("\060\047", 1, true) then
         return original
     end
@@ -2161,7 +2161,7 @@ local function translateText(original, language)
     local folded = foldText(result)
     local dict = TRANSLATIONS[language]
     if not dict then return original end
-    
+    -- Longest phrases first; only replace whole tokens, not portions of game IDs.
     for _, pair in ipairs(dict) do
         local source, translated, foldedSource = pair[1], pair[2], pair[3]
         local startFrom = 1
@@ -2191,7 +2191,7 @@ function ArasakaI18n:UpdateObject(obj, property)
     local origin = self.Sources[obj]
     if type(origin) ~= "\115\116\114\105\110\103" then return end
     local rendered = translateText(origin, self.Language)
-    
+    -- Remember the output before writing: Roblox signals can be deferred.
     self.Rendered[obj] = rendered
     if obj[property] ~= rendered then
         obj[property] = rendered
@@ -2215,7 +2215,7 @@ function ArasakaI18n:Bind(obj)
     if obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\117\116\116\111\110") then
         property = "\084\101\120\116"
     elseif obj:IsA("\084\101\120\116\066\111\120") then
-        property = "\080\108\097\099\101\104\111\108\100\101\114\084\101\120\116" 
+        property = "\080\108\097\099\101\104\111\108\100\101\114\084\101\120\116" -- never translate user-entered data or key input
     else
         return
     end
@@ -2268,13 +2268,13 @@ function ArasakaI18n:Start(playerGui)
         if self.Active then self:Bind(obj) end
     end)
     self.RootRemoving = playerGui.DescendantRemoving:Connect(function(obj)
-        
+        -- Release all descendants if an entire Arasaka overlay is destroyed.
         if obj:IsA("\083\099\114\101\101\110\071\117\105") then
             for _, child in ipairs(obj:GetDescendants()) do self:Unbind(child) end
         end
         self:Unbind(obj)
     end)
-    
+    -- Scan only owned overlays, not the whole game's interface tree.
     for _, root in ipairs(playerGui:GetChildren()) do
         if root:IsA("\083\099\114\101\101\110\071\117\105") and root.Name:sub(1, 7) == "\065\114\097\115\097\107\097" then
             for _, obj in ipairs(root:GetDescendants()) do self:Bind(obj) end
@@ -2288,7 +2288,7 @@ function ArasakaI18n:Stop()
     for obj in pairs(self.Connections) do self:Unbind(obj) end
     self.PlayerGui = nil
 end
-
+-- END ARASAKA INTERNATIONAL / UI I18N V2
 
 local Farms = { Name = "\070\097\114\109\115" }
 local Pets = { Name = "\080\101\116\115" }
@@ -2300,8 +2300,8 @@ local Calculator = { Name = "\067\097\108\099\117\108\097\116\111\114" }
 local System = { Name = "\083\121\115\116\101\109" }
 local ProcessControlModule
 
-
-
+-- ÚNICA PONTE GLOBAL: serve apenas para invalidar/limpar uma execução anterior.
+-- Todo o estado funcional continua local em Core/módulos.
 local Bridge = rawget(_G, "\065\114\097\115\097\107\097\066\114\105\100\103\101")
 if type(Bridge) ~= "\116\097\098\108\101" then
     Bridge = { generation = 0 }
@@ -2314,7 +2314,7 @@ Bridge.generation = (Bridge.generation or 0) + 1
 local RUN_GENERATION = Bridge.generation
 local Runtime = { Running = true }
 
-
+-- Compatibilidade: encerra versões antigas que ainda usavam vários _G.Arasaka*.
 if rawget(_G, "\065\114\097\115\097\107\097\083\099\114\105\112\116\082\117\110\110\105\110\103") ~= nil then
     rawset(_G, "\065\114\097\115\097\107\097\083\099\114\105\112\116\082\117\110\110\105\110\103", false)
 end
@@ -2739,11 +2739,11 @@ function Utils.CreateTextButton(parent, properties)
     return button
 end
 
+-- COREMEMORY
+-- Migrado para o WorkerManager na FASE 10.
+-- A rotina será iniciada depois que o Core estiver disponível.
 
-
-
-
-
+-- ANTI-AFK FÍSICO
 Core:TrackConnection("\067\111\114\101", player.Idled:Connect(function()
     if not Core:IsAlive() then return end
     VirtualUser:CaptureController()
@@ -2753,7 +2753,7 @@ end))
 
 local targetGui = player:WaitForChild("\080\108\097\121\101\114\071\117\105")
 ArasakaI18n:Start(targetGui)
-
+-- ARASAKA GRATIS: inicia diretamente na UI, sem tela de carregamento.
 if not Core:IsAlive() then return end
 
 local uiName = "\065\114\097\115\097\107\097\067\104\097\116\095\071\117\105"
@@ -2764,9 +2764,9 @@ for _, oldGui in ipairs(targetGui:GetChildren()) do
     end
 end
 
-
+-- MÓDULO INTERNO DE CHAT PRIVADO
 function Chat:Build(tabChat, playClickSound)
-    
+    -- Chat externo indisponivel na edicao offline.
     local ws = nil
     self.Socket = nil
 
@@ -2877,7 +2877,7 @@ function Chat:Build(tabChat, playClickSound)
         msgLabel.TextXAlignment = Enum.TextXAlignment.Left
         msgLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-        scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiListLayout.AbsoluteContentSize.Y + 20)
+        scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiListLayout.AbsoluteContentSize.Y + 120)
     end
 
     if ws then
@@ -2919,7 +2919,7 @@ function Chat:Build(tabChat, playClickSound)
     end))
 end
 
-
+-- DROPDOWN SELECTOR
 local function AbrirMenuSelecao(titulo, listaOpcoes, callback)
     local oldDrop = targetGui:FindFirstChild("\065\114\097\115\097\107\097\068\114\111\112\100\111\119\110\095\071\117\105")
     if oldDrop then oldDrop:Destroy() end
@@ -3026,7 +3026,7 @@ local function AbrirMenuSelecao(titulo, listaOpcoes, callback)
     padding.PaddingBottom = UDim.new(0, 8)
 
     layout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
+        scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 120)
     end)
 
     local dropConnections = {}
@@ -3094,8 +3094,8 @@ local function AbrirMenuSelecao(titulo, listaOpcoes, callback)
     end
 end
 
-
-
+-- HUB EXECUTION PRINCIPAL
+-- BEGIN ARASAKA VISUAL STYLES (isolated UI module)
 function UI:BuildArasakaStyles(tab)
     local world=game:GetService("\087\111\114\107\115\112\097\099\101")
     local owner="\085\073\046\065\114\097\115\097\107\097\083\116\121\108\101\115"
@@ -3159,7 +3159,7 @@ function UI:BuildArasakaStyles(tab)
             if not savedMaterials[part] then
                 savedMaterials[part]={material=part.Material,variant=part.MaterialVariant,physics=part.CustomPhysicalProperties}
             end
-            
+            -- Mantem atrito/densidade enquanto altera o acabamento visual.
             local physics=part.CurrentPhysicalProperties
             part.CustomPhysicalProperties=physics
             part.Material=activeMaterial
@@ -3191,7 +3191,7 @@ function UI:BuildArasakaStyles(tab)
         obj.Font=font;obj.TextColor3=color;obj.TextSize=13;obj.TextXAlignment=Enum.TextXAlignment.Left;obj.Parent=parent
         return obj
     end
-    
+    -- Os controles visuais existentes compartilham a mesma rolagem dos presets.
     local legacy=Instance.new("\070\114\097\109\101",scroll)
     legacy.Name="\069\120\105\115\116\105\110\103\086\105\115\117\097\108\067\111\110\116\114\111\108\115"
     legacy.LayoutOrder=0
@@ -3236,7 +3236,7 @@ function UI:BuildArasakaStyles(tab)
             Lighting.Brightness=preset.brightness or 2;Lighting.GlobalShadows=true;Lighting.ClockTime=preset.time
             for _,entry in ipairs(preset.effects) do
                 if entry[1]=="\065\116\109\111\115\112\104\101\114\101" then
-                    
+                    -- Uma Atmosphere existente pode prevalecer; use a mesma instancia e restaure seus valores.
                     local existing=Lighting:FindFirstChildOfClass("\065\116\109\111\115\112\104\101\114\101")
                     if existing then
                         local backup={}
@@ -3263,7 +3263,7 @@ function UI:BuildArasakaStyles(tab)
             end
         end)
     end
-    
+    -- Restaura a atmosfera junto de qualquer troca/desativacao.
     local restoreBase=restore
     restore=function() restoreBase();Core:CleanupOwner(owner.."\065\116\109\111\115\112\104\101\114\101") end
     for index,preset in ipairs(styles) do
@@ -3287,7 +3287,7 @@ function UI:BuildArasakaStyles(tab)
     Core:AddCleanup(owner,function() destroyed=true;restore() end)
     Core:TrackConnection("\085\073",tab.Destroying:Connect(function() Core:CleanupOwner(owner) end))
 end
-
+-- END ARASAKA VISUAL STYLES
 
 function UI:Start()
     Core:AddCleanup("\085\073", function() ArasakaI18n:Stop() end)
@@ -3318,7 +3318,7 @@ function UI:Start()
     end
     uiScale.Parent = screenGui
 
-    
+    -- INTERFACE PRINCIPAL V4 / CLAREZA E CONTRASTE
     local frame = Instance.new("\070\114\097\109\101", screenGui)
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Size = UDim2.new(0, 820, 0, 520)
@@ -3449,8 +3449,8 @@ function UI:Start()
     sideHeader.Position = UDim2.new(0, 12, 0, 12)
     sideHeader.BackgroundTransparency = 1
     sideHeader.Text = "\078\065\086\069\071\065\067\065\079"
-    
-    
+    -- LANGUAGE SWITCHER: tap/click to cycle PT > EN > ES > FR > DE > RU > JA.
+    -- Preserves ON/OFF markers used by the existing toggle controller.
     sideHeader.Size = UDim2.new(1, -78, 0, 28)
     sideHeader.TextScaled = true
     local langButton = Instance.new("\084\101\120\116\066\117\116\116\111\110", sidebar)
@@ -3507,7 +3507,7 @@ function UI:Start()
     contentCode.TextSize = 10
     contentCode.TextXAlignment = Enum.TextXAlignment.Left
 
-    
+    -- Icones separados dos titulos: mantem os emojis visiveis ao usar Gotham nos textos.
     local tabIcons = {
         ["\073\110\195\173\099\105\111"] = "\240\159\143\160", ["\070\097\114\109\032\070\111\114\195\167\097"] = "\240\159\146\170", ["\070\097\114\109\032\082\101\098\105\114\116\104"] = "\240\159\148\132",
         ["\070\097\114\109\032\066\111\115\115"] = "\240\159\145\145", ["\072\097\108\108\111\119\101\101\110"] = "\240\159\142\131", ["\069\110\099\097\110\116\097\109\101\110\116\111\115"] = "\240\159\147\150", ["\084\101\108\101\112\111\114\116\101\115"] = "\240\159\147\141",
@@ -3533,8 +3533,8 @@ function UI:Start()
         tabBtn.TextXAlignment = Enum.TextXAlignment.Left
         Instance.new("\085\073\067\111\114\110\101\114", tabBtn).CornerRadius = UDim.new(0, 7)
 
-        
-        
+        -- O icone tem seu proprio TextLabel e fonte: evita sumir/trocar de fonte
+        -- quando um botao muda de estado. O nome continua no Gotham do Arasaka.
         local iconLabel = Instance.new("\084\101\120\116\076\097\098\101\108", tabBtn)
         iconLabel.Name = "\065\114\097\115\097\107\097\084\097\098\073\099\111\110"
         iconLabel.BackgroundTransparency = 1
@@ -3605,8 +3605,8 @@ function UI:Start()
         return tabContent
     end
 
-    
-    
+    -- Abas removidas do menu gratis. Containers ocultos preservam referencias
+    -- internas usadas pelos modulos existentes, sem criar botoes de navegacao.
     local function CriarContainerOculto(nome)
         local container = Instance.new("\070\114\097\109\101")
         container.Name = "\082\101\109\111\118\101\100\084\097\098\095" .. nome
@@ -3628,25 +3628,25 @@ function UI:Start()
     UI:BuildArasakaStyles(tabVisual)
     local tabOutros = CriarAba("\079\117\116\114\111\115", "\079\085\084\082\079\083")
 
-    
-    
-    
-    
-    
+    --==================================================
+    -- ARASAKA HALLOWEEN 2026 // EVENT BOSSES, PREMIUM + FREE
+    -- Isolado da BossArena; nenhum sistema de crystal/pets.
+    -- Worker criado somente no ON; OFF invalida geracao e libera estado.
+    --==================================================
     do
         local HWINames = {"\070\114\097\110\107\101\110\098\114\117\116\101", "\080\117\109\112\107\105\110\032\084\105\116\097\110", "\071\114\105\109\032\082\101\097\112\101\114", "\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"}
-        
+        -- Perfis fixos do evento, sem edicao por UI ou preferencias antigas.
         local HWProfiles = {
             ["\070\114\097\110\107\101\110\098\114\117\116\101"] = {height=75},
             ["\080\117\109\112\107\105\110\032\084\105\116\097\110"] = {height=75},
             ["\071\114\105\109\032\082\101\097\112\101\114"] = {height=75},
             ["\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"] = {height=75},
         }
-        
-        
-        
+        -- Gratuito permanente: sem prazo de 24 horas nem exigencia de key/UID.
+        -- Nenhum servidor externo libera ou bloqueia o evento.
+        -- Protecao do premium V7 permanece exclusivamente no backend Premium.
         local function hwEventIsActive()
-            return true 
+            return true -- disponibilidade depende apenas do evento existir no jogo
         end
 
         local HWState = {
@@ -3676,20 +3676,20 @@ function UI:Start()
         local HWLayout = Instance.new("\085\073\076\105\115\116\076\097\121\111\117\116", HWWrap)
         HWLayout.Padding = UDim.new(0, 9)
         HWLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        
+        -- Respiro ao final da lista: o ultimo controle nunca fica escondido no mobile.
         local HWBottomSpace = Instance.new("\070\114\097\109\101", HWWrap)
         HWBottomSpace.Name = "\072\097\108\108\111\119\101\101\110\066\111\116\116\111\109\083\112\097\099\101"
         HWBottomSpace.Size = UDim2.new(1, -8, 0, UserInputService.TouchEnabled and 110 or 36)
         HWBottomSpace.BackgroundTransparency = 1
         HWBottomSpace.BorderSizePixel = 0
         HWBottomSpace.LayoutOrder = 1000000
-        
-        
+        -- HALLOWEEN MOBILE FIX V3: a altura dos controles muda depois da criação da UI.
+        -- O layout mede os botões já redimensionados e sincroniza o canvas.
         local hwCanvasPending = false
         local function updateHalloweenCanvas()
             if not HWWrap.Parent then return end
             local total = HWLayout.AbsoluteContentSize.Y
-            
+            -- AbsoluteContentSize inclui os controles e o espaçador final.
             local needed = math.max(total + 40, HWWrap.AbsoluteSize.Y + 1)
             local wanted = UDim2.fromOffset(0, math.ceil(needed))
             if HWWrap.CanvasSize ~= wanted then
@@ -3720,42 +3720,8 @@ function UI:Start()
         end
         task.defer(scheduleHalloweenCanvas)
 
-        
-        
-        if UserInputService.TouchEnabled then
-            HWWrap.ScrollingEnabled = false 
-            local trackedTouch, touchY, dragged
-            local function insideScroll(pos)
-                local a = HWWrap.AbsolutePosition
-                local size = HWWrap.AbsoluteSize
-                return pos.X >= a.X and pos.X <= a.X + size.X
-                    and pos.Y >= a.Y and pos.Y <= a.Y + size.Y
-            end
-            Core:TrackConnection("\085\073", UserInputService.TouchStarted:Connect(function(touch)
-                if not tabHalloween.Visible or not HWWrap.Visible or trackedTouch then return end
-                if not insideScroll(touch.Position) then return end
-                trackedTouch = touch
-                touchY = touch.Position.Y
-                dragged = false
-                scheduleHalloweenCanvas()
-            end))
-            Core:TrackConnection("\085\073", UserInputService.TouchMoved:Connect(function(touch)
-                if touch ~= trackedTouch or not tabHalloween.Visible then return end
-                local dy = touch.Position.Y - touchY
-                if math.abs(dy) < 0.05 then return end
-                if math.abs(dy) > 5 then dragged = true end
-                touchY = touch.Position.Y
-                local maxY = math.max(0, HWWrap.CanvasSize.Y.Offset - HWWrap.AbsoluteSize.Y)
-                local target = math.clamp(HWWrap.CanvasPosition.Y - dy, 0, maxY)
-                HWWrap.CanvasPosition = Vector2.new(0, target)
-            end))
-            Core:TrackConnection("\085\073", UserInputService.TouchEnded:Connect(function(touch)
-                if touch == trackedTouch then
-                    trackedTouch = nil
-                    touchY = nil
-                end
-            end))
-        end
+        -- Rolagem nativa para mouse, roda e toque; o gerenciador global atualiza o canvas.
+        HWWrap.ScrollingEnabled = true
 
         local function hwText(str, size, height, color)
             local label = Instance.new("\084\101\120\116\076\097\098\101\108", HWWrap)
@@ -3785,7 +3751,7 @@ function UI:Start()
         hwText("\240\159\142\131\032\072\065\076\076\079\087\069\069\078\032\047\047\032\069\086\069\078\084\079", 17, 36, Color3.fromRGB(255, 126, 63))
         hwText("\052\032\066\079\083\083\069\083\032\226\128\162\032\080\069\082\070\073\083\032\070\073\088\079\083\032\226\128\162\032\072\065\076\076\079\087\069\068\032\120\049\048", 11, 42, Color3.fromRGB(194, 178, 172))
         hwText("\076\065\084\069\082\065\076\032\070\073\088\079\032\226\128\162\032\068\073\083\084\195\130\078\067\073\065\032\069\032\065\076\084\085\082\065\032\068\069\070\073\078\073\068\065\083\032\080\079\082\032\066\079\083\083\032\226\128\162\032\043\053\032\080\079\082\032\068\065\078\079", 11, 58, Color3.fromRGB(194,178,172))
-        
+        -- Hallowed Crystal: abrir x10, sem Pet Shop ou selecao de pets no Gratis.
         local hwEggActive, hwEggSerial = false, 0
         local hwEggStatus = hwText("\072\097\108\108\111\119\101\100\032\067\114\121\115\116\097\108\032\120\049\048\032\112\114\111\110\116\111\046", 11, 40, Color3.fromRGB(224,182,182))
         local hwEggOnce = hwButton("\065\066\082\073\082\032\072\065\076\076\079\087\069\068\032\067\082\089\083\084\065\076\032\120\049\048\032\047\047\032\085\077\065\032\086\069\090")
@@ -3857,9 +3823,9 @@ function UI:Start()
         hwText("\077\097\110\116\101\110\104\097\032\065\117\116\111\032\066\111\115\115\032\110\111\114\109\097\108\032\101\032\065\117\116\111\032\081\117\101\115\116\032\100\101\115\108\105\103\097\100\111\115\032\097\111\032\117\115\097\114\032\101\115\116\097\032\097\098\097\046\032\083\101\032\097\109\098\111\115\032\102\111\114\101\109\032\097\116\105\118\097\100\111\115\044\032\072\097\108\108\111\119\101\101\110\032\112\097\114\097\032\112\097\114\097\032\101\118\105\116\097\114\032\099\111\110\102\108\105\116\111\032\100\101\032\116\101\108\101\112\111\114\116\101\046", 11, 75, Color3.fromRGB(156, 152, 152))
 
         hwText("\240\159\142\129\032\080\065\083\083\069\032\068\069\032\072\065\076\076\079\087\069\069\078", 15, 34, Color3.fromRGB(255, 160, 90))
-    
-    
-    
+    -- ARASAKA GRATIS V23 // AUTO PASSE DE HALLOWEEN
+    -- Baseado no HalloweenPassController: resposta.Ok, resposta.State,
+    -- TierUnlocked/IsTierClaimed, ClaimTier, ClaimQuest e ClaimFinal.
     local PASS_WORKER = "\071\114\097\116\105\115\086\050\052\046\065\117\116\111\072\097\108\108\111\119\101\101\110\080\097\115\115"
     local passEnabled = false
     local btnHalloweenPass = hwButton("\065\085\084\079\032\067\079\076\069\084\065\082\032\080\065\083\083\069\032\240\159\142\131\058\032\079\070\070\032\240\159\148\180")
@@ -3943,7 +3909,7 @@ function UI:Start()
             if response and response.Ok == true then
                 successes += 1
                 print("\091\065\082\065\083\065\075\065\093\091\080\065\083\083\093\032\067\111\108\101\116\097\100\111\058\032" .. description)
-                
+                -- Atualizar estado apos cada sucesso para nao enviar premios repetidos.
                 local updated = response.State
                 if type(updated) ~= "\116\097\098\108\101" then
                     updated = getPassState(remote)
@@ -3954,7 +3920,7 @@ function UI:Start()
             return response and response.Ok == true
         end
 
-        
+        -- Recompensas do passe: consultar a mesma regra do cliente oficial.
         if module and type(module.TierUnlocked) == "\102\117\110\099\116\105\111\110" and type(module.IsTierClaimed) == "\102\117\110\099\116\105\111\110" then
             local maxTier = math.clamp(math.floor(tonumber(state.MaxTier) or 0), 0, 200)
             for tier = 1, maxTier do
@@ -3970,7 +3936,7 @@ function UI:Start()
             warn("\091\065\082\065\083\065\075\065\093\091\080\065\083\083\093\032\077\111\100\117\108\111\032\072\097\108\108\111\119\101\101\110\080\097\115\115\032\105\110\100\105\115\112\111\110\105\118\101\108\059\032\110\097\111\032\116\101\110\116\097\114\101\105\032\116\105\101\114\115\032\098\108\111\113\117\101\097\100\111\115")
         end
 
-        
+        -- Missões do proprio Halloween Pass, diferentes das Quests normais do jogador.
         for _, group in ipairs({"\068\097\105\108\121", "\083\101\097\115\111\110"}) do
             local quests = state[group]
             if type(quests) == "\116\097\098\108\101" then
@@ -4016,7 +3982,7 @@ function UI:Start()
     end))
 
 
-    
+    -- ARASAKA GRATIS V24 // AUTO PRESTIGE DO PASSE
     local PRESTIGE_WORKER = "\071\114\097\116\105\115\086\050\052\046\065\117\116\111\072\097\108\108\111\119\101\101\110\080\114\101\115\116\105\103\101"
     local prestigeEnabled = false
     local btnPassPrestige = hwButton("\065\085\084\079\032\080\082\069\083\084\073\071\069\032\240\159\142\131\058\032\079\070\070\032\240\159\148\180")
@@ -4037,7 +4003,7 @@ function UI:Start()
         local tier = tonumber(state.Tier)
         local maximum = tonumber(state.MaxTier)
         if not tier or not maximum or maximum <= 0 or tier < maximum then return end
-        
+        -- A mesma condicao do botao PrestigeTab oficial.
         local before = tonumber(state.Prestige)
         local response = passInvoke(remote, "\080\114\101\115\116\105\103\101", {})
         if not response or response.Ok ~= true then return end
@@ -4165,8 +4131,8 @@ function UI:Start()
                 hwOrbitGyro = bg
             end
         end
-        
-        
+        -- Trava temporária contra queda no limbo ao matar/trocar de boss.
+        -- Não é uma âncora permanente; sai ao chegar no próximo alvo/farm.
         local function hwFreezeTransition()
             local _, hum, root = hwCharacter()
             if not root or not hum or hum.Health <= 0 then return false end
@@ -4177,7 +4143,7 @@ function UI:Start()
         end
         local function hwReturn()
             if HWState.returning or not HWState.origin then return end
-            
+            -- Não libera a posição antes do teleporte: isso causava queda no limbo.
             hwFreezeTransition()
             HWState.returning = true
             local origin = HWState.origin
@@ -4265,7 +4231,7 @@ function UI:Start()
                     if not targetPart or not targetPart.Parent or not activeOffsetY then return end
                     local _, hum, root = hwCharacter()
                     if not hum or hum.Health <= 0 or not root then return end
-                    
+                    -- Mesmo modo 3 do teste V6, sem BodyPosition/BodyGyro.
                     local profile = HWProfiles[lastName]
                     if not profile then return end
                     local desired = targetPart.Position + Vector3.new(0, activeOffsetY, 0)
@@ -4340,7 +4306,7 @@ function UI:Start()
                         end
                         local ch, hum, root = hwCharacter()
                         if hum and hum.Health > 0 and root and part and part.Parent then
-                            
+                            -- Subida progressiva: +5 studs ao receber dano, como no Auto Boss normal.
                             if hum ~= eventHealthHumanoid then
                                 eventHealthHumanoid = hum
                                 eventLastHealth = hum.Health
@@ -4366,13 +4332,13 @@ function UI:Start()
                                 hwStatus("\109\117\115\099\108\101\069\118\101\110\116\032\110\195\163\111\032\101\110\099\111\110\116\114\097\100\111")
                             end
                         end
-                        task.wait(0.1) 
+                        task.wait(0.1) -- Soco a cada 0.1s; orbita recalculada a cada ciclo
                     end
                 end
                 activeBossPart = nil
                 movementConnection:Disconnect()
                 hwReleaseHold()
-                
+                -- Um STOP interrompe a iteração; o retorno é assíncrono e tem trava.
             end)
         end
         Core:TrackConnection("\085\073", HWMainButton.MouseButton1Click:Connect(arsToggleHalloween))
@@ -4387,15 +4353,15 @@ function UI:Start()
             HWState.generation += 1
             Core:StopWorker("\072\097\108\108\111\119\101\101\110\046\066\111\115\115\070\097\114\109")
             hwReleaseHold()
-            
+            -- Se a janela for destruída durante a sessão, não deixar movimento automático.
         end)
     end
-    
+    -- FIM / ARASAKA HALLOWEEN
 
-    
-    
-    
-    
+    -- ARASAKA V3 / MOBILE OPTION ACCESSIBILITY
+    -- Aumenta os CONTROLES do conteudo, nunca o tamanho/UIScale do hub.
+    -- Somente aumenta a altura de botoes em listas com UIListLayout, para nao
+    -- sobrepor botoes de janelas que usam posicionamento absoluto.
     local ArasakaOptionSizing = {
         Root = contentArea,
         Mode = UserInputService.TouchEnabled and 2 or 1,
@@ -4429,14 +4395,14 @@ function UI:Start()
             and parent:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116") ~= nil
             and original.size.Y.Scale == 0
             and baseHeight >= 24 and baseHeight <= 66
-        
+        -- Aumentar a area de toque, mantendo o CanvasSize sob controle do layout.
         if inVerticalList and (obj:IsA("\084\101\120\116\066\117\116\116\111\110") or obj:IsA("\084\101\120\116\066\111\120")) then
             local minHeight = mode == 2 and 52 or 62
             local height = math.min(98, math.max(minHeight, math.floor(baseHeight * factor + 0.5)))
             obj.Size = UDim2.new(original.size.X.Scale, original.size.X.Offset, 0, height)
             obj.TextWrapped = true
         else
-            
+            -- Elementos posicionados manualmente nao mudam de tamanho: evita sobreposicao.
             obj.Size = original.size
             obj.TextWrapped = original.wrapped
             if original.size.Y.Scale == 0 and baseHeight > 0 then
@@ -4444,7 +4410,7 @@ function UI:Start()
             end
         end
         if obj.TextScaled then
-            
+            -- TextScaled ja usa toda a area disponivel; seu limite fica intocado.
             return
         end
         if obj.TextSize ~= targetFont then obj.TextSize = targetFont end
@@ -4460,7 +4426,7 @@ function UI:Start()
     function ArasakaOptionSizing:Start()
         if self.Connected then return end
         self.Connected = true
-        
+        -- Nenhuma varredura periodica. Apenas novos elementos e cliques do usuario.
         Core:TrackConnection("\085\073", self.Root.DescendantAdded:Connect(function(obj)
             if obj:IsA("\084\101\120\116\066\117\116\116\111\110") or obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\111\120") then
                 task.defer(function()
@@ -4483,16 +4449,16 @@ function UI:Start()
     abas["\073\110\195\173\099\105\111"].title.TextColor3 = Color3.fromRGB(245, 245, 245)
     abas["\073\110\195\173\099\105\111"].line.Visible = true
 
-    
+    -- ATALHO DE TECLADO: TECLA INSERT (INS) PARA ESCONDER/MOSTRAR HUB
     Core:TrackConnection("\085\073", UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.Insert and screenGui.Parent then
             screenGui.Enabled = not screenGui.Enabled
         end
     end))
 
-    
-    
-    
+    --==================================================
+    -- MODULE // CALCULATOR
+    --==================================================
     function Calculator:Init()
         local tab = abas["\067\097\108\099\117\108\097\100\111\114\097"] and abas["\067\097\108\099\117\108\097\100\111\114\097"].container
         if not tab then return end
@@ -4510,7 +4476,7 @@ function UI:Start()
         layout.Padding = UDim.new(0, 7)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
         layout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 18)
+            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 120)
         end)
 
         local header = Instance.new("\084\101\120\116\076\097\098\101\108", scroll)
@@ -4598,10 +4564,10 @@ function UI:Start()
             Rebirths = makeCard("\240\159\148\132\032\082\069\078\065\083\067\073\077\069\078\084\079\083", 6)
         }
 
-        
-        
-        
-        
+        -- A UI acima foi mantida intacta.
+        -- Apenas a lógica de cálculo foi substituída:
+        -- agora mede ganho REAL enquanto cada atributo está subindo e atualiza
+        -- continuamente, sem precisar esperar fechar uma amostra de 1 minuto.
         local TRAINING_GRACE_SECONDS = 5
         local POLL_SECONDS = 0.25
 
@@ -4677,7 +4643,7 @@ function UI:Start()
                         local delta = current - (s.previous or current)
                         s.previous = current
 
-                        
+                        -- Só soma crescimento positivo. Reset/rebirth não reduz o acumulado.
                         if delta > 0 then
                             if not s.started then
                                 s.started = true
@@ -4689,7 +4655,7 @@ function UI:Start()
                             s.lastGainAt = now
                         end
 
-                        
+                        -- Conta apenas o tempo em que o atributo está efetivamente progredindo.
                         if s.started and s.lastGainAt and (now - s.lastGainAt) <= TRAINING_GRACE_SECONDS then
                             s.activeTime += dt
                             table.insert(activeNames, s.name)
@@ -4719,10 +4685,10 @@ function UI:Start()
     local calcOk, calcErr = Core:StartModule("\067\097\108\099\117\108\097\116\111\114")
     if not calcOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\067\097\108\099\117\108\097\116\111\114\093\032\070\097\108\104\097\058", calcErr) end
 
-    
-    
-    
-    
+    --==================================================
+    -- MODULE // CHAT // LAZY LOADING
+    -- O chat só é inicializado quando a aba CHAT é aberta pela primeira vez.
+    --==================================================
     Chat.Initialized = false
     Chat.Loading = false
 
@@ -4768,8 +4734,8 @@ function UI:Start()
         end
     end
 
-    
-    
+    -- Detecta a primeira abertura da página do chat sem alterar os botões existentes.
+    -- Assim preservamos a navegação original do Hub.
     local chatVisibilityConnection
     chatVisibilityConnection = tabChat:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(function()
         if tabChat.Visible then
@@ -4798,14 +4764,14 @@ function UI:Start()
         self.Initialized = false
     end
 
-    
+    -- Caso CHAT já esteja visível por alguma configuração futura.
     if tabChat.Visible then
         task.defer(EnsureChatLoaded)
     end
 
-    
-    
-    
+    --==================================================
+    -- MODULE // KILL
+    --==================================================
     function Kill:Init()
         Utils.PerfBegin("\075\073\076\076\095\085\073")
         self.State = self.State or {
@@ -4815,7 +4781,7 @@ function UI:Start()
             excludedUserIds = {}
         }
 
-    
+    -- CACHE LOCAL DE AMIGOS
     local friendsCache = {}
 
     local function updateFriendsCache()
@@ -4858,7 +4824,7 @@ function UI:Start()
     killLayout.Padding = UDim.new(0, 7)
     killLayout.SortOrder = Enum.SortOrder.LayoutOrder
     killLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-        killScroll.CanvasSize = UDim2.new(0, 0, 0, killLayout.AbsoluteContentSize.Y + 18)
+        killScroll.CanvasSize = UDim2.new(0, 0, 0, killLayout.AbsoluteContentSize.Y + 120)
     end)
 
     local killHeader = Instance.new("\084\101\120\116\076\097\098\101\108", killScroll)
@@ -5093,7 +5059,7 @@ function UI:Start()
         local ll = Instance.new("\085\073\076\105\115\116\076\097\121\111\117\116", list)
         ll.Padding = UDim.new(0,5)
         ll:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-            list.CanvasSize = UDim2.new(0,0,0,ll.AbsoluteContentSize.Y+10)
+            list.CanvasSize = UDim2.new(0,0,0,ll.AbsoluteContentSize.Y+120)
         end)
 
         local function closeMenu() if gui then gui:Destroy() end end
@@ -5158,7 +5124,7 @@ function UI:Start()
                     killStatus.Text = "\083\084\065\084\085\083\032\047\047\032\078\069\078\072\085\077\032\065\076\086\079\032\086\195\129\076\073\068\079"
                     task.wait(0.25)
                 else
-                    
+                    -- Evita giro quente quando há muitos alvos e mantém resposta rápida.
                     task.wait(0.03)
                 end
             end
@@ -5182,7 +5148,7 @@ function UI:Start()
     local killOk, killErr = Core:StartModule("\075\105\108\108")
     if not killOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\075\105\108\108\093\032\070\097\108\104\097\058", killErr) end
 
-    
+    -- ABA INÍCIO // DASHBOARD ARASAKA
     local introTop = Instance.new("\070\114\097\109\101", tabInicio)
     introTop.Size = UDim2.new(1, -20, 0, 70)
     introTop.Position = UDim2.new(0, 10, 0, 8)
@@ -5391,13 +5357,13 @@ function UI:Start()
     local CaptureBossReturnContext = function() return false end
     local FarmQuestPaused = false
 
-    
+    -- MODULE // FARMS
     function Farms:Init()
         Utils.PerfBegin("\070\065\082\077\083\095\085\073")
 
-    
-    
-    
+    --==================================================
+    -- ABAS SEPARADAS // FORÇA / REBIRTH / BOSS
+    --==================================================
     local function CriarFarmScroll(parentTab)
         local scroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", parentTab)
         scroll.Size = UDim2.new(1, -20, 1, -10)
@@ -5412,7 +5378,7 @@ function UI:Start()
         layout.Padding = UDim.new(0, 6)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
         layout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
+            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 120)
         end)
 
         return scroll
@@ -5422,7 +5388,7 @@ function UI:Start()
     local farmRebirthScroll = CriarFarmScroll(tabFarmRebirth)
     local farmBossScroll = CriarFarmScroll(tabFarmBoss)
 
-    
+    -- Auto Boss normal: posição/altura e comportamento originais, sem controles novos.
 
     local farmScrolls = {
         farmForcaScroll,
@@ -5430,9 +5396,9 @@ function UI:Start()
         farmBossScroll,
     }
 
-    
-    
-    
+    -- Cria os controles diretamente, sem depender do helper global Utils.CreateTextButton.
+    -- A versao anterior parava na primeira tentativa de criar botao de farm;
+    -- os tres paineis ficavam incompletos (Force/Boss vazios, Rebirth so com meta).
     local function CriarBotaoFarmScroll(parent, texto, order)
         local btn = Instance.new("\084\101\120\116\066\117\116\116\111\110")
         btn.Name = "\065\114\097\115\097\107\097\070\097\114\109\065\099\116\105\111\110\095" .. tostring(order)
@@ -5469,7 +5435,7 @@ function UI:Start()
 
     local autoFarmActive, autoRepsActive, autoUnifiedFarmActive, travarLocalActive = false, false, false, false
 
-    
+    -- Gratis: todos os tipos de boss suportados ficam habilitados.
     local function isBossAllowedBySelection(bossName)
         return bossName == "\066\111\115\115\049" or bossName == "\066\111\115\115\050"
             or bossName == "\066\111\115\115\051" or bossName == "\066\111\115\115\052"
@@ -5650,12 +5616,12 @@ function UI:Start()
         end
     end)
 
-    
+    -- FARM REBIRTH
     targetRebirthButton = CriarBotaoFarmScroll(farmRebirthScroll, "\065\085\084\079\032\082\069\066\073\082\084\072\032\084\065\082\071\069\084", 3)
     local btnUnifiedFarm = CriarBotaoFarmScroll(farmRebirthScroll, "\065\085\084\079\032\082\069\080\083\032\050\088\032\043\032\082\069\066\073\082\084\072\032\240\159\143\139\239\184\143\240\159\148\132", 4)
     local btnOverlordRebirth = CriarBotaoFarmScroll(farmRebirthScroll, "\082\069\066\073\082\084\072\032\080\065\067\075\032\079\086\069\082\076\079\082\068\032\240\159\145\145", 5)
 
-    
+    -- FARM FORÇA
     CriarSeparadorFarm(farmForcaScroll, "\047\047\032\070\065\082\077\032\068\069\032\070\079\082\195\135\065", 1)
     local btnRepsOnly = CriarBotaoFarmScroll(farmForcaScroll, "\065\085\084\079\032\082\069\080\083\032\050\088\032\040\083\079\032\070\079\082\067\065\041\032\240\159\143\139\239\184\143", 2)
     local btnFarmOp = CriarBotaoFarmScroll(farmForcaScroll, "\067\073\067\076\079\032\067\079\078\084\082\079\076\065\068\079\082\032\226\154\153\239\184\143", 3)
@@ -5666,9 +5632,9 @@ function UI:Start()
 
     local btnMainStrengthOp = CriarBotaoFarmScroll(farmForcaScroll, "\077\065\073\078\032\070\079\082\195\135\065\032\240\159\146\170", 6)
 
-    
-    
-    
+    --==================================================
+    -- SENSOR GLOBAL DE BOSS // VERSÃO GRÁTIS
+    --==================================================
     do
         local FREE_BOSS_API = "\104\116\116\112\115\058\047\047\099\104\097\116\112\114\105\118\097\100\111\045\099\119\117\051\046\111\110\114\101\110\100\101\114\046\099\111\109"
         local FREE_BOSS_SCAN_INTERVAL = 0.50
@@ -5880,13 +5846,13 @@ function UI:Start()
     end
 
 
-    
+    -- FARM BOSS
     CriarSeparadorFarm(farmBossScroll, "\047\047\032\070\065\082\077\032\066\079\083\083", 1)
     local btnFarm = CriarBotaoFarmScroll(farmBossScroll, "\065\085\084\079\032\070\065\082\077\032\066\079\083\083\032\226\154\148\239\184\143", 2)
 
-    
-    
-    
+    -- FARM OP (11 PETS) // ciclo configurável.
+    -- Baseado no modo "Strength (Slower)" do Silence:
+    -- velocidade configurável + controle adaptativo por ping.
     do
         local box = Instance.new("\084\101\120\116\066\111\120", farmForcaScroll)
         box.Name = "\065\114\097\115\097\107\097\070\097\114\109\079\112\082\101\112\115\066\111\120"
@@ -6043,7 +6009,7 @@ function UI:Start()
         layoutSlots.Padding = UDim.new(0, 6)
 
         layoutSlots:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-            scrollSlots.CanvasSize = UDim2.new(0, 0, 0, layoutSlots.AbsoluteContentSize.Y + 10)
+            scrollSlots.CanvasSize = UDim2.new(0, 0, 0, layoutSlots.AbsoluteContentSize.Y + 120)
         end)
 
         local function GetAvailablePetsForSlot(targetSlotsTable, currentSlotIndex)
@@ -6176,8 +6142,8 @@ function UI:Start()
                         break
                     end
 
-                    
-                    
+                    -- AUTO REBIRTH META agora também treina força.
+                    -- Mantém o treino ativo enquanto tenta alcançar a meta.
                     local muscleEvent = getMuscleEvent()
                     if muscleEvent then
                         for _ = 1, 4 do
@@ -6331,9 +6297,9 @@ function UI:Start()
         refreshTrainingWatchdog()
     end)
 
-    
-    
-    
+    -- WATCHDOG DE TREINO // 5 SEGUNDOS
+    -- Aplica-se aos treinos comuns desta aba. OVERLORD e FARM OP (11 PETS)
+    -- ficam fora para preservar exatamente as versões ajustadas recentemente.
     ;(function()
         local function getStrength()
             local ls = player:FindFirstChild("\108\101\097\100\101\114\115\116\097\116\115")
@@ -6352,7 +6318,7 @@ function UI:Start()
                 weight = backpack:FindFirstChild("\087\101\105\103\104\116")
             end
 
-            
+            -- Compatibilidade caso o peso tenha variação no nome.
             if not weight then
                 for _, container in ipairs({char, backpack}) do
                     if container then
@@ -6487,7 +6453,7 @@ function UI:Start()
             return false
         end
 
-        
+        -- Se já existe um Tool equipado, prioriza um peso/weight existente.
         local currentTool = char:FindFirstChildOfClass("\084\111\111\108")
         if currentTool and string.find(string.lower(currentTool.Name), "\119\101\105\103\104\116", 1, true) then
             return true
@@ -6495,7 +6461,7 @@ function UI:Start()
 
         local weight = nil
 
-        
+        -- Nomes mais comuns primeiro.
         local preferredNames = {
             "\087\101\105\103\104\116",
             "\049\048\048\103\032\087\101\105\103\104\116",
@@ -6510,7 +6476,7 @@ function UI:Start()
             weight = nil
         end
 
-        
+        -- Fallback: qualquer Tool cujo nome contenha "weight".
         if not weight then
             for _, container in ipairs({char, backpack}) do
                 if container then
@@ -6604,10 +6570,10 @@ function UI:Start()
         if overlordRebirthActive then startOverlordWorker() else Core:StopWorker("\070\097\114\109\115\046\079\118\101\114\108\111\114\100") end
     end)
 
-    
-    
-    
-    
+    --==================================================
+    -- CICLO CONTROLADOR // IMPORTADO/ADAPTADO DO SILENCE
+    --==================================================
+    -- Dicionário usado pelo Silence para decidir quais pets priorizar.
     local SILENCE_FARM_PETS = {
         ["\079\109\101\103\097\032\079\118\101\114\108\111\114\100"] = {repSpeed = 20, strength = 0, durability = 0, rebirth = 0},
         ["\083\119\105\102\116\032\083\097\109\117\114\097\105"] = {repSpeed = 15, strength = 0, durability = 0, rebirth = 0},
@@ -6688,7 +6654,7 @@ function UI:Start()
         local equippedCount = 0
         local currentRepSpeed = 0
 
-        
+        -- Primeiro o Silence prioriza Rep Speed até alcançar o alvo.
         table.sort(pets, function(a, b)
             return a.repSpeed > b.repSpeed
         end)
@@ -6709,7 +6675,7 @@ function UI:Start()
             end
         end
 
-        
+        -- Depois completa os slots com Strength + Durability.
         local remaining = {}
         for _, pet in ipairs(pets) do
             if not equipped[pet.instance] then
@@ -6767,8 +6733,8 @@ function UI:Start()
     startFarmOp = function()
         if Core:IsWorkerRunning("\070\097\114\109\115\046\070\097\114\109\079\112") then return end
 
-        
-        
+        -- Mantem os pets atualmente equipados pelo jogador.
+        -- O Ciclo Controlador faz apenas os REPS e nao altera equipes.
 
         Core:StartWorker("\070\097\114\109\115\046\070\097\114\109\079\112", function(isAlive)
             while isAlive() and farmOpActive do
@@ -6800,7 +6766,7 @@ function UI:Start()
                         event:FireServer("\114\101\112")
                     end)
 
-                    
+                    -- Mesmo princípio do Silence: cede o scheduler em lotes muito grandes.
                     if i % 500 == 0 then
                         task.wait()
                     end
@@ -6833,7 +6799,7 @@ function UI:Start()
             btnFarmOp.Text = "\067\073\067\076\079\032\067\079\078\084\082\079\076\065\068\079\082\058\032\079\070\070\032\240\159\148\180"
             btnFarmOp.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
         else
-            
+            -- Evita dois farms de Strength disparando juntos.
             if mainStrengthOpActive then
                 mainStrengthOpActive = false
                 Core:StopWorker("\070\097\114\109\115\046\077\097\105\110\083\116\114\101\110\103\116\104\079\112")
@@ -6848,10 +6814,10 @@ function UI:Start()
         end
     end)
 
-    
-    
-    
-    
+    --==================================================
+    -- MAIN FORÇA — controlador do Silence original.
+    -- Ajusta a taxa a cada 0,5 s; reduz após dois intervalos sem progresso.
+    --==================================================
     local mainStrengthState = {
         initialSendRate = 200,
         maxRate = 659,
@@ -6984,7 +6950,7 @@ function UI:Start()
         mainStrengthOpActive = not mainStrengthOpActive
 
         if mainStrengthOpActive then
-            
+            -- Não deixa o Ciclo Controlador disputar o mesmo muscleEvent.
             if farmOpActive then
                 stopFarmOp()
                 btnFarmOp.Text = "\067\073\067\076\079\032\067\079\078\084\082\079\076\065\068\079\082\058\032\079\070\070\032\240\159\148\180"
@@ -7015,11 +6981,11 @@ function UI:Start()
         return nil
     end
 
-    
-    
-    
-    
-    
+    --==================================================
+    -- BOSS CHEST // workspace.BossChest
+    --==================================================
+    -- Todos os baus de boss ficam dentro de workspace.BossChest.
+    -- Nao varremos mais o Workspace inteiro: usamos somente esse container.
     local function findBossChestPrompt()
         local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
         if not chest then
@@ -7068,8 +7034,8 @@ function UI:Start()
     end
 
     local function collectBossChest()
-        
-        
+        -- Sistema antigo que funcionava:
+        -- procura qualquer ProximityPrompt dentro de workspace.BossChest.
         local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
         if not chest then return false end
 
@@ -7084,8 +7050,8 @@ function UI:Start()
         return false
     end
 
-    
-    
+    -- Mantém o personagem suspenso durante a troca de alvo/espera de baú.
+    -- Só trava a raiz enquanto o Auto Boss está realmente em transição.
     local function holdBossTransition()
         local char = player.Character
         local hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
@@ -7112,8 +7078,8 @@ function UI:Start()
         local root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
         if not root or not hum or hum.Health <= 0 then return false end
 
-        
-        
+        -- Mantém o personagem perto do prompt e impede que ele atravesse o chão
+        -- enquanto o baú está sendo coletado.
         root.Anchored = true
         root.CFrame = CFrame.new(pos + Vector3.new(0, 2.5, 0))
         root.AssemblyLinearVelocity = Vector3.zero
@@ -7135,7 +7101,7 @@ function UI:Start()
         local bossArena = events:FindFirstChild("\066\111\115\115\065\114\101\110\097")
         if not bossArena then return nil end
 
-        
+        -- Mantem a lista antiga e adiciona BossAdmin sem remover Boss6/BossRainbow.
         local targetBosses = {"\066\111\115\115\049", "\066\111\115\115\050", "\066\111\115\115\051", "\066\111\115\115\052", "\066\111\115\115\053", "\066\111\115\115\054", "\066\111\115\115\065\100\109\105\110", "\066\111\115\115\082\097\105\110\098\111\119"}
         local sawNamedBoss = false
 
@@ -7144,7 +7110,7 @@ function UI:Start()
             if bossObj then
                 sawNamedBoss = true
 
-                
+                -- Boss existe, mas o usuario nao marcou esse tipo: ignora e continua farmando.
                 if isBossAllowedBySelection(bossName) then
                     if bossObj:IsA("\077\111\100\101\108") then
                         local humanoid = bossObj:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
@@ -7161,8 +7127,8 @@ function UI:Start()
             end
         end
 
-        
-        
+        -- Nunca usa BossSpawn/Part da arena como alvo.
+        -- Se nenhum objeto real de boss permitido estiver presente, não farma.
         return nil
     end
 
@@ -7233,18 +7199,18 @@ function UI:Start()
         return true
     end
 
-    
-    
-    
+    --==================================================
+    -- AUTO BOSS // RETORNO AO LOCAL ORIGINAL + BAÚ
+    --==================================================
     local bossCycleInArena = false
     local bossReturnDeadline = nil
     local bossChestCollected = false
     local bossFarmPauseSnapshot = nil
 
     local function getBossTargetForFarm()
-        
-        
-        
+        -- Usa a MESMA detecção que o Auto Boss antigo já usava.
+        -- A versão anterior exigia Humanoid e alguns bosses deste jogo não
+        -- expõem Humanoid do jeito esperado, então o target ficava nil.
         return getBossTargetPosition()
     end
 
@@ -7258,9 +7224,9 @@ function UI:Start()
     local function pauseAllFarmsForBoss()
         if bossFarmPauseSnapshot then return end
 
-        
-        
-        
+        -- AUTO BOSS: salva o ponto REAL onde o player está farmando agora,
+        -- imediatamente antes de sair para o boss. Isso evita voltar para
+        -- a posição antiga onde o botão do farm foi ligado.
         pcall(CaptureBossReturnContext)
 
         bossFarmPauseSnapshot = {
@@ -7274,8 +7240,8 @@ function UI:Start()
             travar = travarLocalActive,
         }
 
-        
-        
+        -- Para TODOS os workers de farm que podem competir com o Auto Boss.
+        -- O Auto Boss em si e o Auto Quest NÃO são desligados aqui.
         for _, workerName in ipairs({
             "\070\097\114\109\115\046\084\097\114\103\101\116\082\101\098\105\114\116\104",
             "\070\097\114\109\115\046\067\117\115\116\111\109\082\101\098\105\114\116\104",
@@ -7289,7 +7255,7 @@ function UI:Start()
             Core:StopWorker(workerName)
         end
 
-        
+        -- Travar Local também interfere com o teleporte até o boss.
         if lockConnection then
             lockConnection:Disconnect()
             lockConnection = nil
@@ -7357,7 +7323,7 @@ function UI:Start()
         print("\091\065\082\065\083\065\075\065\093\091\065\085\084\079\032\066\079\083\083\093\032\070\097\114\109\115\032\097\110\116\101\114\105\111\114\101\115\032\114\101\116\111\109\097\100\097\115\046")
     end
 
-    
+    -- Mesmo sistema de sustentacao fisica usado no evento Halloween.
     local normalBossPosition, normalBossGyro = nil, nil
     local normalBossAngle, normalBossTick = 0, os.clock()
     local function releaseNormalBossHold()
@@ -7395,9 +7361,9 @@ function UI:Start()
         Core:StartWorker("\070\097\114\109\115\046\066\111\115\115\080\111\115\105\116\105\111\110", function(isAlive)
             local lastBossSeen = false
             while isAlive() and autoFarmActive and not FarmQuestPaused do
-                
-                
-                
+                -- Comportamento antigo completo: tenta coletar o BossChest
+                -- em TODO Heartbeat enquanto o Auto Boss estiver ativo.
+                -- Assim, no instante em que o baú/prompt aparece, ele já tenta usar.
                 if collectBossChest() then
                     bossChestCollected = true
                 end
@@ -7407,9 +7373,9 @@ function UI:Start()
                 local humanoid = character and character:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 
                 if hrp and humanoid and humanoid.Health > 0 then
-                    
-                    
-                    
+                    -- Depois que o boss morreu, tenta coletar o baú por no máximo 5s.
+                    -- Durante essa janela o player fica preso perto do prompt para não
+                    -- atravessar o chão/morrer antes da coleta.
                     if bossReturnDeadline then
                         releaseNormalBossHold()
                         BossDamageHudState.BossAlive = false
@@ -7420,8 +7386,8 @@ function UI:Start()
                             bossChestCollected = true
                         end
 
-                        
-                        
+                        -- Coletou: encerra a espera imediatamente.
+                        -- Se o baú não responder, encerra após no máximo 5s.
                         if bossChestCollected or os.clock() >= bossReturnDeadline then
                             if not bossChestCollected then
                                 holdNearBossChest()
@@ -7430,7 +7396,7 @@ function UI:Start()
                                 end
                             end
 
-                            
+                            -- Não solta antes do retorno: manter seguro contra limbo.
                             holdBossTransition()
                             setNoclip(false)
                             RestoreFarmContext()
@@ -7451,19 +7417,19 @@ function UI:Start()
                                 bossCycleInArena = true
                                 bossChestCollected = false
 
-                                
-                                
-                                
+                                -- Evita delay/conflito: pausa todos os farms antes do Auto Boss.
+                                -- Auto Quest permanece ativo; se a quest atual for de boss,
+                                -- ela pode continuar trabalhando no mesmo boss.
                                 pauseAllFarmsForBoss()
 
-                                
+                                -- Mesmo pulo usado no fluxo do Auto Quest/retorno da farm.
                                 jumpBeforeFarmReturn()
                             end
 
                             releaseBossChestHold()
                             setNoclip(true)
-                            
-                            
+                            -- Sustentacao igual ao boss do evento; altura reage ao dano.
+                            -- Orbita opcional (normalOrbit); quando desligada, fica a 25 studs.
                             local desired = targetPos + Vector3.new(0, currentOffsetY, 0)
                             if hrp.Anchored then
                                 hrp.CFrame = CFrame.new(desired)
@@ -7484,8 +7450,8 @@ function UI:Start()
                                 print("\091\065\082\065\083\065\075\065\093\091\065\085\084\079\032\066\079\083\083\093\032\066\111\115\115\032\109\111\114\116\111\046\032\084\101\110\116\097\110\100\111\032\099\111\108\101\116\097\114\032\111\032\098\097\195\186\032\112\111\114\032\097\116\195\169\032\053\115\046")
                                 lastBossSeen = false
                             end
-                            
-                            
+                            -- Transição boss vivo -> boss morto.
+                            -- Janela curta: fica perto do baú por até 5s e tenta coletar.
                             bossReturnDeadline = os.clock() + 5
                             holdNearBossChest()
                             if collectBossChest() then
@@ -7494,7 +7460,7 @@ function UI:Start()
                         else
                             BossDamageHudState.BossAlive = false
                             releaseNormalBossHold()
-                            
+                            -- Sem boss ativo: permanece onde estiver aguardando o próximo.
                             setNoclip(false)
                         end
                     end
@@ -7513,7 +7479,7 @@ function UI:Start()
             local useLeftHand = true
 
             while isAlive() and autoFarmActive and not FarmQuestPaused do
-                
+                -- 1 soco a cada 0.1s.
                 if bossCycleInArena and not bossReturnDeadline then
                     local targetPos = getBossTargetForFarm()
                     if targetPos then
@@ -7573,8 +7539,8 @@ function UI:Start()
             releaseNormalBossHold()
             setNoclip(false)
 
-            
-            
+            -- Ao desligar manualmente, permanece onde estiver.
+            -- Não executa jump nem RestoreFarmContext.
             resetBossCycleState()
 
             damageCount = 0
@@ -7626,9 +7592,9 @@ function UI:Start()
     end)
 
 
-    
-    
-    
+    --==================================================
+    -- V6.0.0 // FARM CONTEXT + PAUSA/RETORNO DO AUTO QUEST
+    --==================================================
     local function getPromptWorldPosition(prompt)
         if not prompt or not prompt.Parent then return nil end
         local parent = prompt.Parent
@@ -7667,8 +7633,8 @@ function UI:Start()
         local tool = char:FindFirstChildOfClass("\084\111\111\108")
         local nearestPrompt = findNearestFarmPrompt(root.Position, 30)
 
-        
-        
+        -- O ponto de retorno do Auto Boss deve ser o local ATUAL da máquina,
+        -- não o CFrame salvo quando o botão do farm foi clicado.
         FarmResumeContext.Saved = true
         FarmResumeContext.FarmName = FarmResumeContext.FarmName or "\070\065\082\077\032\065\084\085\065\076"
         FarmResumeContext.CFrame = root.CFrame
@@ -7752,12 +7718,12 @@ function UI:Start()
         root.AssemblyLinearVelocity = Vector3.zero
         root.AssemblyAngularVelocity = Vector3.zero
 
-        
-        
+        -- IMPORTANTE: após Auto Quest/Auto Boss, dá tempo para o jogo
+        -- limpar o estado anterior antes de tentar subir novamente na máquina.
         print("\091\065\082\065\083\065\075\065\093\091\070\065\082\077\032\067\079\078\084\069\088\084\093\032\097\103\117\097\114\100\097\110\100\111\032\052\115\032\097\110\116\101\115\032\100\101\032\114\101\097\116\105\118\097\114\032\109\195\161\113\117\105\110\097\046\046\046")
         task.wait(4)
 
-        
+        -- Garante novamente a posição exata após a espera.
         char = player.Character or char
         hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
         root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
@@ -7778,10 +7744,10 @@ function UI:Start()
             end
         end
 
-        
+        -- Rebusca o prompt porque algumas máquinas recriam o prompt/attachment.
         FarmResumeContext.Prompt = findNearestFarmPrompt(FarmResumeContext.CFrame.Position, 28)
 
-        
+        -- Igual ao início da farm: não depende de uma única tentativa.
         local activated = false
         for attempt = 1, 4 do
             if reactivateFarmInteraction() then
@@ -7791,7 +7757,7 @@ function UI:Start()
             if attempt < 4 then
                 task.wait(0.6)
 
-                
+                -- Mantém o player em cima da máquina entre as tentativas.
                 local currentChar = player.Character
                 local currentRoot = currentChar and currentChar:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
                 if currentRoot then
@@ -7811,8 +7777,8 @@ function UI:Start()
         return true
     end
 
-    
-    
+    -- Salva o ponto ANTES do clique ligar uma farm.
+    -- MouseButton1Down acontece antes do MouseButton1Click que muda OFF -> ON.
     local farmCaptureConnections = setmetatable({}, {__mode = "\107"})
     local function attachFarmContextCapture(obj)
         if not obj:IsA("\084\101\120\116\066\117\116\116\111\110") or farmCaptureConnections[obj] then return end
@@ -7868,8 +7834,8 @@ function UI:Start()
             end
         end)
 
-        
-        
+        -- Usa exatamente a mesma lógica do Auto Boss normal:
+        -- mata -> coleta baú por até 15s -> volta ao local anterior.
         startBossFarmRuntime()
     end
 
@@ -7987,7 +7953,7 @@ function UI:Start()
     local farmsOk, farmsErr = Core:StartModule("\070\097\114\109\115")
     if not farmsOk then
         warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\070\097\114\109\115\093\032\070\097\108\104\097\058", farmsErr)
-        
+        -- Erros na montagem nao devem deixar as abas silenciosamente vazias.
         for _, tab in ipairs({tabFarmForca, tabFarmRebirth, tabFarmBoss}) do
             local errLabel = Instance.new("\084\101\120\116\076\097\098\101\108")
             errLabel.Name = "\065\114\097\115\097\107\097\070\097\114\109\115\069\114\114\111\114"
@@ -8005,10 +7971,10 @@ function UI:Start()
         end
     end
 
-    
+    -- MODULE // TELEPORTS
     function Teleports:Init()
         Utils.PerfBegin("\084\069\076\069\080\079\082\084\069\083\095\085\073")
-    
+    -- ABA TELEPORTES
     local teleScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabTeleports)
     teleScroll.Size = UDim2.new(1, -20, 1, -10)
     teleScroll.Position = UDim2.new(0, 10, 0, 5)
@@ -8020,7 +7986,7 @@ function UI:Start()
     teleLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
     teleLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-        teleScroll.CanvasSize = UDim2.new(0, 0, 0, teleLayout.AbsoluteContentSize.Y + 20)
+        teleScroll.CanvasSize = UDim2.new(0, 0, 0, teleLayout.AbsoluteContentSize.Y + 120)
     end)
 
     local locations = {
@@ -8059,10 +8025,10 @@ function UI:Start()
     local teleOk, teleErr = Core:StartModule("\084\101\108\101\112\111\114\116\115")
     if not teleOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\084\101\108\101\112\111\114\116\115\093\032\070\097\108\104\097\058", teleErr) end
 
-    
+    -- MODULE // PETS
     function Pets:Init()
         Utils.PerfBegin("\080\069\084\083\095\085\073")
-    
+    -- ABA PETS
     local petScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabPets)
     petScroll.Size = UDim2.new(1, -20, 1, -10)
     petScroll.Position = UDim2.new(0, 10, 0, 5)
@@ -8074,7 +8040,7 @@ function UI:Start()
     petLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
     petLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-        petScroll.CanvasSize = UDim2.new(0, 0, 0, petLayout.AbsoluteContentSize.Y + 20)
+        petScroll.CanvasSize = UDim2.new(0, 0, 0, petLayout.AbsoluteContentSize.Y + 120)
     end)
 
     local function CriarSecaoTitulo(txt, order)
@@ -8327,10 +8293,10 @@ function UI:Start()
     local petsOk, petsErr = Core:StartModule("\080\101\116\115")
     if not petsOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\080\101\116\115\093\032\070\097\108\104\097\058", petsErr) end
 
-    
+    -- MODULE // VISUAL
     function Visual:Init()
         Utils.PerfBegin("\086\073\083\085\065\076\095\085\073")
-    
+    -- ABA VISUAL
     local rtxActive, vibeActive, antiLagActive, terrorActive, fotorealistaActive, blackScreenActive = false, false, false, false, false, false
 
     local defaultLighting = {
@@ -8356,7 +8322,7 @@ function UI:Start()
         btn.BackgroundTransparency=1
         btn.BorderSizePixel=0
         btn.AutoButtonColor=false
-        
+        -- Mantem o texto original para callbacks e notificacoes existentes.
         btn.Text=texto.."\058\032\079\070\070\032\240\159\148\180"
         btn.TextTransparency=1
         local surface=Instance.new("\070\114\097\109\101",btn)
@@ -8758,10 +8724,10 @@ function UI:Start()
     local visualOk, visualErr = Core:StartModule("\086\105\115\117\097\108")
     if not visualOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\086\105\115\117\097\108\093\032\070\097\108\104\097\058", visualErr) end
 
-    
+    -- MODULE // SYSTEM / OUTROS
     function System:Init()
         Utils.PerfBegin("\079\085\084\082\079\083\095\085\073")
-    
+    -- ABA OUTROS
     local outrosScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabOutros)
     outrosScroll.Size = UDim2.new(1, -20, 0, 215)
     outrosScroll.Position = UDim2.new(0, 10, 0, 5)
@@ -8773,7 +8739,7 @@ function UI:Start()
     outrosLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
     outrosLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
-        outrosScroll.CanvasSize = UDim2.new(0, 0, 0, outrosLayout.AbsoluteContentSize.Y + 20)
+        outrosScroll.CanvasSize = UDim2.new(0, 0, 0, outrosLayout.AbsoluteContentSize.Y + 120)
     end)
 
     local function CriarBotaoOutros(texto, order)
@@ -8792,8 +8758,8 @@ function UI:Start()
     local autoSpinWheelActive, eatAllBoostsActive = false, false
 
 
-    
-    
+    -- Preferencia local: mobile inicia em GRANDE, desktop permanece NORMAL.
+    -- Nao modifica frame.Size, uiScale nem as velocidades dos farms.
     local sizeButton = Instance.new("\084\101\120\116\066\117\116\116\111\110", outrosScroll)
     sizeButton.Name = "\065\114\097\115\097\107\097\079\112\116\105\111\110\083\105\122\101\066\117\116\116\111\110"
     sizeButton.LayoutOrder = 0
@@ -8846,8 +8812,8 @@ function UI:Start()
             arsSavePrefs()
         end
     end)
-    
-    
+    -- Auto Rejoin: apenas quando o Roblox ainda permite executar Lua.
+    -- A reconexao apos fechar o app ou perder totalmente a conexao nao e garantida.
     local arsRejoining = false
     local function arsTryRejoin(reason)
         if not ARS_PREF.autoRejoin or arsRejoining or not Core:IsAlive() then return end
@@ -9076,10 +9042,10 @@ function UI:Start()
     end)
 
 
-    
-    
-    
-    
+    --==================================================
+    -- NOTIFICAÇÕES UNIVERSAIS // TODAS AS FUNÇÕES DA UI
+    -- Observa mudanças ON/OFF sem alterar a lógica das funções.
+    --==================================================
     local function limparNomeFuncao(texto)
         texto = tostring(texto or "")
         texto = texto:gsub("\037\115\042\058\037\115\042\079\078\037\115\042\240\159\159\162", "")
@@ -9102,7 +9068,7 @@ function UI:Start()
     local function conectarNotificacaoBotao(botao)
         if not botao:IsA("\084\101\120\116\066\117\116\116\111\110") or botoesNotificacaoConectados[botao] then return end
         botoesNotificacaoConectados[botao] = true
-        
+        -- Cache independente da ordem dos callbacks de clique.
         local ultimoEstado = estadoDoTexto(botao.Text)
         local textoConn = botao:GetPropertyChangedSignal("\084\101\120\116"):Connect(function()
             if not botao.Parent or not Core:IsAlive() then return end
@@ -9118,7 +9084,7 @@ function UI:Start()
 
         local cliqueConn = botao.MouseButton1Click:Connect(function()
             if not Core:IsAlive() or not botao.Parent then return end
-            
+            -- Abas de navegacao nao executam teleporte.
             if botao:FindFirstChild("\065\099\116\105\118\101\076\105\110\101") then return end
             if estadoDoTexto(botao.Text) ~= nil then return end
             local texto = botao.Text
@@ -9154,10 +9120,10 @@ function UI:Start()
 
     iniciarNotificacoesUniversais()
 
-    
-    
-    
-    
+    --==================================================
+    -- MODULE // DASHBOARD // COMPLETE UPGRADE
+    -- Observabilidade local: uptime, FPS, jogadores, workers e conexões.
+    --==================================================
     local DashboardModule = {
         Name = "\068\097\115\104\098\111\097\114\100",
         Connections = {},
@@ -9282,11 +9248,11 @@ function UI:Start()
         DashboardModule:Init()
     end
 
-    
-    
-    
-    
-    
+    --==================================================
+    --==================================================
+    -- MODULE // PROCESS PANEL // FASE 7
+    -- Painel visual para workers gerenciados pelo Core.
+    --==================================================
     local ProcessPanelModule = {
         Name = "\080\114\111\099\101\115\115\080\097\110\101\108",
         Connections = {}
@@ -9446,7 +9412,7 @@ function UI:Start()
             table.insert(self.Connections, masterStopConnection)
         end
 
-        
+        -- Atualiza ~2x por segundo, sem interferir no gameplay.
         local elapsed = 0
         local refreshConnection = RunService.Heartbeat:Connect(function(dt)
             elapsed += dt
@@ -9489,17 +9455,124 @@ function UI:Start()
         ProcessPanelModule:Init()
     end
 
-    
+    --==================================================
         Utils.PerfEnd("\079\085\084\082\079\083\095\085\073")
     end
     Core:RegisterModule("\083\121\115\116\101\109", System)
     local systemOk, systemErr = Core:StartModule("\083\121\115\116\101\109")
     if not systemOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\083\121\115\116\101\109\093\032\070\097\108\104\097\058", systemErr) end
 
-    
-        
-    
-    
+    -- ARASAKA GRATIS / ROLAGEM GLOBAL V4
+    -- Corrige todas as listas (Halloween, Teleportes, Visual, Outros, etc.).
+    -- O tamanho do canvas acompanha UIListLayout/UIGridLayout APOS ajustes de mobile.
+    local scrollManaged = setmetatable({}, {__mode = "\107"})
+    local function manageScroll(scroll)
+        if not scroll:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") or scrollManaged[scroll] then return end
+        if not scroll:IsDescendantOf(contentArea) then return end
+        scrollManaged[scroll] = true
+        scroll.Active = true
+        scroll.ScrollingEnabled = true
+        scroll.ScrollingDirection = Enum.ScrollingDirection.Y
+        scroll.AutomaticCanvasSize = Enum.AutomaticSize.None
+        scroll.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
+        scroll.ScrollBarThickness = UserInputService.TouchEnabled and 7 or 5
+        scroll.ScrollBarImageColor3 = Color3.fromRGB(236, 64, 88)
+        local pending = false
+        local function refresh()
+            if not scroll.Parent then return end
+            local extent = 0
+            local layout = scroll:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116")
+                or scroll:FindFirstChildOfClass("\085\073\071\114\105\100\076\097\121\111\117\116")
+                or scroll:FindFirstChildOfClass("\085\073\084\097\098\108\101\076\097\121\111\117\116")
+            if layout then
+                extent = layout.AbsoluteContentSize.Y
+            else
+                -- Algumas abas usam posicionamento manual, sem UIListLayout.
+                for _, child in ipairs(scroll:GetChildren()) do
+                    if child:IsA("\071\117\105\079\098\106\101\099\116") and child.Visible then
+                        local top = child.Position.Y.Scale * scroll.AbsoluteSize.Y
+                            + child.Position.Y.Offset
+                        local bottom = top + child.AbsoluteSize.Y
+                        if bottom > extent then extent = bottom end
+                    end
+                end
+            end
+            local pad = UserInputService.TouchEnabled and 108 or 32
+            local required = math.max(0, math.ceil(extent + pad))
+            local goal = UDim2.fromOffset(0, required)
+            if scroll.CanvasSize ~= goal then scroll.CanvasSize = goal end
+        end
+        local function schedule()
+            if pending then return end
+            pending = true
+            task.defer(function()
+                pending = false
+                refresh()
+            end)
+        end
+        Core:TrackConnection("\085\073", scroll:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(schedule))
+        Core:TrackConnection("\085\073", scroll:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(schedule))
+        local layout = scroll:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116")
+            or scroll:FindFirstChildOfClass("\085\073\071\114\105\100\076\097\121\111\117\116")
+            or scroll:FindFirstChildOfClass("\085\073\084\097\098\108\101\076\097\121\111\117\116")
+        if layout then
+            Core:TrackConnection("\085\073", layout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(schedule))
+        end
+        local seen = setmetatable({}, {__mode = "\107"})
+        local function trackChild(child)
+            if not child:IsA("\071\117\105\079\098\106\101\099\116") or seen[child] then return end
+            seen[child] = true
+            Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(schedule))
+            Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(schedule))
+            if not layout then
+                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\080\111\115\105\116\105\111\110"):Connect(schedule))
+            end
+        end
+        for _, child in ipairs(scroll:GetChildren()) do trackChild(child) end
+        Core:TrackConnection("\085\073", scroll.ChildAdded:Connect(function(child)
+            if child:IsA("\085\073\076\105\115\116\076\097\121\111\117\116") or child:IsA("\085\073\071\114\105\100\076\097\121\111\117\116") or child:IsA("\085\073\084\097\098\108\101\076\097\121\111\117\116") then
+                -- Layouts criados depois do frame são observados pela atualização.
+                Core:TrackConnection("\085\073", child:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(schedule))
+            end
+            trackChild(child)
+            schedule()
+        end))
+        Core:TrackConnection("\085\073", scroll.ChildRemoved:Connect(schedule))
+        schedule()
+    end
+    for _, item in ipairs(contentArea:GetDescendants()) do
+        if item:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") then manageScroll(item) end
+    end
+    Core:TrackConnection("\085\073", contentArea.DescendantAdded:Connect(function(item)
+        if item:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") then task.defer(manageScroll, item) end
+    end))
+    -- Recalcula ao abrir abas; também cobre conteúdo criado após inicialização.
+    for _, tab in pairs(abas) do
+        Core:TrackConnection("\085\073", tab.container:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(function()
+            if tab.container.Visible then
+                task.defer(function()
+                    for _, item in ipairs(tab.container:GetDescendants()) do
+                        if item:IsA("\083\099\114\111\108\108\105\110\103\070\114\097\109\101") then
+                            manageScroll(item)
+                            -- Propriedades dos filhos ativam o recálculo.
+                            local layout = item:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116")
+                                or item:FindFirstChildOfClass("\085\073\071\114\105\100\076\097\121\111\117\116")
+                            if layout then
+                                local pad = UserInputService.TouchEnabled and 108 or 32
+                                item.CanvasSize = UDim2.fromOffset(0, math.ceil(layout.AbsoluteContentSize.Y + pad))
+                            end
+                        end
+                    end
+                end)
+            end
+        end))
+    end
+
+
+    --==================================================
+        -- MODULE // SYSTEM UI
+    -- Primeira migração real para a arquitetura modular.
+    --==================================================
     local SystemUIModule = { Name = "\083\121\115\116\101\109\085\073" }
 
     function SystemUIModule:Init()
@@ -9509,7 +9582,7 @@ function UI:Start()
         local minimizeTween = nil
         local minimizeGeneration = 0
 
-        
+        -- Quando minimizado, o painel vira apenas o icone Arasaka.
         local botaoIcone = Instance.new("\073\109\097\103\101\066\117\116\116\111\110")
         botaoIcone.Name = "\065\114\097\115\097\107\097\073\099\111\110\101\077\105\110\105\109\105\122\097\100\111"
         botaoIcone.Parent = frame
@@ -9553,7 +9626,7 @@ function UI:Start()
             if minimizado then
                 AplicarEstadoMinimizado(true)
             else
-                
+                -- Oculta o icone antes da expansao e restaura os controles apos a animacao.
                 botaoIcone.Visible = false
             end
 
@@ -9598,16 +9671,16 @@ function UI:Stop()
     end
 end
 
+--==================================================
+-- CORE já foi declarado no topo para que todos os módulos compartilhem
+-- o mesmo gerenciador local sem depender de _G.
+--==================================================
 
-
-
-
-
-
-
-
-
-
+--==================================================
+-- MODULE // PROCESS CONTROL
+-- MASTER STOP para todos os workers que forem migrados
+-- para o WorkerManager. Não encerra o Hub/UI.
+--==================================================
 ProcessControlModule = {
     Name = "\080\114\111\099\101\115\115\067\111\110\116\114\111\108"
 }
@@ -9622,14 +9695,14 @@ function ProcessControlModule:GetSnapshot()
 end
 
 Core:RegisterModule("\080\114\111\099\101\115\115\067\111\110\116\114\111\108", ProcessControlModule)
+-- ProcessControlModule já é local
 
-
-
-
-
-
-
-
+--==================================================
+-- MODULE // CORE MEMORY // FASE 10
+-- Primeira rotina real migrada para o WorkerManager.
+-- Mantém exatamente a operação antiga: consulta periódica
+-- ao contador de memória do coletor Lua.
+--==================================================
 local CoreMemoryModule = {
     Name = "\067\111\114\101\077\101\109\111\114\121"
 }
@@ -9641,7 +9714,7 @@ function CoreMemoryModule:Start()
 
     return Core:StartWorker("\067\111\114\101\077\101\109\111\114\121", function(isAlive)
         while isAlive() do
-            
+            -- Espera fracionada para que STOP não precise aguardar 30s.
             local elapsed = 0
             while elapsed < 30 and isAlive() do
                 task.wait(0.25)
@@ -9672,11 +9745,11 @@ else
     print("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\093\032\067\111\114\101\077\101\109\111\114\121\032\061\032\077\073\071\082\065\068\079")
 end
 
-
-
-
-
-
+--==================================================
+-- MODULE // HUB LIFECYCLE WATCHER // FASE 11
+-- Stops managed workers if the hub itself is invalidated/re-executed.
+-- Does not control gameplay actions; only lifecycle cleanup.
+--==================================================
 local HubLifecycleModule = {
     Name = "\072\117\098\076\105\102\101\099\121\099\108\101"
 }
@@ -9691,7 +9764,7 @@ function HubLifecycleModule:Start()
             task.wait(0.25)
 
             if not Core:IsAlive() then
-                
+                -- Snapshot names first so the manager can safely mutate Workers.
                 local names = {}
                 for workerName in pairs(Core.Workers) do
                     if workerName ~= "\072\117\098\076\105\102\101\099\121\099\108\101" then
@@ -9723,7 +9796,7 @@ end
 
 
 
-
+-- Worker de diagnóstico local (inativo por padrão).
 local WorkerDiagnosticModule = {
     Name = "\087\111\114\107\101\114\068\105\097\103\110\111\115\116\105\099"
 }
@@ -9742,7 +9815,7 @@ end
 
 Core:RegisterModule("\087\111\114\107\101\114\068\105\097\103\110\111\115\116\105\099", WorkerDiagnosticModule)
 
-
+-- Módulos reais do arquivo único. O Chat é registrado de forma lazy dentro da UI.
 Core:RegisterModule("\085\116\105\108\115", Utils)
 Core:RegisterModule("\085\073", UI)
 Core:RegisterModule("\070\097\114\109\115", Farms)
@@ -9753,9 +9826,9 @@ Core:RegisterModule("\075\105\108\108", Kill)
 Core:RegisterModule("\067\097\108\099\117\108\097\116\111\114", Calculator)
 Core:RegisterModule("\083\121\115\116\101\109", System)
 
+--==================================================
 
-
-
+-- INICIAR HUB DIRETAMENTE // SEM SISTEMA DE KEY
 local __arasakaBootStart = os.clock()
 print("\091\065\082\065\083\065\075\065\093\091\066\079\079\084\093\032\073\110\105\099\105\097\110\100\111\032\072\117\098\032\115\101\109\032\115\105\115\116\101\109\097\032\100\101\032\107\101\121\046\046\046")
 
