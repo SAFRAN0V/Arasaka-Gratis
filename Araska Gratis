@@ -19,7 +19,7 @@ local player = Players.LocalPlayer
 local ARS_PREF_PATH = "\065\114\097\115\097\107\097\095\071\114\097\116\105\115\095\083\116\097\110\100\097\108\111\110\101\095" .. tostring(player.UserId) .. "\046\106\115\111\110"
 local ARS_PREF = { saveEnabled = true, autoRejoin = false, bossNormal = false,
     bossHalloween = false, halloweenSelected = {},
-    normalHeight = 45, normalLeft = 25, eventHeight = 100, eventLeft = 25, halloweenOrbit = true, normalOrbit = false }
+    normalHeight = 45, normalLeft = 25, eventHeight = 60, eventLeft = 25, halloweenOrbit = true, normalOrbit = false }
 local function arsSavePrefs()
     if not ARS_PREF.saveEnabled or type(writefile) ~= "\102\117\110\099\116\105\111\110" then return end
     pcall(function() writefile(ARS_PREF_PATH, HttpService:JSONEncode(ARS_PREF)) end)
@@ -39,7 +39,7 @@ local function arsLoadPrefs()
 end
 arsLoadPrefs()
 -- Halloween fixo nesta versão: ignorar valores antigos salvos.
-ARS_PREF.eventHeight = 100
+ARS_PREF.eventHeight = 60
 ARS_PREF.eventLeft = 25
 ARS_PREF.normalHeight = 45
 ARS_PREF.normalLeft = 25
@@ -51,7 +51,7 @@ local function arsBossNumber(value, default, minimum, maximum)
 end
 for _, item in ipairs({
     {"\110\111\114\109\097\108\072\101\105\103\104\116",45,0,500}, {"\110\111\114\109\097\108\076\101\102\116",25,-500,500},
-    {"\101\118\101\110\116\072\101\105\103\104\116",100,0,500}, {"\101\118\101\110\116\076\101\102\116",25,-500,500},
+    {"\101\118\101\110\116\072\101\105\103\104\116",60,0,500}, {"\101\118\101\110\116\076\101\102\116",25,-500,500},
 }) do
     ARS_PREF[item[1]] = arsBossNumber(ARS_PREF[item[1]],item[2],item[3],item[4])
 end
