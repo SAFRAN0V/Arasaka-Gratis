@@ -56,10 +56,42 @@ for _, item in ipairs({
     ARS_PREF[item[1]] = arsBossNumber(ARS_PREF[item[1]],item[2],item[3],item[4])
 end
  
+local ARS_REJOIN_SCRIPT_URL = "\104\116\116\112\115\058\047\047\114\097\119\046\103\105\116\104\117\098\117\115\101\114\099\111\110\116\101\110\116\046\099\111\109\047\083\065\070\082\065\078\048\086\047\065\114\097\115\097\107\097\045\071\114\097\116\105\115\047\114\101\102\115\047\104\101\097\100\115\047\109\097\105\110\047\065\114\097\115\107\097\037\050\048\071\114\097\116\105\115"
 local function arsQueueAfterTeleport()
      
-     
-    return false
+    local queue = queue_on_teleport
+    if type(queue) ~= "\102\117\110\099\116\105\111\110" and type(syn) == "\116\097\098\108\101" then
+        queue = syn.queue_on_teleport
+    end
+    if type(queue) ~= "\102\117\110\099\116\105\111\110" and type(fluxus) == "\116\097\098\108\101" then
+        queue = fluxus.queue_on_teleport
+    end
+    if type(queue) ~= "\102\117\110\099\116\105\111\110" then
+        warn("\091\065\082\065\083\065\075\065\032\071\082\065\084\073\083\093\091\082\069\074\079\073\078\093\032\069\120\101\099\117\116\111\114\032\115\101\109\032\113\117\101\117\101\095\111\110\095\116\101\108\101\112\111\114\116\046\032\082\101\106\111\105\110\032\112\111\100\101\032\111\099\111\114\114\101\114\044\032\109\097\115\032\111\032\104\117\098\032\110\097\111\032\114\101\105\110\105\099\105\097\114\097\032\115\111\122\105\110\104\111\046")
+        return false
+    end
+    local nextCode = string.format([[
+repeat task.wait() until game:IsLoaded()
+local ok, source = pcall(function()
+    return game:HttpGet(%q)
+end)
+if ok and type(source) == "string" and #source > 0 then
+    local fn, compileError = loadstring(source)
+    if fn then
+        local ran, runError = pcall(fn)
+        if not ran then warn("[ARASAKA GRATIS][REJOIN] Erro ao reiniciar:", runError) end
+    else
+        warn("[ARASAKA GRATIS][REJOIN] Script invalido:", compileError)
+    end
+else
+    warn("[ARASAKA GRATIS][REJOIN] Falha ao obter script:", source)
+end
+]], ARS_REJOIN_SCRIPT_URL)
+    local ok, err = pcall(queue, nextCode)
+    if not ok then
+        warn("\091\065\082\065\083\065\075\065\032\071\082\065\084\073\083\093\091\082\069\074\079\073\078\093\032\078\097\111\032\102\111\105\032\112\111\115\115\105\118\101\108\032\114\101\103\105\115\116\114\097\114\032\108\111\097\100\101\114\058", err)
+    end
+    return ok
 end
 
  
