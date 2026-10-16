@@ -1,6 +1,6 @@
- 
- 
- 
+
+
+
 local ReplicatedStorage = game:GetService("\082\101\112\108\105\099\097\116\101\100\083\116\111\114\097\103\101")
 local SoundService = game:GetService("\083\111\117\110\100\083\101\114\118\105\099\101")
 local TweenService = game:GetService("\084\119\101\101\110\083\101\114\118\105\099\101")
@@ -15,7 +15,7 @@ local TeleportService = game:GetService("\084\101\108\101\112\111\114\116\083\10
 
 local player = Players.LocalPlayer
 
- 
+
 local ARS_PREF_PATH = "\065\114\097\115\097\107\097\095\071\114\097\116\105\115\095\083\116\097\110\100\097\108\111\110\101\095" .. tostring(player.UserId) .. "\046\106\115\111\110"
 local ARS_PREF = { saveEnabled = true, autoRejoin = false, bossNormal = false,
     bossHalloween = false, halloweenSelected = {},
@@ -38,7 +38,7 @@ local function arsLoadPrefs()
     end)
 end
 arsLoadPrefs()
- 
+
 ARS_PREF.eventHeight = 100
 ARS_PREF.eventLeft = 25
 ARS_PREF.normalHeight = 45
@@ -55,10 +55,10 @@ for _, item in ipairs({
 }) do
     ARS_PREF[item[1]] = arsBossNumber(ARS_PREF[item[1]],item[2],item[3],item[4])
 end
- 
+
 local ARS_REJOIN_SCRIPT_URL = "\104\116\116\112\115\058\047\047\114\097\119\046\103\105\116\104\117\098\117\115\101\114\099\111\110\116\101\110\116\046\099\111\109\047\083\065\070\082\065\078\048\086\047\065\114\097\115\097\107\097\045\071\114\097\116\105\115\047\114\101\102\115\047\104\101\097\100\115\047\109\097\105\110\047\065\114\097\115\107\097\037\050\048\071\114\097\116\105\115"
 local function arsQueueAfterTeleport()
-     
+    
     local queue = queue_on_teleport
     if type(queue) ~= "\102\117\110\099\116\105\111\110" and type(syn) == "\116\097\098\108\101" then
         queue = syn.queue_on_teleport
@@ -94,10 +94,10 @@ end
     return ok
 end
 
- 
- 
- 
- 
+
+
+
+
 local Utils = { Name = "\085\116\105\108\115", PerfMarks = {} }
 local Core = {
     Name = "\067\111\114\101",
@@ -113,8 +113,8 @@ local Core = {
 }
 local UI = { Name = "\085\073" }
 
- 
- 
+
+
 local ArasakaI18n = {
     Language = "\112\116", Active = false,
     Sources = setmetatable({}, {__mode = "\107"}),
@@ -2124,14 +2124,14 @@ local function normalizedLanguage(value)
     for _, lang in ipairs(LANGUAGE_ORDER) do
         if lang == base then return base end
     end
-    return "\101\110"  
+    return "\101\110" 
 end
 local okLocale, robloxLocale = pcall(function()
     return LocalizationService.RobloxLocaleId
 end)
 ArasakaI18n.Language = normalizedLanguage(okLocale and robloxLocale or "\112\116")
 
- 
+
 local FOLD_ACCENTS = {
     ["\195\129"]="\195\161", ["\195\128"]="\195\160", ["\195\130"]="\195\162", ["\195\131"]="\195\163",
     ["\195\137"]="\195\169", ["\195\138"]="\195\170", ["\195\141"]="\195\173", ["\195\147"]="\195\179",
@@ -2153,7 +2153,7 @@ local function translateText(original, language)
     if language == "\112\116" or type(original) ~= "\115\116\114\105\110\103" or #original == 0 then
         return original
     end
-     
+    
     if #original > 350 or original:find("\060\102\111\110\116", 1, true) or original:find("\060\047", 1, true) then
         return original
     end
@@ -2161,7 +2161,7 @@ local function translateText(original, language)
     local folded = foldText(result)
     local dict = TRANSLATIONS[language]
     if not dict then return original end
-     
+    
     for _, pair in ipairs(dict) do
         local source, translated, foldedSource = pair[1], pair[2], pair[3]
         local startFrom = 1
@@ -2191,7 +2191,7 @@ function ArasakaI18n:UpdateObject(obj, property)
     local origin = self.Sources[obj]
     if type(origin) ~= "\115\116\114\105\110\103" then return end
     local rendered = translateText(origin, self.Language)
-     
+    
     self.Rendered[obj] = rendered
     if obj[property] ~= rendered then
         obj[property] = rendered
@@ -2215,7 +2215,7 @@ function ArasakaI18n:Bind(obj)
     if obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\117\116\116\111\110") then
         property = "\084\101\120\116"
     elseif obj:IsA("\084\101\120\116\066\111\120") then
-        property = "\080\108\097\099\101\104\111\108\100\101\114\084\101\120\116"  
+        property = "\080\108\097\099\101\104\111\108\100\101\114\084\101\120\116" 
     else
         return
     end
@@ -2268,13 +2268,13 @@ function ArasakaI18n:Start(playerGui)
         if self.Active then self:Bind(obj) end
     end)
     self.RootRemoving = playerGui.DescendantRemoving:Connect(function(obj)
-         
+        
         if obj:IsA("\083\099\114\101\101\110\071\117\105") then
             for _, child in ipairs(obj:GetDescendants()) do self:Unbind(child) end
         end
         self:Unbind(obj)
     end)
-     
+    
     for _, root in ipairs(playerGui:GetChildren()) do
         if root:IsA("\083\099\114\101\101\110\071\117\105") and root.Name:sub(1, 7) == "\065\114\097\115\097\107\097" then
             for _, obj in ipairs(root:GetDescendants()) do self:Bind(obj) end
@@ -2288,7 +2288,7 @@ function ArasakaI18n:Stop()
     for obj in pairs(self.Connections) do self:Unbind(obj) end
     self.PlayerGui = nil
 end
- 
+
 
 local Farms = { Name = "\070\097\114\109\115" }
 local Pets = { Name = "\080\101\116\115" }
@@ -2300,8 +2300,8 @@ local Calculator = { Name = "\067\097\108\099\117\108\097\116\111\114" }
 local System = { Name = "\083\121\115\116\101\109" }
 local ProcessControlModule
 
- 
- 
+
+
 local Bridge = rawget(_G, "\065\114\097\115\097\107\097\066\114\105\100\103\101")
 if type(Bridge) ~= "\116\097\098\108\101" then
     Bridge = { generation = 0 }
@@ -2314,7 +2314,7 @@ Bridge.generation = (Bridge.generation or 0) + 1
 local RUN_GENERATION = Bridge.generation
 local Runtime = { Running = true }
 
- 
+
 if rawget(_G, "\065\114\097\115\097\107\097\083\099\114\105\112\116\082\117\110\110\105\110\103") ~= nil then
     rawset(_G, "\065\114\097\115\097\107\097\083\099\114\105\112\116\082\117\110\110\105\110\103", false)
 end
@@ -2739,11 +2739,11 @@ function Utils.CreateTextButton(parent, properties)
     return button
 end
 
- 
- 
- 
 
- 
+
+
+
+
 Core:TrackConnection("\067\111\114\101", player.Idled:Connect(function()
     if not Core:IsAlive() then return end
     VirtualUser:CaptureController()
@@ -2753,7 +2753,7 @@ end))
 
 local targetGui = player:WaitForChild("\080\108\097\121\101\114\071\117\105")
 ArasakaI18n:Start(targetGui)
- 
+
 if not Core:IsAlive() then return end
 
 local uiName = "\065\114\097\115\097\107\097\067\104\097\116\095\071\117\105"
@@ -2764,9 +2764,9 @@ for _, oldGui in ipairs(targetGui:GetChildren()) do
     end
 end
 
- 
+
 function Chat:Build(tabChat, playClickSound)
-     
+    
     local ws = nil
     self.Socket = nil
 
@@ -2919,7 +2919,7 @@ function Chat:Build(tabChat, playClickSound)
     end))
 end
 
- 
+
 local function AbrirMenuSelecao(titulo, listaOpcoes, callback)
     local oldDrop = targetGui:FindFirstChild("\065\114\097\115\097\107\097\068\114\111\112\100\111\119\110\095\071\117\105")
     if oldDrop then oldDrop:Destroy() end
@@ -3094,8 +3094,8 @@ local function AbrirMenuSelecao(titulo, listaOpcoes, callback)
     end
 end
 
- 
- 
+
+
 function UI:BuildArasakaStyles(tab)
     local world=game:GetService("\087\111\114\107\115\112\097\099\101")
     local owner="\085\073\046\065\114\097\115\097\107\097\083\116\121\108\101\115"
@@ -3159,7 +3159,7 @@ function UI:BuildArasakaStyles(tab)
             if not savedMaterials[part] then
                 savedMaterials[part]={material=part.Material,variant=part.MaterialVariant,physics=part.CustomPhysicalProperties}
             end
-             
+            
             local physics=part.CurrentPhysicalProperties
             part.CustomPhysicalProperties=physics
             part.Material=activeMaterial
@@ -3191,7 +3191,7 @@ function UI:BuildArasakaStyles(tab)
         obj.Font=font;obj.TextColor3=color;obj.TextSize=13;obj.TextXAlignment=Enum.TextXAlignment.Left;obj.Parent=parent
         return obj
     end
-     
+    
     local legacy=Instance.new("\070\114\097\109\101",scroll)
     legacy.Name="\069\120\105\115\116\105\110\103\086\105\115\117\097\108\067\111\110\116\114\111\108\115"
     legacy.LayoutOrder=0
@@ -3236,7 +3236,7 @@ function UI:BuildArasakaStyles(tab)
             Lighting.Brightness=preset.brightness or 2;Lighting.GlobalShadows=true;Lighting.ClockTime=preset.time
             for _,entry in ipairs(preset.effects) do
                 if entry[1]=="\065\116\109\111\115\112\104\101\114\101" then
-                     
+                    
                     local existing=Lighting:FindFirstChildOfClass("\065\116\109\111\115\112\104\101\114\101")
                     if existing then
                         local backup={}
@@ -3263,7 +3263,7 @@ function UI:BuildArasakaStyles(tab)
             end
         end)
     end
-     
+    
     local restoreBase=restore
     restore=function() restoreBase();Core:CleanupOwner(owner.."\065\116\109\111\115\112\104\101\114\101") end
     for index,preset in ipairs(styles) do
@@ -3287,7 +3287,7 @@ function UI:BuildArasakaStyles(tab)
     Core:AddCleanup(owner,function() destroyed=true;restore() end)
     Core:TrackConnection("\085\073",tab.Destroying:Connect(function() Core:CleanupOwner(owner) end))
 end
- 
+
 
 function UI:Start()
     Core:AddCleanup("\085\073", function() ArasakaI18n:Stop() end)
@@ -3318,7 +3318,7 @@ function UI:Start()
     end
     uiScale.Parent = screenGui
 
-     
+    
     local frame = Instance.new("\070\114\097\109\101", screenGui)
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Size = UDim2.new(0, 820, 0, 520)
@@ -3449,8 +3449,8 @@ function UI:Start()
     sideHeader.Position = UDim2.new(0, 12, 0, 12)
     sideHeader.BackgroundTransparency = 1
     sideHeader.Text = "\078\065\086\069\071\065\067\065\079"
-     
-     
+    
+    
     sideHeader.Size = UDim2.new(1, -78, 0, 28)
     sideHeader.TextScaled = true
     local langButton = Instance.new("\084\101\120\116\066\117\116\116\111\110", sidebar)
@@ -3507,7 +3507,7 @@ function UI:Start()
     contentCode.TextSize = 10
     contentCode.TextXAlignment = Enum.TextXAlignment.Left
 
-     
+    
     local tabIcons = {
         ["\073\110\195\173\099\105\111"] = "\240\159\143\160", ["\070\097\114\109\032\070\111\114\195\167\097"] = "\240\159\146\170", ["\070\097\114\109\032\082\101\098\105\114\116\104"] = "\240\159\148\132",
         ["\070\097\114\109\032\066\111\115\115"] = "\240\159\145\145", ["\072\097\108\108\111\119\101\101\110"] = "\240\159\142\131", ["\069\110\099\097\110\116\097\109\101\110\116\111\115"] = "\240\159\147\150", ["\084\101\108\101\112\111\114\116\101\115"] = "\240\159\147\141",
@@ -3533,8 +3533,8 @@ function UI:Start()
         tabBtn.TextXAlignment = Enum.TextXAlignment.Left
         Instance.new("\085\073\067\111\114\110\101\114", tabBtn).CornerRadius = UDim.new(0, 7)
 
-         
-         
+        
+        
         local iconLabel = Instance.new("\084\101\120\116\076\097\098\101\108", tabBtn)
         iconLabel.Name = "\065\114\097\115\097\107\097\084\097\098\073\099\111\110"
         iconLabel.BackgroundTransparency = 1
@@ -3605,8 +3605,8 @@ function UI:Start()
         return tabContent
     end
 
-     
-     
+    
+    
     local function CriarContainerOculto(nome)
         local container = Instance.new("\070\114\097\109\101")
         container.Name = "\082\101\109\111\118\101\100\084\097\098\095" .. nome
@@ -3628,25 +3628,25 @@ function UI:Start()
     UI:BuildArasakaStyles(tabVisual)
     local tabOutros = CriarAba("\079\117\116\114\111\115", "\079\085\084\082\079\083")
 
-     
-     
-     
-     
-     
+    
+    
+    
+    
+    
     do
         local HWINames = {"\070\114\097\110\107\101\110\098\114\117\116\101", "\080\117\109\112\107\105\110\032\084\105\116\097\110", "\071\114\105\109\032\082\101\097\112\101\114", "\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"}
-         
+        
         local HWProfiles = {
             ["\070\114\097\110\107\101\110\098\114\117\116\101"] = {height=75},
             ["\080\117\109\112\107\105\110\032\084\105\116\097\110"] = {height=75},
             ["\071\114\105\109\032\082\101\097\112\101\114"] = {height=75},
             ["\083\099\097\114\101\099\114\111\119\032\067\111\108\111\115\115\117\115"] = {height=75},
         }
-         
-         
-         
+        
+        
+        
         local function hwEventIsActive()
-            return true  
+            return true 
         end
 
         local HWState = {
@@ -3676,30 +3676,86 @@ function UI:Start()
         local HWLayout = Instance.new("\085\073\076\105\115\116\076\097\121\111\117\116", HWWrap)
         HWLayout.Padding = UDim.new(0, 9)
         HWLayout.SortOrder = Enum.SortOrder.LayoutOrder
-         
+        
         local HWBottomSpace = Instance.new("\070\114\097\109\101", HWWrap)
         HWBottomSpace.Name = "\072\097\108\108\111\119\101\101\110\066\111\116\116\111\109\083\112\097\099\101"
         HWBottomSpace.Size = UDim2.new(1, -8, 0, UserInputService.TouchEnabled and 110 or 36)
         HWBottomSpace.BackgroundTransparency = 1
         HWBottomSpace.BorderSizePixel = 0
         HWBottomSpace.LayoutOrder = 1000000
+        
+        
+        local hwCanvasPending = false
         local function updateHalloweenCanvas()
             if not HWWrap.Parent then return end
-            local contentHeight = HWLayout.AbsoluteContentSize.Y
-            local maxChildBottom = 0
-            for _, item in ipairs(HWWrap:GetChildren()) do
-                if item:IsA("\071\117\105\079\098\106\101\099\116") and item ~= HWBottomSpace and item.Visible then
-                    local bottom = item.AbsolutePosition.Y - HWWrap.AbsolutePosition.Y
-                        + HWWrap.CanvasPosition.Y + item.AbsoluteSize.Y
-                    maxChildBottom = math.max(maxChildBottom, bottom)
-                end
+            local total = HWLayout.AbsoluteContentSize.Y
+            
+            local needed = math.max(total + 40, HWWrap.AbsoluteSize.Y + 1)
+            local wanted = UDim2.fromOffset(0, math.ceil(needed))
+            if HWWrap.CanvasSize ~= wanted then
+                HWWrap.CanvasSize = wanted
             end
-            local needed = math.max(contentHeight + 24, maxChildBottom + 110)
-            HWWrap.CanvasSize = UDim2.fromOffset(0, math.ceil(needed))
         end
-        Core:TrackConnection("\085\073", HWLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(updateHalloweenCanvas))
-        Core:TrackConnection("\085\073", HWWrap:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(updateHalloweenCanvas))
-        task.defer(updateHalloweenCanvas)
+        local function scheduleHalloweenCanvas()
+            if hwCanvasPending then return end
+            hwCanvasPending = true
+            task.defer(function()
+                hwCanvasPending = false
+                updateHalloweenCanvas()
+            end)
+        end
+        Core:TrackConnection("\085\073", HWLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(scheduleHalloweenCanvas))
+        Core:TrackConnection("\085\073", HWWrap:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(scheduleHalloweenCanvas))
+        Core:TrackConnection("\085\073", HWWrap.ChildAdded:Connect(function(obj)
+            if obj:IsA("\071\117\105\079\098\106\101\099\116") then
+                Core:TrackConnection("\085\073", obj:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(scheduleHalloweenCanvas))
+                Core:TrackConnection("\085\073", obj:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(scheduleHalloweenCanvas))
+            end
+            scheduleHalloweenCanvas()
+        end))
+        for _, obj in ipairs(HWWrap:GetChildren()) do
+            if obj:IsA("\071\117\105\079\098\106\101\099\116") then
+                Core:TrackConnection("\085\073", obj:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\083\105\122\101"):Connect(scheduleHalloweenCanvas))
+            end
+        end
+        task.defer(scheduleHalloweenCanvas)
+
+        
+        
+        if UserInputService.TouchEnabled then
+            HWWrap.ScrollingEnabled = false 
+            local trackedTouch, touchY, dragged
+            local function insideScroll(pos)
+                local a = HWWrap.AbsolutePosition
+                local size = HWWrap.AbsoluteSize
+                return pos.X >= a.X and pos.X <= a.X + size.X
+                    and pos.Y >= a.Y and pos.Y <= a.Y + size.Y
+            end
+            Core:TrackConnection("\085\073", UserInputService.TouchStarted:Connect(function(touch)
+                if not tabHalloween.Visible or not HWWrap.Visible or trackedTouch then return end
+                if not insideScroll(touch.Position) then return end
+                trackedTouch = touch
+                touchY = touch.Position.Y
+                dragged = false
+                scheduleHalloweenCanvas()
+            end))
+            Core:TrackConnection("\085\073", UserInputService.TouchMoved:Connect(function(touch)
+                if touch ~= trackedTouch or not tabHalloween.Visible then return end
+                local dy = touch.Position.Y - touchY
+                if math.abs(dy) < 0.05 then return end
+                if math.abs(dy) > 5 then dragged = true end
+                touchY = touch.Position.Y
+                local maxY = math.max(0, HWWrap.CanvasSize.Y.Offset - HWWrap.AbsoluteSize.Y)
+                local target = math.clamp(HWWrap.CanvasPosition.Y - dy, 0, maxY)
+                HWWrap.CanvasPosition = Vector2.new(0, target)
+            end))
+            Core:TrackConnection("\085\073", UserInputService.TouchEnded:Connect(function(touch)
+                if touch == trackedTouch then
+                    trackedTouch = nil
+                    touchY = nil
+                end
+            end))
+        end
 
         local function hwText(str, size, height, color)
             local label = Instance.new("\084\101\120\116\076\097\098\101\108", HWWrap)
@@ -3729,7 +3785,7 @@ function UI:Start()
         hwText("\240\159\142\131\032\072\065\076\076\079\087\069\069\078\032\047\047\032\069\086\069\078\084\079", 17, 36, Color3.fromRGB(255, 126, 63))
         hwText("\052\032\066\079\083\083\069\083\032\226\128\162\032\080\069\082\070\073\083\032\070\073\088\079\083\032\226\128\162\032\072\065\076\076\079\087\069\068\032\120\049\048", 11, 42, Color3.fromRGB(194, 178, 172))
         hwText("\076\065\084\069\082\065\076\032\070\073\088\079\032\226\128\162\032\068\073\083\084\195\130\078\067\073\065\032\069\032\065\076\084\085\082\065\032\068\069\070\073\078\073\068\065\083\032\080\079\082\032\066\079\083\083\032\226\128\162\032\043\053\032\080\079\082\032\068\065\078\079", 11, 58, Color3.fromRGB(194,178,172))
-         
+        
         local hwEggActive, hwEggSerial = false, 0
         local hwEggStatus = hwText("\072\097\108\108\111\119\101\100\032\067\114\121\115\116\097\108\032\120\049\048\032\112\114\111\110\116\111\046", 11, 40, Color3.fromRGB(224,182,182))
         local hwEggOnce = hwButton("\065\066\082\073\082\032\072\065\076\076\079\087\069\068\032\067\082\089\083\084\065\076\032\120\049\048\032\047\047\032\085\077\065\032\086\069\090")
@@ -3801,9 +3857,9 @@ function UI:Start()
         hwText("\077\097\110\116\101\110\104\097\032\065\117\116\111\032\066\111\115\115\032\110\111\114\109\097\108\032\101\032\065\117\116\111\032\081\117\101\115\116\032\100\101\115\108\105\103\097\100\111\115\032\097\111\032\117\115\097\114\032\101\115\116\097\032\097\098\097\046\032\083\101\032\097\109\098\111\115\032\102\111\114\101\109\032\097\116\105\118\097\100\111\115\044\032\072\097\108\108\111\119\101\101\110\032\112\097\114\097\032\112\097\114\097\032\101\118\105\116\097\114\032\099\111\110\102\108\105\116\111\032\100\101\032\116\101\108\101\112\111\114\116\101\046", 11, 75, Color3.fromRGB(156, 152, 152))
 
         hwText("\240\159\142\129\032\080\065\083\083\069\032\068\069\032\072\065\076\076\079\087\069\069\078", 15, 34, Color3.fromRGB(255, 160, 90))
-     
-     
-     
+    
+    
+    
     local PASS_WORKER = "\071\114\097\116\105\115\086\050\052\046\065\117\116\111\072\097\108\108\111\119\101\101\110\080\097\115\115"
     local passEnabled = false
     local btnHalloweenPass = hwButton("\065\085\084\079\032\067\079\076\069\084\065\082\032\080\065\083\083\069\032\240\159\142\131\058\032\079\070\070\032\240\159\148\180")
@@ -3887,7 +3943,7 @@ function UI:Start()
             if response and response.Ok == true then
                 successes += 1
                 print("\091\065\082\065\083\065\075\065\093\091\080\065\083\083\093\032\067\111\108\101\116\097\100\111\058\032" .. description)
-                 
+                
                 local updated = response.State
                 if type(updated) ~= "\116\097\098\108\101" then
                     updated = getPassState(remote)
@@ -3898,7 +3954,7 @@ function UI:Start()
             return response and response.Ok == true
         end
 
-         
+        
         if module and type(module.TierUnlocked) == "\102\117\110\099\116\105\111\110" and type(module.IsTierClaimed) == "\102\117\110\099\116\105\111\110" then
             local maxTier = math.clamp(math.floor(tonumber(state.MaxTier) or 0), 0, 200)
             for tier = 1, maxTier do
@@ -3914,7 +3970,7 @@ function UI:Start()
             warn("\091\065\082\065\083\065\075\065\093\091\080\065\083\083\093\032\077\111\100\117\108\111\032\072\097\108\108\111\119\101\101\110\080\097\115\115\032\105\110\100\105\115\112\111\110\105\118\101\108\059\032\110\097\111\032\116\101\110\116\097\114\101\105\032\116\105\101\114\115\032\098\108\111\113\117\101\097\100\111\115")
         end
 
-         
+        
         for _, group in ipairs({"\068\097\105\108\121", "\083\101\097\115\111\110"}) do
             local quests = state[group]
             if type(quests) == "\116\097\098\108\101" then
@@ -3960,7 +4016,7 @@ function UI:Start()
     end))
 
 
-     
+    
     local PRESTIGE_WORKER = "\071\114\097\116\105\115\086\050\052\046\065\117\116\111\072\097\108\108\111\119\101\101\110\080\114\101\115\116\105\103\101"
     local prestigeEnabled = false
     local btnPassPrestige = hwButton("\065\085\084\079\032\080\082\069\083\084\073\071\069\032\240\159\142\131\058\032\079\070\070\032\240\159\148\180")
@@ -3981,7 +4037,7 @@ function UI:Start()
         local tier = tonumber(state.Tier)
         local maximum = tonumber(state.MaxTier)
         if not tier or not maximum or maximum <= 0 or tier < maximum then return end
-         
+        
         local before = tonumber(state.Prestige)
         local response = passInvoke(remote, "\080\114\101\115\116\105\103\101", {})
         if not response or response.Ok ~= true then return end
@@ -4109,8 +4165,8 @@ function UI:Start()
                 hwOrbitGyro = bg
             end
         end
-         
-         
+        
+        
         local function hwFreezeTransition()
             local _, hum, root = hwCharacter()
             if not root or not hum or hum.Health <= 0 then return false end
@@ -4121,7 +4177,7 @@ function UI:Start()
         end
         local function hwReturn()
             if HWState.returning or not HWState.origin then return end
-             
+            
             hwFreezeTransition()
             HWState.returning = true
             local origin = HWState.origin
@@ -4209,7 +4265,7 @@ function UI:Start()
                     if not targetPart or not targetPart.Parent or not activeOffsetY then return end
                     local _, hum, root = hwCharacter()
                     if not hum or hum.Health <= 0 or not root then return end
-                     
+                    
                     local profile = HWProfiles[lastName]
                     if not profile then return end
                     local desired = targetPart.Position + Vector3.new(0, activeOffsetY, 0)
@@ -4284,7 +4340,7 @@ function UI:Start()
                         end
                         local ch, hum, root = hwCharacter()
                         if hum and hum.Health > 0 and root and part and part.Parent then
-                             
+                            
                             if hum ~= eventHealthHumanoid then
                                 eventHealthHumanoid = hum
                                 eventLastHealth = hum.Health
@@ -4310,13 +4366,13 @@ function UI:Start()
                                 hwStatus("\109\117\115\099\108\101\069\118\101\110\116\032\110\195\163\111\032\101\110\099\111\110\116\114\097\100\111")
                             end
                         end
-                        task.wait(0.1)  
+                        task.wait(0.1) 
                     end
                 end
                 activeBossPart = nil
                 movementConnection:Disconnect()
                 hwReleaseHold()
-                 
+                
             end)
         end
         Core:TrackConnection("\085\073", HWMainButton.MouseButton1Click:Connect(arsToggleHalloween))
@@ -4331,15 +4387,15 @@ function UI:Start()
             HWState.generation += 1
             Core:StopWorker("\072\097\108\108\111\119\101\101\110\046\066\111\115\115\070\097\114\109")
             hwReleaseHold()
-             
+            
         end)
     end
-     
+    
 
-     
-     
-     
-     
+    
+    
+    
+    
     local ArasakaOptionSizing = {
         Root = contentArea,
         Mode = UserInputService.TouchEnabled and 2 or 1,
@@ -4373,14 +4429,14 @@ function UI:Start()
             and parent:FindFirstChildOfClass("\085\073\076\105\115\116\076\097\121\111\117\116") ~= nil
             and original.size.Y.Scale == 0
             and baseHeight >= 24 and baseHeight <= 66
-         
+        
         if inVerticalList and (obj:IsA("\084\101\120\116\066\117\116\116\111\110") or obj:IsA("\084\101\120\116\066\111\120")) then
             local minHeight = mode == 2 and 52 or 62
             local height = math.min(98, math.max(minHeight, math.floor(baseHeight * factor + 0.5)))
             obj.Size = UDim2.new(original.size.X.Scale, original.size.X.Offset, 0, height)
             obj.TextWrapped = true
         else
-             
+            
             obj.Size = original.size
             obj.TextWrapped = original.wrapped
             if original.size.Y.Scale == 0 and baseHeight > 0 then
@@ -4388,7 +4444,7 @@ function UI:Start()
             end
         end
         if obj.TextScaled then
-             
+            
             return
         end
         if obj.TextSize ~= targetFont then obj.TextSize = targetFont end
@@ -4404,7 +4460,7 @@ function UI:Start()
     function ArasakaOptionSizing:Start()
         if self.Connected then return end
         self.Connected = true
-         
+        
         Core:TrackConnection("\085\073", self.Root.DescendantAdded:Connect(function(obj)
             if obj:IsA("\084\101\120\116\066\117\116\116\111\110") or obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\111\120") then
                 task.defer(function()
@@ -4427,16 +4483,16 @@ function UI:Start()
     abas["\073\110\195\173\099\105\111"].title.TextColor3 = Color3.fromRGB(245, 245, 245)
     abas["\073\110\195\173\099\105\111"].line.Visible = true
 
-     
+    
     Core:TrackConnection("\085\073", UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.Insert and screenGui.Parent then
             screenGui.Enabled = not screenGui.Enabled
         end
     end))
 
-     
-     
-     
+    
+    
+    
     function Calculator:Init()
         local tab = abas["\067\097\108\099\117\108\097\100\111\114\097"] and abas["\067\097\108\099\117\108\097\100\111\114\097"].container
         if not tab then return end
@@ -4542,10 +4598,10 @@ function UI:Start()
             Rebirths = makeCard("\240\159\148\132\032\082\069\078\065\083\067\073\077\069\078\084\079\083", 6)
         }
 
-         
-         
-         
-         
+        
+        
+        
+        
         local TRAINING_GRACE_SECONDS = 5
         local POLL_SECONDS = 0.25
 
@@ -4621,7 +4677,7 @@ function UI:Start()
                         local delta = current - (s.previous or current)
                         s.previous = current
 
-                         
+                        
                         if delta > 0 then
                             if not s.started then
                                 s.started = true
@@ -4633,7 +4689,7 @@ function UI:Start()
                             s.lastGainAt = now
                         end
 
-                         
+                        
                         if s.started and s.lastGainAt and (now - s.lastGainAt) <= TRAINING_GRACE_SECONDS then
                             s.activeTime += dt
                             table.insert(activeNames, s.name)
@@ -4663,10 +4719,10 @@ function UI:Start()
     local calcOk, calcErr = Core:StartModule("\067\097\108\099\117\108\097\116\111\114")
     if not calcOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\067\097\108\099\117\108\097\116\111\114\093\032\070\097\108\104\097\058", calcErr) end
 
-     
-     
-     
-     
+    
+    
+    
+    
     Chat.Initialized = false
     Chat.Loading = false
 
@@ -4712,8 +4768,8 @@ function UI:Start()
         end
     end
 
-     
-     
+    
+    
     local chatVisibilityConnection
     chatVisibilityConnection = tabChat:GetPropertyChangedSignal("\086\105\115\105\098\108\101"):Connect(function()
         if tabChat.Visible then
@@ -4742,14 +4798,14 @@ function UI:Start()
         self.Initialized = false
     end
 
-     
+    
     if tabChat.Visible then
         task.defer(EnsureChatLoaded)
     end
 
-     
-     
-     
+    
+    
+    
     function Kill:Init()
         Utils.PerfBegin("\075\073\076\076\095\085\073")
         self.State = self.State or {
@@ -4759,7 +4815,7 @@ function UI:Start()
             excludedUserIds = {}
         }
 
-     
+    
     local friendsCache = {}
 
     local function updateFriendsCache()
@@ -5102,7 +5158,7 @@ function UI:Start()
                     killStatus.Text = "\083\084\065\084\085\083\032\047\047\032\078\069\078\072\085\077\032\065\076\086\079\032\086\195\129\076\073\068\079"
                     task.wait(0.25)
                 else
-                     
+                    
                     task.wait(0.03)
                 end
             end
@@ -5126,7 +5182,7 @@ function UI:Start()
     local killOk, killErr = Core:StartModule("\075\105\108\108")
     if not killOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\075\105\108\108\093\032\070\097\108\104\097\058", killErr) end
 
-     
+    
     local introTop = Instance.new("\070\114\097\109\101", tabInicio)
     introTop.Size = UDim2.new(1, -20, 0, 70)
     introTop.Position = UDim2.new(0, 10, 0, 8)
@@ -5335,13 +5391,13 @@ function UI:Start()
     local CaptureBossReturnContext = function() return false end
     local FarmQuestPaused = false
 
-     
+    
     function Farms:Init()
         Utils.PerfBegin("\070\065\082\077\083\095\085\073")
 
-     
-     
-     
+    
+    
+    
     local function CriarFarmScroll(parentTab)
         local scroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", parentTab)
         scroll.Size = UDim2.new(1, -20, 1, -10)
@@ -5366,7 +5422,7 @@ function UI:Start()
     local farmRebirthScroll = CriarFarmScroll(tabFarmRebirth)
     local farmBossScroll = CriarFarmScroll(tabFarmBoss)
 
-     
+    
 
     local farmScrolls = {
         farmForcaScroll,
@@ -5374,9 +5430,9 @@ function UI:Start()
         farmBossScroll,
     }
 
-     
-     
-     
+    
+    
+    
     local function CriarBotaoFarmScroll(parent, texto, order)
         local btn = Instance.new("\084\101\120\116\066\117\116\116\111\110")
         btn.Name = "\065\114\097\115\097\107\097\070\097\114\109\065\099\116\105\111\110\095" .. tostring(order)
@@ -5413,7 +5469,7 @@ function UI:Start()
 
     local autoFarmActive, autoRepsActive, autoUnifiedFarmActive, travarLocalActive = false, false, false, false
 
-     
+    
     local function isBossAllowedBySelection(bossName)
         return bossName == "\066\111\115\115\049" or bossName == "\066\111\115\115\050"
             or bossName == "\066\111\115\115\051" or bossName == "\066\111\115\115\052"
@@ -5594,12 +5650,12 @@ function UI:Start()
         end
     end)
 
-     
+    
     targetRebirthButton = CriarBotaoFarmScroll(farmRebirthScroll, "\065\085\084\079\032\082\069\066\073\082\084\072\032\084\065\082\071\069\084", 3)
     local btnUnifiedFarm = CriarBotaoFarmScroll(farmRebirthScroll, "\065\085\084\079\032\082\069\080\083\032\050\088\032\043\032\082\069\066\073\082\084\072\032\240\159\143\139\239\184\143\240\159\148\132", 4)
     local btnOverlordRebirth = CriarBotaoFarmScroll(farmRebirthScroll, "\082\069\066\073\082\084\072\032\080\065\067\075\032\079\086\069\082\076\079\082\068\032\240\159\145\145", 5)
 
-     
+    
     CriarSeparadorFarm(farmForcaScroll, "\047\047\032\070\065\082\077\032\068\069\032\070\079\082\195\135\065", 1)
     local btnRepsOnly = CriarBotaoFarmScroll(farmForcaScroll, "\065\085\084\079\032\082\069\080\083\032\050\088\032\040\083\079\032\070\079\082\067\065\041\032\240\159\143\139\239\184\143", 2)
     local btnFarmOp = CriarBotaoFarmScroll(farmForcaScroll, "\067\073\067\076\079\032\067\079\078\084\082\079\076\065\068\079\082\032\226\154\153\239\184\143", 3)
@@ -5610,9 +5666,9 @@ function UI:Start()
 
     local btnMainStrengthOp = CriarBotaoFarmScroll(farmForcaScroll, "\077\065\073\078\032\070\079\082\195\135\065\032\240\159\146\170", 6)
 
-     
-     
-     
+    
+    
+    
     do
         local FREE_BOSS_API = "\104\116\116\112\115\058\047\047\099\104\097\116\112\114\105\118\097\100\111\045\099\119\117\051\046\111\110\114\101\110\100\101\114\046\099\111\109"
         local FREE_BOSS_SCAN_INTERVAL = 0.50
@@ -5824,13 +5880,13 @@ function UI:Start()
     end
 
 
-     
+    
     CriarSeparadorFarm(farmBossScroll, "\047\047\032\070\065\082\077\032\066\079\083\083", 1)
     local btnFarm = CriarBotaoFarmScroll(farmBossScroll, "\065\085\084\079\032\070\065\082\077\032\066\079\083\083\032\226\154\148\239\184\143", 2)
 
-     
-     
-     
+    
+    
+    
     do
         local box = Instance.new("\084\101\120\116\066\111\120", farmForcaScroll)
         box.Name = "\065\114\097\115\097\107\097\070\097\114\109\079\112\082\101\112\115\066\111\120"
@@ -6120,8 +6176,8 @@ function UI:Start()
                         break
                     end
 
-                     
-                     
+                    
+                    
                     local muscleEvent = getMuscleEvent()
                     if muscleEvent then
                         for _ = 1, 4 do
@@ -6275,9 +6331,9 @@ function UI:Start()
         refreshTrainingWatchdog()
     end)
 
-     
-     
-     
+    
+    
+    
     ;(function()
         local function getStrength()
             local ls = player:FindFirstChild("\108\101\097\100\101\114\115\116\097\116\115")
@@ -6296,7 +6352,7 @@ function UI:Start()
                 weight = backpack:FindFirstChild("\087\101\105\103\104\116")
             end
 
-             
+            
             if not weight then
                 for _, container in ipairs({char, backpack}) do
                     if container then
@@ -6431,7 +6487,7 @@ function UI:Start()
             return false
         end
 
-         
+        
         local currentTool = char:FindFirstChildOfClass("\084\111\111\108")
         if currentTool and string.find(string.lower(currentTool.Name), "\119\101\105\103\104\116", 1, true) then
             return true
@@ -6439,7 +6495,7 @@ function UI:Start()
 
         local weight = nil
 
-         
+        
         local preferredNames = {
             "\087\101\105\103\104\116",
             "\049\048\048\103\032\087\101\105\103\104\116",
@@ -6454,7 +6510,7 @@ function UI:Start()
             weight = nil
         end
 
-         
+        
         if not weight then
             for _, container in ipairs({char, backpack}) do
                 if container then
@@ -6548,10 +6604,10 @@ function UI:Start()
         if overlordRebirthActive then startOverlordWorker() else Core:StopWorker("\070\097\114\109\115\046\079\118\101\114\108\111\114\100") end
     end)
 
-     
-     
-     
-     
+    
+    
+    
+    
     local SILENCE_FARM_PETS = {
         ["\079\109\101\103\097\032\079\118\101\114\108\111\114\100"] = {repSpeed = 20, strength = 0, durability = 0, rebirth = 0},
         ["\083\119\105\102\116\032\083\097\109\117\114\097\105"] = {repSpeed = 15, strength = 0, durability = 0, rebirth = 0},
@@ -6632,7 +6688,7 @@ function UI:Start()
         local equippedCount = 0
         local currentRepSpeed = 0
 
-         
+        
         table.sort(pets, function(a, b)
             return a.repSpeed > b.repSpeed
         end)
@@ -6653,7 +6709,7 @@ function UI:Start()
             end
         end
 
-         
+        
         local remaining = {}
         for _, pet in ipairs(pets) do
             if not equipped[pet.instance] then
@@ -6711,8 +6767,8 @@ function UI:Start()
     startFarmOp = function()
         if Core:IsWorkerRunning("\070\097\114\109\115\046\070\097\114\109\079\112") then return end
 
-         
-         
+        
+        
 
         Core:StartWorker("\070\097\114\109\115\046\070\097\114\109\079\112", function(isAlive)
             while isAlive() and farmOpActive do
@@ -6744,7 +6800,7 @@ function UI:Start()
                         event:FireServer("\114\101\112")
                     end)
 
-                     
+                    
                     if i % 500 == 0 then
                         task.wait()
                     end
@@ -6777,7 +6833,7 @@ function UI:Start()
             btnFarmOp.Text = "\067\073\067\076\079\032\067\079\078\084\082\079\076\065\068\079\082\058\032\079\070\070\032\240\159\148\180"
             btnFarmOp.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
         else
-             
+            
             if mainStrengthOpActive then
                 mainStrengthOpActive = false
                 Core:StopWorker("\070\097\114\109\115\046\077\097\105\110\083\116\114\101\110\103\116\104\079\112")
@@ -6792,10 +6848,10 @@ function UI:Start()
         end
     end)
 
-     
-     
-     
-     
+    
+    
+    
+    
     local mainStrengthState = {
         initialSendRate = 200,
         maxRate = 659,
@@ -6928,7 +6984,7 @@ function UI:Start()
         mainStrengthOpActive = not mainStrengthOpActive
 
         if mainStrengthOpActive then
-             
+            
             if farmOpActive then
                 stopFarmOp()
                 btnFarmOp.Text = "\067\073\067\076\079\032\067\079\078\084\082\079\076\065\068\079\082\058\032\079\070\070\032\240\159\148\180"
@@ -6959,11 +7015,11 @@ function UI:Start()
         return nil
     end
 
-     
-     
-     
-     
-     
+    
+    
+    
+    
+    
     local function findBossChestPrompt()
         local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
         if not chest then
@@ -7012,8 +7068,8 @@ function UI:Start()
     end
 
     local function collectBossChest()
-         
-         
+        
+        
         local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
         if not chest then return false end
 
@@ -7028,8 +7084,8 @@ function UI:Start()
         return false
     end
 
-     
-     
+    
+    
     local function holdBossTransition()
         local char = player.Character
         local hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
@@ -7056,8 +7112,8 @@ function UI:Start()
         local root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
         if not root or not hum or hum.Health <= 0 then return false end
 
-         
-         
+        
+        
         root.Anchored = true
         root.CFrame = CFrame.new(pos + Vector3.new(0, 2.5, 0))
         root.AssemblyLinearVelocity = Vector3.zero
@@ -7079,7 +7135,7 @@ function UI:Start()
         local bossArena = events:FindFirstChild("\066\111\115\115\065\114\101\110\097")
         if not bossArena then return nil end
 
-         
+        
         local targetBosses = {"\066\111\115\115\049", "\066\111\115\115\050", "\066\111\115\115\051", "\066\111\115\115\052", "\066\111\115\115\053", "\066\111\115\115\054", "\066\111\115\115\065\100\109\105\110", "\066\111\115\115\082\097\105\110\098\111\119"}
         local sawNamedBoss = false
 
@@ -7088,7 +7144,7 @@ function UI:Start()
             if bossObj then
                 sawNamedBoss = true
 
-                 
+                
                 if isBossAllowedBySelection(bossName) then
                     if bossObj:IsA("\077\111\100\101\108") then
                         local humanoid = bossObj:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
@@ -7105,8 +7161,8 @@ function UI:Start()
             end
         end
 
-         
-         
+        
+        
         return nil
     end
 
@@ -7177,18 +7233,18 @@ function UI:Start()
         return true
     end
 
-     
-     
-     
+    
+    
+    
     local bossCycleInArena = false
     local bossReturnDeadline = nil
     local bossChestCollected = false
     local bossFarmPauseSnapshot = nil
 
     local function getBossTargetForFarm()
-         
-         
-         
+        
+        
+        
         return getBossTargetPosition()
     end
 
@@ -7202,9 +7258,9 @@ function UI:Start()
     local function pauseAllFarmsForBoss()
         if bossFarmPauseSnapshot then return end
 
-         
-         
-         
+        
+        
+        
         pcall(CaptureBossReturnContext)
 
         bossFarmPauseSnapshot = {
@@ -7218,8 +7274,8 @@ function UI:Start()
             travar = travarLocalActive,
         }
 
-         
-         
+        
+        
         for _, workerName in ipairs({
             "\070\097\114\109\115\046\084\097\114\103\101\116\082\101\098\105\114\116\104",
             "\070\097\114\109\115\046\067\117\115\116\111\109\082\101\098\105\114\116\104",
@@ -7233,7 +7289,7 @@ function UI:Start()
             Core:StopWorker(workerName)
         end
 
-         
+        
         if lockConnection then
             lockConnection:Disconnect()
             lockConnection = nil
@@ -7301,7 +7357,7 @@ function UI:Start()
         print("\091\065\082\065\083\065\075\065\093\091\065\085\084\079\032\066\079\083\083\093\032\070\097\114\109\115\032\097\110\116\101\114\105\111\114\101\115\032\114\101\116\111\109\097\100\097\115\046")
     end
 
-     
+    
     local normalBossPosition, normalBossGyro = nil, nil
     local normalBossAngle, normalBossTick = 0, os.clock()
     local function releaseNormalBossHold()
@@ -7339,9 +7395,9 @@ function UI:Start()
         Core:StartWorker("\070\097\114\109\115\046\066\111\115\115\080\111\115\105\116\105\111\110", function(isAlive)
             local lastBossSeen = false
             while isAlive() and autoFarmActive and not FarmQuestPaused do
-                 
-                 
-                 
+                
+                
+                
                 if collectBossChest() then
                     bossChestCollected = true
                 end
@@ -7351,9 +7407,9 @@ function UI:Start()
                 local humanoid = character and character:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 
                 if hrp and humanoid and humanoid.Health > 0 then
-                     
-                     
-                     
+                    
+                    
+                    
                     if bossReturnDeadline then
                         releaseNormalBossHold()
                         BossDamageHudState.BossAlive = false
@@ -7364,8 +7420,8 @@ function UI:Start()
                             bossChestCollected = true
                         end
 
-                         
-                         
+                        
+                        
                         if bossChestCollected or os.clock() >= bossReturnDeadline then
                             if not bossChestCollected then
                                 holdNearBossChest()
@@ -7374,7 +7430,7 @@ function UI:Start()
                                 end
                             end
 
-                             
+                            
                             holdBossTransition()
                             setNoclip(false)
                             RestoreFarmContext()
@@ -7395,19 +7451,19 @@ function UI:Start()
                                 bossCycleInArena = true
                                 bossChestCollected = false
 
-                                 
-                                 
-                                 
+                                
+                                
+                                
                                 pauseAllFarmsForBoss()
 
-                                 
+                                
                                 jumpBeforeFarmReturn()
                             end
 
                             releaseBossChestHold()
                             setNoclip(true)
-                             
-                             
+                            
+                            
                             local desired = targetPos + Vector3.new(0, currentOffsetY, 0)
                             if hrp.Anchored then
                                 hrp.CFrame = CFrame.new(desired)
@@ -7428,8 +7484,8 @@ function UI:Start()
                                 print("\091\065\082\065\083\065\075\065\093\091\065\085\084\079\032\066\079\083\083\093\032\066\111\115\115\032\109\111\114\116\111\046\032\084\101\110\116\097\110\100\111\032\099\111\108\101\116\097\114\032\111\032\098\097\195\186\032\112\111\114\032\097\116\195\169\032\053\115\046")
                                 lastBossSeen = false
                             end
-                             
-                             
+                            
+                            
                             bossReturnDeadline = os.clock() + 5
                             holdNearBossChest()
                             if collectBossChest() then
@@ -7438,7 +7494,7 @@ function UI:Start()
                         else
                             BossDamageHudState.BossAlive = false
                             releaseNormalBossHold()
-                             
+                            
                             setNoclip(false)
                         end
                     end
@@ -7457,7 +7513,7 @@ function UI:Start()
             local useLeftHand = true
 
             while isAlive() and autoFarmActive and not FarmQuestPaused do
-                 
+                
                 if bossCycleInArena and not bossReturnDeadline then
                     local targetPos = getBossTargetForFarm()
                     if targetPos then
@@ -7517,8 +7573,8 @@ function UI:Start()
             releaseNormalBossHold()
             setNoclip(false)
 
-             
-             
+            
+            
             resetBossCycleState()
 
             damageCount = 0
@@ -7570,9 +7626,9 @@ function UI:Start()
     end)
 
 
-     
-     
-     
+    
+    
+    
     local function getPromptWorldPosition(prompt)
         if not prompt or not prompt.Parent then return nil end
         local parent = prompt.Parent
@@ -7611,8 +7667,8 @@ function UI:Start()
         local tool = char:FindFirstChildOfClass("\084\111\111\108")
         local nearestPrompt = findNearestFarmPrompt(root.Position, 30)
 
-         
-         
+        
+        
         FarmResumeContext.Saved = true
         FarmResumeContext.FarmName = FarmResumeContext.FarmName or "\070\065\082\077\032\065\084\085\065\076"
         FarmResumeContext.CFrame = root.CFrame
@@ -7696,12 +7752,12 @@ function UI:Start()
         root.AssemblyLinearVelocity = Vector3.zero
         root.AssemblyAngularVelocity = Vector3.zero
 
-         
-         
+        
+        
         print("\091\065\082\065\083\065\075\065\093\091\070\065\082\077\032\067\079\078\084\069\088\084\093\032\097\103\117\097\114\100\097\110\100\111\032\052\115\032\097\110\116\101\115\032\100\101\032\114\101\097\116\105\118\097\114\032\109\195\161\113\117\105\110\097\046\046\046")
         task.wait(4)
 
-         
+        
         char = player.Character or char
         hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
         root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
@@ -7722,10 +7778,10 @@ function UI:Start()
             end
         end
 
-         
+        
         FarmResumeContext.Prompt = findNearestFarmPrompt(FarmResumeContext.CFrame.Position, 28)
 
-         
+        
         local activated = false
         for attempt = 1, 4 do
             if reactivateFarmInteraction() then
@@ -7735,7 +7791,7 @@ function UI:Start()
             if attempt < 4 then
                 task.wait(0.6)
 
-                 
+                
                 local currentChar = player.Character
                 local currentRoot = currentChar and currentChar:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
                 if currentRoot then
@@ -7755,8 +7811,8 @@ function UI:Start()
         return true
     end
 
-     
-     
+    
+    
     local farmCaptureConnections = setmetatable({}, {__mode = "\107"})
     local function attachFarmContextCapture(obj)
         if not obj:IsA("\084\101\120\116\066\117\116\116\111\110") or farmCaptureConnections[obj] then return end
@@ -7812,8 +7868,8 @@ function UI:Start()
             end
         end)
 
-         
-         
+        
+        
         startBossFarmRuntime()
     end
 
@@ -7931,7 +7987,7 @@ function UI:Start()
     local farmsOk, farmsErr = Core:StartModule("\070\097\114\109\115")
     if not farmsOk then
         warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\070\097\114\109\115\093\032\070\097\108\104\097\058", farmsErr)
-         
+        
         for _, tab in ipairs({tabFarmForca, tabFarmRebirth, tabFarmBoss}) do
             local errLabel = Instance.new("\084\101\120\116\076\097\098\101\108")
             errLabel.Name = "\065\114\097\115\097\107\097\070\097\114\109\115\069\114\114\111\114"
@@ -7949,10 +8005,10 @@ function UI:Start()
         end
     end
 
-     
+    
     function Teleports:Init()
         Utils.PerfBegin("\084\069\076\069\080\079\082\084\069\083\095\085\073")
-     
+    
     local teleScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabTeleports)
     teleScroll.Size = UDim2.new(1, -20, 1, -10)
     teleScroll.Position = UDim2.new(0, 10, 0, 5)
@@ -8003,10 +8059,10 @@ function UI:Start()
     local teleOk, teleErr = Core:StartModule("\084\101\108\101\112\111\114\116\115")
     if not teleOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\084\101\108\101\112\111\114\116\115\093\032\070\097\108\104\097\058", teleErr) end
 
-     
+    
     function Pets:Init()
         Utils.PerfBegin("\080\069\084\083\095\085\073")
-     
+    
     local petScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabPets)
     petScroll.Size = UDim2.new(1, -20, 1, -10)
     petScroll.Position = UDim2.new(0, 10, 0, 5)
@@ -8271,10 +8327,10 @@ function UI:Start()
     local petsOk, petsErr = Core:StartModule("\080\101\116\115")
     if not petsOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\080\101\116\115\093\032\070\097\108\104\097\058", petsErr) end
 
-     
+    
     function Visual:Init()
         Utils.PerfBegin("\086\073\083\085\065\076\095\085\073")
-     
+    
     local rtxActive, vibeActive, antiLagActive, terrorActive, fotorealistaActive, blackScreenActive = false, false, false, false, false, false
 
     local defaultLighting = {
@@ -8300,7 +8356,7 @@ function UI:Start()
         btn.BackgroundTransparency=1
         btn.BorderSizePixel=0
         btn.AutoButtonColor=false
-         
+        
         btn.Text=texto.."\058\032\079\070\070\032\240\159\148\180"
         btn.TextTransparency=1
         local surface=Instance.new("\070\114\097\109\101",btn)
@@ -8702,10 +8758,10 @@ function UI:Start()
     local visualOk, visualErr = Core:StartModule("\086\105\115\117\097\108")
     if not visualOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\086\105\115\117\097\108\093\032\070\097\108\104\097\058", visualErr) end
 
-     
+    
     function System:Init()
         Utils.PerfBegin("\079\085\084\082\079\083\095\085\073")
-     
+    
     local outrosScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabOutros)
     outrosScroll.Size = UDim2.new(1, -20, 0, 215)
     outrosScroll.Position = UDim2.new(0, 10, 0, 5)
@@ -8736,8 +8792,8 @@ function UI:Start()
     local autoSpinWheelActive, eatAllBoostsActive = false, false
 
 
-     
-     
+    
+    
     local sizeButton = Instance.new("\084\101\120\116\066\117\116\116\111\110", outrosScroll)
     sizeButton.Name = "\065\114\097\115\097\107\097\079\112\116\105\111\110\083\105\122\101\066\117\116\116\111\110"
     sizeButton.LayoutOrder = 0
@@ -8790,8 +8846,8 @@ function UI:Start()
             arsSavePrefs()
         end
     end)
-     
-     
+    
+    
     local arsRejoining = false
     local function arsTryRejoin(reason)
         if not ARS_PREF.autoRejoin or arsRejoining or not Core:IsAlive() then return end
@@ -9020,10 +9076,10 @@ function UI:Start()
     end)
 
 
-     
-     
-     
-     
+    
+    
+    
+    
     local function limparNomeFuncao(texto)
         texto = tostring(texto or "")
         texto = texto:gsub("\037\115\042\058\037\115\042\079\078\037\115\042\240\159\159\162", "")
@@ -9046,7 +9102,7 @@ function UI:Start()
     local function conectarNotificacaoBotao(botao)
         if not botao:IsA("\084\101\120\116\066\117\116\116\111\110") or botoesNotificacaoConectados[botao] then return end
         botoesNotificacaoConectados[botao] = true
-         
+        
         local ultimoEstado = estadoDoTexto(botao.Text)
         local textoConn = botao:GetPropertyChangedSignal("\084\101\120\116"):Connect(function()
             if not botao.Parent or not Core:IsAlive() then return end
@@ -9062,7 +9118,7 @@ function UI:Start()
 
         local cliqueConn = botao.MouseButton1Click:Connect(function()
             if not Core:IsAlive() or not botao.Parent then return end
-             
+            
             if botao:FindFirstChild("\065\099\116\105\118\101\076\105\110\101") then return end
             if estadoDoTexto(botao.Text) ~= nil then return end
             local texto = botao.Text
@@ -9098,10 +9154,10 @@ function UI:Start()
 
     iniciarNotificacoesUniversais()
 
-     
-     
-     
-     
+    
+    
+    
+    
     local DashboardModule = {
         Name = "\068\097\115\104\098\111\097\114\100",
         Connections = {},
@@ -9226,11 +9282,11 @@ function UI:Start()
         DashboardModule:Init()
     end
 
-     
-     
-     
-     
-     
+    
+    
+    
+    
+    
     local ProcessPanelModule = {
         Name = "\080\114\111\099\101\115\115\080\097\110\101\108",
         Connections = {}
@@ -9390,7 +9446,7 @@ function UI:Start()
             table.insert(self.Connections, masterStopConnection)
         end
 
-         
+        
         local elapsed = 0
         local refreshConnection = RunService.Heartbeat:Connect(function(dt)
             elapsed += dt
@@ -9433,17 +9489,17 @@ function UI:Start()
         ProcessPanelModule:Init()
     end
 
-     
+    
         Utils.PerfEnd("\079\085\084\082\079\083\095\085\073")
     end
     Core:RegisterModule("\083\121\115\116\101\109", System)
     local systemOk, systemErr = Core:StartModule("\083\121\115\116\101\109")
     if not systemOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\083\121\115\116\101\109\093\032\070\097\108\104\097\058", systemErr) end
 
-     
-         
-     
-     
+    
+        
+    
+    
     local SystemUIModule = { Name = "\083\121\115\116\101\109\085\073" }
 
     function SystemUIModule:Init()
@@ -9453,7 +9509,7 @@ function UI:Start()
         local minimizeTween = nil
         local minimizeGeneration = 0
 
-         
+        
         local botaoIcone = Instance.new("\073\109\097\103\101\066\117\116\116\111\110")
         botaoIcone.Name = "\065\114\097\115\097\107\097\073\099\111\110\101\077\105\110\105\109\105\122\097\100\111"
         botaoIcone.Parent = frame
@@ -9497,7 +9553,7 @@ function UI:Start()
             if minimizado then
                 AplicarEstadoMinimizado(true)
             else
-                 
+                
                 botaoIcone.Visible = false
             end
 
@@ -9542,16 +9598,16 @@ function UI:Stop()
     end
 end
 
- 
- 
- 
- 
 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+
 ProcessControlModule = {
     Name = "\080\114\111\099\101\115\115\067\111\110\116\114\111\108"
 }
@@ -9566,14 +9622,14 @@ function ProcessControlModule:GetSnapshot()
 end
 
 Core:RegisterModule("\080\114\111\099\101\115\115\067\111\110\116\114\111\108", ProcessControlModule)
- 
 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
 local CoreMemoryModule = {
     Name = "\067\111\114\101\077\101\109\111\114\121"
 }
@@ -9585,7 +9641,7 @@ function CoreMemoryModule:Start()
 
     return Core:StartWorker("\067\111\114\101\077\101\109\111\114\121", function(isAlive)
         while isAlive() do
-             
+            
             local elapsed = 0
             while elapsed < 30 and isAlive() do
                 task.wait(0.25)
@@ -9616,11 +9672,11 @@ else
     print("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\093\032\067\111\114\101\077\101\109\111\114\121\032\061\032\077\073\071\082\065\068\079")
 end
 
- 
- 
- 
- 
- 
+
+
+
+
+
 local HubLifecycleModule = {
     Name = "\072\117\098\076\105\102\101\099\121\099\108\101"
 }
@@ -9635,7 +9691,7 @@ function HubLifecycleModule:Start()
             task.wait(0.25)
 
             if not Core:IsAlive() then
-                 
+                
                 local names = {}
                 for workerName in pairs(Core.Workers) do
                     if workerName ~= "\072\117\098\076\105\102\101\099\121\099\108\101" then
@@ -9667,7 +9723,7 @@ end
 
 
 
- 
+
 local WorkerDiagnosticModule = {
     Name = "\087\111\114\107\101\114\068\105\097\103\110\111\115\116\105\099"
 }
@@ -9686,7 +9742,7 @@ end
 
 Core:RegisterModule("\087\111\114\107\101\114\068\105\097\103\110\111\115\116\105\099", WorkerDiagnosticModule)
 
- 
+
 Core:RegisterModule("\085\116\105\108\115", Utils)
 Core:RegisterModule("\085\073", UI)
 Core:RegisterModule("\070\097\114\109\115", Farms)
@@ -9697,9 +9753,9 @@ Core:RegisterModule("\075\105\108\108", Kill)
 Core:RegisterModule("\067\097\108\099\117\108\097\116\111\114", Calculator)
 Core:RegisterModule("\083\121\115\116\101\109", System)
 
- 
 
- 
+
+
 local __arasakaBootStart = os.clock()
 print("\091\065\082\065\083\065\075\065\093\091\066\079\079\084\093\032\073\110\105\099\105\097\110\100\111\032\072\117\098\032\115\101\109\032\115\105\115\116\101\109\097\032\100\101\032\107\101\121\046\046\046")
 
