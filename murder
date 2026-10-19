@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
@@ -19,6 +20,8 @@ local Target = nil
 local collisionCache = {}
 local travelSpeed = 100
 local travelToken = 0
+local activeTween = nil
+local noclipCache = {}
 local RoleColors = { Murderer = Color3.fromRGB(245,60,69), Sheriff = Color3.fromRGB(61,151,255), Hero = Color3.fromRGB(61,151,255) }
 
 local Gui = Instance.new("ScreenGui")
@@ -281,7 +284,10 @@ local function toggle(label, key, y)
     end
     btn.MouseButton1Click:Connect(function()
         Settings[key] = not Settings[key]
-        if key == "Candy" then travelToken += 1 end
+        if key == "Candy" then
+            travelToken += 1
+            if activeTween then activeTween:Cancel() activeTween = nil end
+        end
         update()
         if not Settings.ESP and key == "ESP" then
             for p in pairs(Highlights) do clearPlayer(p) end
@@ -324,6 +330,11 @@ local function stop()
     Settings.Candy = false
     Settings.AntiFling = false
     travelToken += 1
+    if activeTween then activeTween:Cancel() activeTween = nil end
+    for part, old in pairs(noclipCache) do
+        if part and part.Parent then pcall(function() part.CanCollide = old end) end
+        noclipCache[part] = nil
+    end
     for part, values in pairs(collisionCache) do
         if part and part.Parent then
             pcall(function() part.CanCollide = values end)
@@ -423,26 +434,59 @@ task.spawn(function()
     end
 end)
 
-local function travelSmooth(part, token)
-    local duration = 0
-    while Running and Settings.Candy and travelToken == token and part and part.Parent do
-        local character = LocalPlayer.Character
-        local root = character and character:FindFirstChild("HumanoidRootPart")
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-        if not root or not humanoid or humanoid.Health <= 0 then return false end
-        local target = part.Position + Vector3.new(0, 1.5, 0)
-        local offset = target - root.Position
-        local distance = offset.Magnitude
-        if distance <= 2.4 then return true end
-        local dt = RunService.Heartbeat:Wait()
-        local step = math.min(distance, travelSpeed * math.clamp(dt, 0, 0.05))
-        root.CFrame = CFrame.new(root.Position + offset.Unit * step) * root.CFrame.Rotation
-        root.AssemblyLinearVelocity = Vector3.zero
-        root.AssemblyAngularVelocity = Vector3.zero
-        duration += dt
-        if duration > 18 then return false end
+local function restoreNoclip()
+    for part, old in pairs(noclipCache) do
+        if part and part.Parent then pcall(function() part.CanCollide = old end) end
+        noclipCache[part] = nil
     end
-    return false
+end
+
+table.insert(Connections, RunService.Stepped:Connect(function()
+    if not Running or not Settings.Candy then
+        if next(noclipCache) then restoreNoclip() end
+        return
+    end
+    local character = LocalPlayer.Character
+    if not character then return end
+    for _, obj in ipairs(character:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            if noclipCache[obj] == nil then noclipCache[obj] = obj.CanCollide end
+            obj.CanCollide = false
+        end
+    end
+end))
+
+local function travelSmooth(part, token)
+    local ch = LocalPlayer.Character
+    local root = ch and ch:FindFirstChild("HumanoidRootPart")
+    local humanoid = ch and ch:FindFirstChildOfClass("Humanoid")
+    if not root or not humanoid or humanoid.Health <= 0 or not part or not part.Parent then return false end
+    local targetPosition = part.Position
+    local delta = targetPosition - root.Position
+    local distance = delta.Magnitude
+    local orientation = root.CFrame.Rotation
+    local goal = CFrame.new(targetPosition) * orientation
+    if distance > 0.15 then
+        local tween = TweenService:Create(root, TweenInfo.new(math.max(distance / travelSpeed, 0.03), Enum.EasingStyle.Linear), {CFrame = goal})
+        activeTween = tween
+        tween:Play()
+        while Running and Settings.Candy and travelToken == token and part.Parent and root.Parent and humanoid.Health > 0 and tween.PlaybackState == Enum.PlaybackState.Playing do
+            root.AssemblyLinearVelocity = Vector3.zero
+            root.AssemblyAngularVelocity = Vector3.zero
+            RunService.Heartbeat:Wait()
+        end
+        if tween.PlaybackState == Enum.PlaybackState.Playing then tween:Cancel() end
+        if activeTween == tween then activeTween = nil end
+    end
+    if not Running or not Settings.Candy or travelToken ~= token or not part.Parent or not root.Parent then return false end
+    root.CFrame = CFrame.new(part.Position) * orientation
+    root.AssemblyLinearVelocity = Vector3.zero
+    root.AssemblyAngularVelocity = Vector3.zero
+    for _ = 1, 3 do
+        if not Running or not Settings.Candy or travelToken ~= token then return false end
+        RunService.Heartbeat:Wait()
+    end
+    return (root.Position - part.Position).Magnitude <= 3
 end
 
 print("[ARASAKA MM2] Pronto. Auto Candy gradual e Anti Fling ativos.")
