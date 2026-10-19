@@ -145,7 +145,7 @@ local function corner(parent, radius)
 end
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.fromOffset(322, 436)
+Frame.Size = UDim2.fromOffset(322, 403)
 Frame.Position = UDim2.new(0.5, -161, 0.5, -218)
 Frame.BackgroundColor3 = Color3.fromRGB(14, 15, 19)
 Frame.BorderSizePixel = 0
@@ -294,12 +294,11 @@ toggle("X-Ray Sheriff / Murderer", "ESP", 65)
 toggle("Aim Lock (F1)", "Aim", 114)
 toggle("Nomes e papeis", "Names", 163)
 toggle("Mirar tambem no Hero", "HeroTarget", 212)
-toggle("Auto Candy (suave 400)", "Candy", 261)
-toggle("Anti Fling (automatico)", "AntiFling", 310)
+toggle("Auto Candy (100 studs/s)", "Candy", 261)
 
 local Status = Instance.new("TextLabel")
 Status.BackgroundTransparency = 1
-Status.Position = UDim2.fromOffset(10, 359)
+Status.Position = UDim2.fromOffset(10, 310)
 Status.Size = UDim2.new(1, -20, 0, 50)
 Status.TextWrapped = true
 Status.TextColor3 = Color3.fromRGB(174,177,188)
@@ -310,7 +309,7 @@ Status.Parent = Frame
 
 local StopButton = Instance.new("TextButton")
 StopButton.Size = UDim2.new(1, -20, 0, 25)
-StopButton.Position = UDim2.fromOffset(10, 406)
+StopButton.Position = UDim2.fromOffset(10, 366)
 StopButton.BackgroundColor3 = Color3.fromRGB(126,32,48)
 StopButton.Text = "ENCERRAR"
 StopButton.Font = Enum.Font.GothamBold
