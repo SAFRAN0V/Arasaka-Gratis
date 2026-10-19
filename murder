@@ -1,0 +1,372 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+local Env = getgenv and getgenv() or _G
+
+if Env.ARASAKA_MM2_STOP then pcall(Env.ARASAKA_MM2_STOP) end
+
+local CurrentRoundClient = require(ReplicatedStorage:WaitForChild("Modules"):WaitForChild("CurrentRoundClient"))
+local Settings = { ESP = true, Aim = false, Tracer = false, Names = true, HeroTarget = true, Smoothness = 0.23, MaxDistance = 2000 }
+local Running = true
+local Connections = {}
+local Highlights = {}
+local Billboards = {}
+local Tracers = {}
+local Target = nil
+local RoleColors = { Murderer = Color3.fromRGB(245,60,69), Sheriff = Color3.fromRGB(61,151,255), Hero = Color3.fromRGB(61,151,255) }
+
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "ArasakaMM2"
+Gui.IgnoreGuiInset = true
+Gui.ResetOnSpawn = false
+Gui.DisplayOrder = 10000
+Gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local function roundInfo(p)
+    local data = CurrentRoundClient.PlayerData
+    local info = type(data) == "table" and data[p.Name]
+    if type(info) ~= "table" then return nil, false end
+    return info.Role, info.Dead == true
+end
+
+local function isAlive(p)
+    local ch = p.Character
+    local hum = ch and ch:FindFirstChildOfClass("Humanoid")
+    local role, dead = roundInfo(p)
+    return ch and hum and hum.Health > 0 and not dead and role ~= nil
+end
+
+local function clearPlayer(p)
+    if Highlights[p] then Highlights[p]:Destroy() Highlights[p] = nil end
+    if Billboards[p] then Billboards[p]:Destroy() Billboards[p] = nil end
+    if Tracers[p] then Tracers[p]:Destroy() Tracers[p] = nil end
+end
+
+local function makeESP(p)
+    if p == LocalPlayer then return end
+    local role = roundInfo(p)
+    local ch = p.Character
+    local head = ch and ch:FindFirstChild("Head")
+    if not Settings.ESP or not isAlive(p) or not RoleColors[role] or not ch or not head then
+        clearPlayer(p)
+        return
+    end
+    local color = RoleColors[role]
+    local h = Highlights[p]
+    if not h or h.Parent ~= ch then
+        clearPlayer(p)
+        h = Instance.new("Highlight")
+        h.Name = "ArasakaRoleHighlight"
+        h.Adornee = ch
+        h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        h.FillTransparency = 0.5
+        h.OutlineTransparency = 0
+        h.Parent = ch
+        Highlights[p] = h
+    end
+    h.FillColor = color
+    h.OutlineColor = color
+    local b = Billboards[p]
+    if Settings.Names then
+        if not b or b.Adornee ~= head then
+            if b then b:Destroy() end
+            b = Instance.new("BillboardGui")
+            b.Name = "ArasakaRoleLabel"
+            b.Size = UDim2.fromOffset(160, 34)
+            b.StudsOffset = Vector3.new(0, 2.65, 0)
+            b.AlwaysOnTop = true
+            b.Adornee = head
+            b.Parent = Gui
+            local txt = Instance.new("TextLabel")
+            txt.Name = "Label"
+            txt.Size = UDim2.fromScale(1, 1)
+            txt.BackgroundTransparency = 1
+            txt.TextScaled = true
+            txt.Font = Enum.Font.GothamBold
+            txt.TextStrokeTransparency = 0.25
+            txt.Parent = b
+            Billboards[p] = b
+        end
+        b.Label.Text = p.DisplayName .. " | " .. role
+        b.Label.TextColor3 = color
+        b.Enabled = true
+    elseif b then
+        b:Destroy()
+        Billboards[p] = nil
+    end
+end
+
+local function getTarget()
+    local ownRole = roundInfo(LocalPlayer)
+    local wanted
+    if ownRole == "Sheriff" or ownRole == "Hero" then
+        wanted = { Murderer = true }
+    elseif ownRole == "Murderer" then
+        wanted = { Sheriff = true }
+        if Settings.HeroTarget then wanted.Hero = true end
+    else
+        return nil
+    end
+    local best, bestDistance = nil, math.huge
+    local center = Camera.ViewportSize / 2
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and isAlive(p) then
+            local role = roundInfo(p)
+            local ch = p.Character
+            local head = ch and ch:FindFirstChild("Head")
+            if wanted[role] and head then
+                local distance = (head.Position - Camera.CFrame.Position).Magnitude
+                if distance <= Settings.MaxDistance then
+                    local pos, visible = Camera:WorldToViewportPoint(head.Position)
+                    if visible and pos.Z > 0 then
+                        local diff = (Vector2.new(pos.X, pos.Y) - center).Magnitude
+                        if diff < bestDistance then
+                            bestDistance = diff
+                            best = p
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return best
+end
+
+local function corner(parent, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius)
+    c.Parent = parent
+end
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.fromOffset(322, 337)
+Frame.Position = UDim2.new(0.5, -161, 0.5, -168)
+Frame.BackgroundColor3 = Color3.fromRGB(14, 15, 19)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Parent = Gui
+corner(Frame, 11)
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(203, 37, 58)
+stroke.Thickness = 1.5
+stroke.Parent = Frame
+
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 55)
+Header.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
+Header.BorderSizePixel = 0
+Header.Parent = Frame
+corner(Header, 11)
+
+local Title = Instance.new("TextLabel")
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.fromOffset(15, 6)
+Title.Size = UDim2.new(1, -62, 0, 27)
+Title.Text = "ARASAKA"
+Title.TextColor3 = Color3.fromRGB(243, 49, 74)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 21
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
+
+local Sub = Instance.new("TextLabel")
+Sub.BackgroundTransparency = 1
+Sub.Position = UDim2.fromOffset(15, 32)
+Sub.Size = UDim2.new(1, -62, 0, 15)
+Sub.Text = "MURDER MYSTERY 2  |  VISUAL & AIM"
+Sub.TextColor3 = Color3.fromRGB(172, 175, 184)
+Sub.Font = Enum.Font.GothamMedium
+Sub.TextSize = 10
+Sub.TextXAlignment = Enum.TextXAlignment.Left
+Sub.Parent = Header
+
+local Mini = Instance.new("TextButton")
+Mini.Size = UDim2.fromOffset(34, 33)
+Mini.Position = UDim2.new(1, -42, 0, 11)
+Mini.BackgroundColor3 = Color3.fromRGB(68, 36, 44)
+Mini.Text = "−"
+Mini.TextSize = 22
+Mini.TextColor3 = Color3.new(1,1,1)
+Mini.Font = Enum.Font.GothamBold
+Mini.Parent = Header
+corner(Mini, 7)
+
+local Logo = Instance.new("ImageButton")
+Logo.Name = "ArasakaMinimizedLogo"
+Logo.Size = UDim2.fromOffset(52,52)
+Logo.Position = UDim2.new(0,22,0.5,-26)
+Logo.BackgroundColor3 = Color3.fromRGB(10,10,12)
+Logo.Image = "rbxassetid://132397224962668"
+Logo.ScaleType = Enum.ScaleType.Fit
+Logo.Visible = false
+Logo.Active = true
+Logo.Parent = Gui
+corner(Logo, 12)
+local logoStroke = Instance.new("UIStroke")
+logoStroke.Color = Color3.fromRGB(220,36,60)
+logoStroke.Thickness = 1.5
+logoStroke.Parent = Logo
+
+local function toggleMini()
+    Frame.Visible = not Frame.Visible
+    Logo.Visible = not Frame.Visible
+end
+Mini.MouseButton1Click:Connect(toggleMini)
+
+local moveStart, origin, moving, dragged, moved
+local function draggable(widget, target, restoreOnClick)
+    widget.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            moving = input
+            moveStart = input.Position
+            origin = target.Position
+            moved = false
+        end
+    end)
+    widget.InputEnded:Connect(function(input)
+        if input == moving then
+            moving = nil
+            if restoreOnClick and not moved then toggleMini() end
+        end
+    end)
+    table.insert(Connections, UserInputService.InputChanged:Connect(function(input)
+        if not moving then return end
+        if moving.UserInputType == Enum.UserInputType.Touch then
+            if input ~= moving then return end
+        elseif input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+        local delta = input.Position - moveStart
+        if delta.Magnitude > 7 then moved = true end
+        if not moved then return end
+        target.Position = UDim2.new(origin.X.Scale, origin.X.Offset + delta.X, origin.Y.Scale, origin.Y.Offset + delta.Y)
+    end))
+end
+
+draggable(Header, Frame, false)
+draggable(Logo, Logo, true)
+
+local function toggle(label, key, y)
+    local row = Instance.new("Frame")
+    row.Size = UDim2.new(1, -20, 0, 42)
+    row.Position = UDim2.fromOffset(10, y)
+    row.BackgroundColor3 = Color3.fromRGB(30,31,37)
+    row.Parent = Frame
+    corner(row, 7)
+    local t = Instance.new("TextLabel")
+    t.BackgroundTransparency = 1
+    t.Size = UDim2.new(1, -92, 1, 0)
+    t.Position = UDim2.fromOffset(11, 0)
+    t.Text = label
+    t.TextXAlignment = Enum.TextXAlignment.Left
+    t.Font = Enum.Font.GothamSemibold
+    t.TextColor3 = Color3.fromRGB(238,238,240)
+    t.TextSize = 12
+    t.Parent = row
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.fromOffset(67, 26)
+    btn.Position = UDim2.new(1, -76, 0.5, -13)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 12
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.Parent = row
+    corner(btn, 6)
+    local function update()
+        btn.Text = Settings[key] and "ON" or "OFF"
+        btn.BackgroundColor3 = Settings[key] and Color3.fromRGB(39,138,85) or Color3.fromRGB(92,45,54)
+    end
+    btn.MouseButton1Click:Connect(function()
+        Settings[key] = not Settings[key]
+        update()
+        if not Settings.ESP and key == "ESP" then
+            for p in pairs(Highlights) do clearPlayer(p) end
+        end
+    end)
+    update()
+end
+
+toggle("X-Ray Sheriff / Murderer", "ESP", 65)
+toggle("Aim Lock (F1)", "Aim", 114)
+toggle("Nomes e papeis", "Names", 163)
+toggle("Mirar tambem no Hero", "HeroTarget", 212)
+
+local Status = Instance.new("TextLabel")
+Status.BackgroundTransparency = 1
+Status.Position = UDim2.fromOffset(10, 264)
+Status.Size = UDim2.new(1, -20, 0, 50)
+Status.TextWrapped = true
+Status.TextColor3 = Color3.fromRGB(174,177,188)
+Status.Font = Enum.Font.Gotham
+Status.TextSize = 12
+Status.Text = "Lendo rodada..."
+Status.Parent = Frame
+
+local StopButton = Instance.new("TextButton")
+StopButton.Size = UDim2.new(1, -20, 0, 25)
+StopButton.Position = UDim2.fromOffset(10, 307)
+StopButton.BackgroundColor3 = Color3.fromRGB(126,32,48)
+StopButton.Text = "ENCERRAR"
+StopButton.Font = Enum.Font.GothamBold
+StopButton.TextColor3 = Color3.new(1,1,1)
+StopButton.TextSize = 11
+StopButton.Parent = Frame
+corner(StopButton, 5)
+
+local function stop()
+    Running = false
+    Settings.Aim = false
+    for _, c in ipairs(Connections) do pcall(function() c:Disconnect() end) end
+    for p in pairs(Highlights) do clearPlayer(p) end
+    if Gui.Parent then Gui:Destroy() end
+end
+Env.ARASAKA_MM2_STOP = stop
+StopButton.MouseButton1Click:Connect(stop)
+
+table.insert(Connections, UserInputService.InputBegan:Connect(function(input, processed)
+    if input.KeyCode == Enum.KeyCode.F1 then
+        Settings.Aim = false
+        for _, node in ipairs(Frame:GetDescendants()) do
+            if node:IsA("TextButton") and node.Text == "ON" then
+                local p = node.Parent
+                local label = p and p:FindFirstChildOfClass("TextLabel")
+                if label and label.Text == "Aim Lock (F1)" then
+                    node.Text = "OFF"
+                    node.BackgroundColor3 = Color3.fromRGB(92,45,54)
+                end
+            end
+        end
+        Target = nil
+    end
+end))
+
+table.insert(Connections, Players.PlayerRemoving:Connect(function(p)
+    clearPlayer(p)
+end))
+
+local accumulator = 0
+table.insert(Connections, RunService.RenderStepped:Connect(function(dt)
+    if not Running then return end
+    accumulator += dt
+    if accumulator >= 0.18 then
+        accumulator = 0
+        for _, p in ipairs(Players:GetPlayers()) do makeESP(p) end
+        local own = roundInfo(LocalPlayer) or "Aguardando"
+        local targetRole = own == "Murderer" and "Sheriff/Hero" or "Murderer"
+        Status.Text = "Seu papel: " .. tostring(own) .. " | Alvo: " .. targetRole .. "\nF1: desliga Aim Lock | Mira somente com alvo visivel na tela"
+    end
+    if Settings.Aim and isAlive(LocalPlayer) then
+        Target = getTarget()
+        if Target and Target.Character then
+            local head = Target.Character:FindFirstChild("Head")
+            if head then
+                local desired = CFrame.lookAt(Camera.CFrame.Position, head.Position)
+                Camera.CFrame = Camera.CFrame:Lerp(desired, math.clamp(Settings.Smoothness, 0.05, 1))
+            end
+        end
+    else
+        Target = nil
+    end
+end))
+
+print("[ARASAKA MM2] Pronto. F1 desativa Aim Lock.")
