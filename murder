@@ -17,7 +17,7 @@ local Billboards = {}
 local Tracers = {}
 local Target = nil
 local collisionCache = {}
-local travelSpeed = 400
+local travelSpeed = 100
 local travelToken = 0
 local RoleColors = { Murderer = Color3.fromRGB(245,60,69), Sheriff = Color3.fromRGB(61,151,255), Hero = Color3.fromRGB(61,151,255) }
 
@@ -465,7 +465,7 @@ local function findCandies()
                     for _, coin in ipairs(container:GetDescendants()) do
                         if coin.Name == "Coin_Server" then
                             local part = coin:IsA("BasePart") and coin or (coin:IsA("Model") and (coin.PrimaryPart or coin:FindFirstChildWhichIsA("BasePart", true)))
-                            if part and part:IsDescendantOf(workspace) and (not recentlyVisited[coin] or now - recentlyVisited[coin] >= 5) then
+                            if part and part:IsDescendantOf(workspace) and (not recentlyVisited[coin] or now - recentlyVisited[coin] >= 0.1) then
                                 table.insert(found, {coin = coin, part = part, distance = (part.Position - root.Position).Magnitude})
                             end
                         end
@@ -494,7 +494,7 @@ task.spawn(function()
                     if ok then candyCounter += 1 end
                     task.wait(0.1)
                 else
-                    task.wait(0.75)
+                    task.wait(0.1)
                 end
             else
                 task.wait(0.5)
