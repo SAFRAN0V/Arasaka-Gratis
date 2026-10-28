@@ -38,8 +38,10 @@ local ArasakaI18n = {
 }
 local LocalizationService = game:GetService("LocalizationService")
 local LANGUAGE_ORDER = {"pt", "en", "es", "fr", "de", "ru", "ja"}
-local TRANSLATIONS = {
-    en = {
+local TRANSLATIONS = {}
+TRANSLATIONS.en = {}
+do
+    local _translationChunk = {
         {"Ilha Principal", "Main Island"},
         {"Muscle King Academia", "Muscle King Gym"},
         {"Legends Academia", "Legends Gym"},
@@ -80,6 +82,14 @@ local TRANSLATIONS = {
         {"SÓ CONTA ENQUANTO O STATUS ESTIVER SUBINDO", "ONLY COUNTS WHILE THE STAT INCREASES"},
         {"REDE ARASAKA // STATUS DO CLIENTE: ONLINE", "ARASAKA NETWORK // CLIENT: ONLINE"},
         {"COMPRA AUTOMATICA DO ESTOQUE SELECIONADO", "AUTO BUY SELECTED STOCK"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MARQUE APENAS OS PETS QUE DESEJA EXCLUIR", "SELECT ONLY PETS TO EXCLUDE"},
         {"PEDRA ESCURA, NOITE E ATMOSFERA SOMBRIA.", "DARK STONE, NIGHT AND GLOOMY ATMOSPHERE."},
         {"PAINEL PRONTO // VOCE ESTA NO CONTROLE", "PANEL READY // YOU ARE IN CONTROL"},
@@ -120,6 +130,14 @@ local TRANSLATIONS = {
         {"FALHA // TENTE NOVAMENTE", "FAILED // TRY AGAIN"},
         {"FALHA AO TROCAR SERVIDOR", "FAILED TO SWITCH SERVER"},
         {"FARM ANTERIOR RESTAURADA", "PREVIOUS FARM RESTORED"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MODO FOTORREALISTA ULTRA", "ULTRA PHOTOREALISTIC MODE"},
         {"PARAR TODOS OS PROCESSOS", "STOP ALL PROCESSES"},
         {"ESCOLHER PET P/ EVOLUIR", "CHOOSE PET TO EVOLVE"},
@@ -160,6 +178,14 @@ local TRANSLATIONS = {
         {"AGUARDANDO TREINO", "WAITING FOR TRAINING"},
         {"APOCALIPSE TOXICO", "TOXIC APOCALYPSE"},
         {"CICLO CONTROLADOR", "CYCLE CONTROLLER"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"COMPRA AUTOMATICA", "AUTO BUY"},
         {"CONFIGURAR BOSSES", "CONFIGURE BOSSES"},
         {"ENVIANDO TESTE DE", "SENDING TEST FOR"},
@@ -200,6 +226,14 @@ local TRANSLATIONS = {
         {"SEM CONFIRMACAO", "NOT CONFIRMED"},
         {"STATUS COMPACTO", "COMPACT STATUS"},
         {"TEMPO DE SESSAO", "SESSION TIME"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TREINO ANTERIOR", "PREVIOUS TRAINING"},
         {"ALERTA ENVIADO", "ALERT SENT"},
         {"ENCHANTAMENTOS", "ENCHANTMENTS"},
@@ -240,6 +274,14 @@ local TRANSLATIONS = {
         {"VIBE AMBIENTE", "AMBIENT VIBE"},
         {"AUTO EVOLUIR", "AUTO EVOLVE"},
         {"DESCONHECIDO", "UNKNOWN"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"DURABILIDADE", "DURABILITY"},
         {"ESCOLHER PET", "CHOOSE PET"},
         {"FARM REBIRTH", "REBIRTH FARM"},
@@ -280,6 +322,14 @@ local TRANSLATIONS = {
         {"MAIN FORÇA", "MAIN STRENGTH"},
         {"NENHUM PET", "NO PET"},
         {"P/ EVOLUIR", "TO EVOLVE"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"PROCURANDO", "SEARCHING"},
         {"RECOMPENSA", "REWARD"},
         {"REPETIÇÕES", "REPETITIONS"},
@@ -320,6 +370,14 @@ local TRANSLATIONS = {
         {"SEGUNDOS", "SECONDS"},
         {"SO FORCA", "STRENGTH ONLY"},
         {"APLICAR", "APPLY"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"ATIVADO", "ENABLED"},
         {"CLIENTE", "CLIENT"},
         {"COMPRAR", "BUY"},
@@ -360,6 +418,14 @@ local TRANSLATIONS = {
         {"TREINO", "TRAINING"},
         {"ULTIMA", "LAST"},
         {"ÚLTIMA", "LAST"},
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"ATIVO", "ACTIVE"},
         {"DADOS", "DATA"},
         {"FALHA", "ERROR"},
@@ -369,8 +435,15 @@ local TRANSLATIONS = {
         {"ALVO", "TARGET"},
         {"ERRO", "ERROR"},
         {"PESO", "WEIGHT"},
-    },
-    es = {
+    }
+    local _target = TRANSLATIONS.en
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+TRANSLATIONS.es = {}
+do
+    local _translationChunk = {
         {"Ilha Principal", "Isla Principal"},
         {"Muscle King Academia", "Gimnasio Muscle King"},
         {"Legends Academia", "Gimnasio Legends"},
@@ -411,6 +484,14 @@ local TRANSLATIONS = {
         {"SÓ CONTA ENQUANTO O STATUS ESTIVER SUBINDO", "SOLO CUENTA SI LA ESTADÍSTICA SUBE"},
         {"REDE ARASAKA // STATUS DO CLIENTE: ONLINE", "RED ARASAKA // CLIENTE: ONLINE"},
         {"COMPRA AUTOMATICA DO ESTOQUE SELECIONADO", "COMPRA AUTOMÁTICA DEL STOCK SELECCIONADO"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MARQUE APENAS OS PETS QUE DESEJA EXCLUIR", "MARCA SOLO MASCOTAS QUE QUIERAS EXCLUIR"},
         {"PEDRA ESCURA, NOITE E ATMOSFERA SOMBRIA.", "PIEDRA OSCURA, NOCHE Y AMBIENTE SOMBRÍO."},
         {"PAINEL PRONTO // VOCE ESTA NO CONTROLE", "PANEL LISTO // TIENES EL CONTROL"},
@@ -451,6 +532,14 @@ local TRANSLATIONS = {
         {"FALHA // TENTE NOVAMENTE", "ERROR // INTÉNTALO OTRA VEZ"},
         {"FALHA AO TROCAR SERVIDOR", "ERROR AL CAMBIAR SERVIDOR"},
         {"FARM ANTERIOR RESTAURADA", "FARM ANTERIOR RESTAURADO"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"PARAR TODOS OS PROCESSOS", "DETENER TODOS LOS PROCESOS"},
         {"ESCOLHER PET P/ EVOLUIR", "ELEGIR MASCOTA A EVOLUCIONAR"},
         {"EXCLUSÕES // NÃO ATACAR", "EXCLUSIONES // NO ATACAR"},
@@ -491,6 +580,14 @@ local TRANSLATIONS = {
         {"APOCALIPSE TOXICO", "APOCALIPSIS TÓXICO"},
         {"CICLO CONTROLADOR", "CONTROLADOR DE CICLO"},
         {"COMPRA AUTOMATICA", "COMPRA AUTOMÁTICA"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"CONFIGURAR BOSSES", "CONFIGURAR JEFES"},
         {"ENVIANDO TESTE DE", "ENVIANDO PRUEBA DE"},
         {"FUNÇÃO DESATIVADA", "FUNCIÓN DESACTIVADA"},
@@ -531,6 +628,14 @@ local TRANSLATIONS = {
         {"STATUS COMPACTO", "ESTADO COMPACTO"},
         {"TEMPO DE SESSAO", "TIEMPO DE SESIÓN"},
         {"TREINO ANTERIOR", "ENTRENAMIENTO ANTERIOR"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"ALERTA ENVIADO", "ALERTA ENVIADA"},
         {"AUTO FARM BOSS", "AUTO FARM DE JEFES"},
         {"ENCHANTAMENTOS", "ENCANTAMIENTOS"},
@@ -571,6 +676,14 @@ local TRANSLATIONS = {
         {"AUTO EVOLUIR", "EVOLUCIÓN AUTOMÁTICA"},
         {"DESCONHECIDO", "DESCONOCIDO"},
         {"DURABILIDADE", "DURABILIDAD"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"ESCOLHER PET", "ELEGIR MASCOTA"},
         {"FARM REBIRTH", "FARM DE RENACIMIENTO"},
         {"GIRAR ROLETA", "GIRAR RULETA"},
@@ -611,6 +724,14 @@ local TRANSLATIONS = {
         {"RECOMPENSA", "RECOMPENSA"},
         {"REPETIÇÕES", "REPETICIONES"},
         {"RETORNANDO", "REGRESANDO"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"SELECIONAR", "SELECCIONAR"},
         {"SEM ESPAÇO", "SIN ESPACIO"},
         {"TELEPORTES", "TELETRANSPORTES"},
@@ -651,6 +772,14 @@ local TRANSLATIONS = {
         {"CLIENTE", "CLIENTE"},
         {"COMPRAR", "COMPRAR"},
         {"COMPRAS", "COMPRAS"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"ESTOQUE", "STOCK"},
         {"JOGADOR", "JUGADOR"},
         {"MAQUINA", "MÁQUINA"},
@@ -691,10 +820,25 @@ local TRANSLATIONS = {
         {"FORÇA", "FUERZA"},
         {"TESTE", "PRUEBA"},
         {"ALVO", "OBJETIVO"},
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"ERRO", "ERROR"},
         {"PESO", "PESO"},
-    },
-    fr = {
+    }
+    local _target = TRANSLATIONS.es
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+TRANSLATIONS.fr = {}
+do
+    local _translationChunk = {
         {"Ilha Principal", "Île principale"},
         {"Muscle King Academia", "Salle Muscle King"},
         {"Legends Academia", "Salle Legends"},
@@ -735,6 +879,14 @@ local TRANSLATIONS = {
         {"SÓ CONTA ENQUANTO O STATUS ESTIVER SUBINDO", "COMPTE UNIQUEMENT SI LA STAT AUGMENTE"},
         {"REDE ARASAKA // STATUS DO CLIENTE: ONLINE", "RÉSEAU ARASAKA // CLIENT : ONLINE"},
         {"COMPRA AUTOMATICA DO ESTOQUE SELECIONADO", "ACHAT AUTO DU STOCK SÉLECTIONNÉ"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MARQUE APENAS OS PETS QUE DESEJA EXCLUIR", "COCHEZ UNIQUEMENT LES FAMILIERS À EXCLURE"},
         {"PEDRA ESCURA, NOITE E ATMOSFERA SOMBRIA.", "PIERRE SOMBRE, NUIT ET AMBIANCE OBSCURE."},
         {"PAINEL PRONTO // VOCE ESTA NO CONTROLE", "PANNEAU PRÊT // À VOUS DE JOUER"},
@@ -775,6 +927,14 @@ local TRANSLATIONS = {
         {"FALHA // TENTE NOVAMENTE", "ÉCHEC // RÉESSAYEZ"},
         {"FALHA AO TROCAR SERVIDOR", "ÉCHEC DU CHANGEMENT DE SERVEUR"},
         {"FARM ANTERIOR RESTAURADA", "FARM PRÉCÉDENT RESTAURÉ"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MODO FOTORREALISTA ULTRA", "MODE PHOTO-RÉALISTE ULTRA"},
         {"PARAR TODOS OS PROCESSOS", "ARRÊTER TOUS LES PROCESSUS"},
         {"ESCOLHER PET P/ EVOLUIR", "CHOISIR UN PET À FAIRE ÉVOLUER"},
@@ -815,6 +975,14 @@ local TRANSLATIONS = {
         {"TROCAS AUTOMÁTICAS", "ÉCHANGES AUTOMATIQUES"},
         {"AGUARDANDO TREINO", "ATTENTE D'ENTRAÎNEMENT"},
         {"APOCALIPSE TOXICO", "APOCALYPSE TOXIQUE"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"CICLO CONTROLADOR", "CONTRÔLEUR DE CYCLE"},
         {"COMPRA AUTOMATICA", "ACHAT AUTOMATIQUE"},
         {"CONFIGURAR BOSSES", "CONFIGURER LES BOSS"},
@@ -855,6 +1023,14 @@ local TRANSLATIONS = {
         {"SELECIONAR ALVO", "CHOISIR UNE CIBLE"},
         {"SEM CONFIRMACAO", "NON CONFIRMÉ"},
         {"STATUS COMPACTO", "STATUT COMPACT"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TEMPO DE SESSAO", "DURÉE DE SESSION"},
         {"TREINO ANTERIOR", "ENTRAÎNEMENT PRÉCÉDENT"},
         {"ALERTA ENVIADO", "ALERTE ENVOYÉE"},
@@ -895,6 +1071,14 @@ local TRANSLATIONS = {
         {"REENTRANDO...", "RECONNEXION..."},
         {"SEM PROGRESSO", "AUCUN PROGRÈS"},
         {"VIBE AMBIENTE", "AMBIANCE"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"AUTO EVOLUIR", "ÉVOLUTION AUTO"},
         {"DESCONHECIDO", "INCONNU"},
         {"DURABILIDADE", "ENDURANCE"},
@@ -935,6 +1119,14 @@ local TRANSLATIONS = {
         {"FARM FORCA", "FARM FORCE"},
         {"IGNORAR  ×", "IGNORER  ×"},
         {"KILL TODOS", "KILL TOUS"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MAIN FORÇA", "FORCE PRINCIPALE"},
         {"NENHUM PET", "AUCUN FAMILIER"},
         {"P/ EVOLUIR", "À ÉVOLUER"},
@@ -975,6 +1167,14 @@ local TRANSLATIONS = {
         {"MODO RTX", "MODE RTX"},
         {"P/ TROCA", "À ÉCHANGER"},
         {"RECEBIDO", "REÇU"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"SEGUNDOS", "SECONDES"},
         {"SO FORCA", "FORCE UNIQUEMENT"},
         {"APLICAR", "APPLIQUER"},
@@ -1015,6 +1215,14 @@ local TRANSLATIONS = {
         {"SESSÃO", "SESSION"},
         {"STATUS", "ÉTAT"},
         {"TESTAR", "TESTER"},
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TREINO", "ENTRAÎNEMENT"},
         {"ULTIMA", "DERNIÈRE"},
         {"ÚLTIMA", "DERNIÈRE"},
@@ -1027,8 +1235,15 @@ local TRANSLATIONS = {
         {"ALVO", "CIBLE"},
         {"ERRO", "ERREUR"},
         {"PESO", "POIDS"},
-    },
-    de = {
+    }
+    local _target = TRANSLATIONS.fr
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+TRANSLATIONS.de = {}
+do
+    local _translationChunk = {
         {"Ilha Principal", "Hauptinsel"},
         {"Muscle King Academia", "Muscle King-Fitnessstudio"},
         {"Legends Academia", "Legends-Fitnessstudio"},
@@ -1069,6 +1284,14 @@ local TRANSLATIONS = {
         {"SÓ CONTA ENQUANTO O STATUS ESTIVER SUBINDO", "ZÄHLT NUR BEI STEIGENDEM WERT"},
         {"REDE ARASAKA // STATUS DO CLIENTE: ONLINE", "ARASAKA-NETZ // CLIENT: ONLINE"},
         {"COMPRA AUTOMATICA DO ESTOQUE SELECIONADO", "AUSGEWÄHLTEN BESTAND AUTOMATISCH KAUFEN"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MARQUE APENAS OS PETS QUE DESEJA EXCLUIR", "NUR AUSZUSCHLIESSENDE PETS MARKIEREN"},
         {"PEDRA ESCURA, NOITE E ATMOSFERA SOMBRIA.", "DUNKLER STEIN, NACHT UND DÜSTERE ATMOSPHÄRE."},
         {"PAINEL PRONTO // VOCE ESTA NO CONTROLE", "PANEL BEREIT // DU HAST DIE KONTROLLE"},
@@ -1109,6 +1332,14 @@ local TRANSLATIONS = {
         {"FALHA // TENTE NOVAMENTE", "FEHLER // NOCHMAL VERSUCHEN"},
         {"FALHA AO TROCAR SERVIDOR", "SERVERWECHSEL FEHLGESCHLAGEN"},
         {"FARM ANTERIOR RESTAURADA", "VORHERIGER FARM WIEDERHERGESTELLT"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MODO FOTORREALISTA ULTRA", "ULTRA-FOTOREALISMUS"},
         {"PARAR TODOS OS PROCESSOS", "ALLE PROZESSE STOPPEN"},
         {"ESCOLHER PET P/ EVOLUIR", "PET ZUM ENTWICKELN WÄHLEN"},
@@ -1149,6 +1380,14 @@ local TRANSLATIONS = {
         {"TROCAS AUTOMÁTICAS", "AUTOMATISCHER HANDEL"},
         {"AGUARDANDO TREINO", "WARTE AUF TRAINING"},
         {"APOCALIPSE TOXICO", "TOXISCHE APOKALYPSE"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"CICLO CONTROLADOR", "ZYKLUS-STEUERUNG"},
         {"COMPRA AUTOMATICA", "AUTOKAUF"},
         {"CONFIGURAR BOSSES", "BOSSE EINSTELLEN"},
@@ -1189,6 +1428,14 @@ local TRANSLATIONS = {
         {"SELECIONAR ALVO", "ZIEL AUSWÄHLEN"},
         {"SEM CONFIRMACAO", "NICHT BESTÄTIGT"},
         {"STATUS COMPACTO", "KOMPAKTSTATUS"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TEMPO DE SESSAO", "SITZUNGSDAUER"},
         {"TREINO ANTERIOR", "VORHERIGES TRAINING"},
         {"ALERTA ENVIADO", "ALARM GESENDET"},
@@ -1229,6 +1476,14 @@ local TRANSLATIONS = {
         {"REENTRANDO...", "NEUBEITRITT..."},
         {"SEM PROGRESSO", "KEIN FORTSCHRITT"},
         {"VIBE AMBIENTE", "UMGEBUNGSSTIMMUNG"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"AUTO EVOLUIR", "AUTO ENTWICKELN"},
         {"DESCONHECIDO", "UNBEKANNT"},
         {"DURABILIDADE", "AUSDAUER"},
@@ -1269,6 +1524,14 @@ local TRANSLATIONS = {
         {"FARM FORCA", "STÄRKE-FARM"},
         {"IGNORAR  ×", "IGNORIEREN  ×"},
         {"KILL TODOS", "ALLE AUSSCHALTEN"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MAIN FORÇA", "HAUPTSTÄRKE"},
         {"NENHUM PET", "KEIN PET"},
         {"P/ EVOLUIR", "ZUM ENTWICKELN"},
@@ -1309,6 +1572,14 @@ local TRANSLATIONS = {
         {"MARCADOS", "MARKIERT"},
         {"MODO RTX", "RTX-MODUS"},
         {"P/ TROCA", "ZUM TAUSCH"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"RECEBIDO", "EMPFANGEN"},
         {"SEGUNDOS", "SEKUNDEN"},
         {"SO FORCA", "NUR STÄRKE"},
@@ -1349,6 +1620,14 @@ local TRANSLATIONS = {
         {"REJOIN", "NEU BEITRETEN"},
         {"SESSÃO", "SITZUNG"},
         {"STATUS", "STATUS"},
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TESTAR", "TESTEN"},
         {"TREINO", "TRAINING"},
         {"ULTIMA", "LETZTE"},
@@ -1362,8 +1641,15 @@ local TRANSLATIONS = {
         {"ALVO", "ZIEL"},
         {"ERRO", "FEHLER"},
         {"PESO", "GEWICHT"},
-    },
-    ru = {
+    }
+    local _target = TRANSLATIONS.de
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+TRANSLATIONS.ru = {}
+do
+    local _translationChunk = {
         {"Ilha Principal", "Главный остров"},
         {"Muscle King Academia", "Зал Muscle King"},
         {"Legends Academia", "Зал Legends"},
@@ -1404,6 +1690,14 @@ local TRANSLATIONS = {
         {"SÓ CONTA ENQUANTO O STATUS ESTIVER SUBINDO", "СЧИТАЕТСЯ ПРИ РОСТЕ ПОКАЗАТЕЛЯ"},
         {"REDE ARASAKA // STATUS DO CLIENTE: ONLINE", "СЕТЬ ARASAKA // КЛИЕНТ: ONLINE"},
         {"COMPRA AUTOMATICA DO ESTOQUE SELECIONADO", "АВТОПОКУПКА ВЫБРАННОГО АССОРТИМЕНТА"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MARQUE APENAS OS PETS QUE DESEJA EXCLUIR", "ОТМЕТЬТЕ ПИТОМЦЕВ ДЛЯ ИСКЛЮЧЕНИЯ"},
         {"PEDRA ESCURA, NOITE E ATMOSFERA SOMBRIA.", "ТЁМНЫЙ КАМЕНЬ, НОЧЬ И МРАЧНАЯ АТМОСФЕРА."},
         {"PAINEL PRONTO // VOCE ESTA NO CONTROLE", "ПАНЕЛЬ ГОТОВА // ВЫ УПРАВЛЯЕТЕ"},
@@ -1444,6 +1738,14 @@ local TRANSLATIONS = {
         {"FALHA // TENTE NOVAMENTE", "ОШИБКА // ПОПРОБУЙТЕ СНОВА"},
         {"FALHA AO TROCAR SERVIDOR", "НЕ УДАЛОСЬ СМЕНИТЬ СЕРВЕР"},
         {"FARM ANTERIOR RESTAURADA", "ПРЕДЫДУЩИЙ ФАРМ ВОССТАНОВЛЕН"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MODO FOTORREALISTA ULTRA", "УЛЬТРАФОТОРЕАЛИЗМ"},
         {"PARAR TODOS OS PROCESSOS", "ОСТАНОВИТЬ ВСЕ ПРОЦЕССЫ"},
         {"ESCOLHER PET P/ EVOLUIR", "ВЫБРАТЬ ПИТОМЦА ДЛЯ ЭВОЛЮЦИИ"},
@@ -1484,6 +1786,14 @@ local TRANSLATIONS = {
         {"TROCAS AUTOMÁTICAS", "АВТООБМЕН"},
         {"AGUARDANDO TREINO", "ОЖИДАНИЕ ТРЕНИРОВКИ"},
         {"APOCALIPSE TOXICO", "ТОКСИЧНЫЙ АПОКАЛИПСИС"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"CICLO CONTROLADOR", "КОНТРОЛЛЕР ЦИКЛА"},
         {"COMPRA AUTOMATICA", "АВТОПОКУПКА"},
         {"CONFIGURAR BOSSES", "НАСТРОИТЬ БОССОВ"},
@@ -1524,6 +1834,14 @@ local TRANSLATIONS = {
         {"SELECIONAR ALVO", "ВЫБРАТЬ ЦЕЛЬ"},
         {"SEM CONFIRMACAO", "БЕЗ ПОДТВЕРЖДЕНИЯ"},
         {"STATUS COMPACTO", "КОМПАКТНЫЙ СТАТУС"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TEMPO DE SESSAO", "ВРЕМЯ СЕССИИ"},
         {"TREINO ANTERIOR", "ПРЕДЫДУЩАЯ ТРЕНИРОВКА"},
         {"ALERTA ENVIADO", "ОПОВЕЩЕНИЕ ОТПРАВЛЕНО"},
@@ -1564,6 +1882,14 @@ local TRANSLATIONS = {
         {"REENTRANDO...", "ПЕРЕПОДКЛЮЧЕНИЕ..."},
         {"SEM PROGRESSO", "НЕТ ПРОГРЕССА"},
         {"VIBE AMBIENTE", "АТМОСФЕРА"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"AUTO EVOLUIR", "АВТОЭВОЛЮЦИЯ"},
         {"DESCONHECIDO", "НЕИЗВЕСТНО"},
         {"DURABILIDADE", "ВЫНОСЛИВОСТЬ"},
@@ -1604,6 +1930,14 @@ local TRANSLATIONS = {
         {"FARM FORCA", "ФАРМ СИЛЫ"},
         {"IGNORAR  ×", "ИГНОРИРОВАТЬ  ×"},
         {"KILL TODOS", "УБИТЬ ВСЕХ"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MAIN FORÇA", "ОСНОВНАЯ СИЛА"},
         {"NENHUM PET", "НЕТ ПИТОМЦА"},
         {"P/ EVOLUIR", "ДЛЯ ЭВОЛЮЦИИ"},
@@ -1644,6 +1978,14 @@ local TRANSLATIONS = {
         {"MARCADOS", "ВЫБРАНО"},
         {"MODO RTX", "РЕЖИМ RTX"},
         {"P/ TROCA", "ДЛЯ ОБМЕНА"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"RECEBIDO", "ПОЛУЧЕНО"},
         {"SEGUNDOS", "СЕКУНДЫ"},
         {"SO FORCA", "ТОЛЬКО СИЛА"},
@@ -1684,6 +2026,14 @@ local TRANSLATIONS = {
         {"REJOIN", "ПЕРЕЗАЙТИ"},
         {"SESSÃO", "СЕССИЯ"},
         {"STATUS", "СТАТУС"},
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TESTAR", "ПРОВЕРИТЬ"},
         {"TREINO", "ТРЕНИРОВКА"},
         {"ULTIMA", "ПОСЛЕДНЯЯ"},
@@ -1697,8 +2047,15 @@ local TRANSLATIONS = {
         {"ALVO", "ЦЕЛЬ"},
         {"ERRO", "ОШИБКА"},
         {"PESO", "ВЕС"},
-    },
-    ja = {
+    }
+    local _target = TRANSLATIONS.ru
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+TRANSLATIONS.ja = {}
+do
+    local _translationChunk = {
         {"Ilha Principal", "メイン島"},
         {"Muscle King Academia", "Muscle King ジム"},
         {"Legends Academia", "Legends ジム"},
@@ -1739,6 +2096,14 @@ local TRANSLATIONS = {
         {"SÓ CONTA ENQUANTO O STATUS ESTIVER SUBINDO", "数値上昇中のみカウント"},
         {"REDE ARASAKA // STATUS DO CLIENTE: ONLINE", "ARASAKAネット // クライアント: ONLINE"},
         {"COMPRA AUTOMATICA DO ESTOQUE SELECIONADO", "選択在庫の自動購入"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MARQUE APENAS OS PETS QUE DESEJA EXCLUIR", "除外したいペットだけ選択"},
         {"PEDRA ESCURA, NOITE E ATMOSFERA SOMBRIA.", "黒い石、夜、暗い雰囲気。"},
         {"PAINEL PRONTO // VOCE ESTA NO CONTROLE", "パネル準備完了 // 操作可能"},
@@ -1779,6 +2144,14 @@ local TRANSLATIONS = {
         {"FALHA // TENTE NOVAMENTE", "失敗 // 再試行してください"},
         {"FALHA AO TROCAR SERVIDOR", "サーバー移動に失敗"},
         {"FARM ANTERIOR RESTAURADA", "前のファームを復元"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MODO FOTORREALISTA ULTRA", "超写実モード"},
         {"PARAR TODOS OS PROCESSOS", "全処理停止"},
         {"ESCOLHER PET P/ EVOLUIR", "進化するペットを選択"},
@@ -1819,6 +2192,14 @@ local TRANSLATIONS = {
         {"TROCAS AUTOMÁTICAS", "自動交換"},
         {"AGUARDANDO TREINO", "トレーニング待機中"},
         {"APOCALIPSE TOXICO", "有毒な終末世界"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"CICLO CONTROLADOR", "サイクル制御"},
         {"COMPRA AUTOMATICA", "自動購入"},
         {"CONFIGURAR BOSSES", "ボス設定"},
@@ -1859,6 +2240,14 @@ local TRANSLATIONS = {
         {"SELECIONAR ALVO", "ターゲット選択"},
         {"SEM CONFIRMACAO", "未確認"},
         {"STATUS COMPACTO", "コンパクト表示"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TEMPO DE SESSAO", "セッション時間"},
         {"TREINO ANTERIOR", "前のトレーニング"},
         {"ALERTA ENVIADO", "アラート送信済み"},
@@ -1899,6 +2288,14 @@ local TRANSLATIONS = {
         {"REENTRANDO...", "再参加中..."},
         {"SEM PROGRESSO", "進捗なし"},
         {"VIBE AMBIENTE", "環境エフェクト"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"AUTO EVOLUIR", "自動進化"},
         {"DESCONHECIDO", "不明"},
         {"DURABILIDADE", "耐久力"},
@@ -1939,6 +2336,14 @@ local TRANSLATIONS = {
         {"FARM FORCA", "筋力ファーム"},
         {"IGNORAR  ×", "無視  ×"},
         {"KILL TODOS", "全員攻撃"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"MAIN FORÇA", "メイン筋力"},
         {"NENHUM PET", "ペットなし"},
         {"P/ EVOLUIR", "進化用"},
@@ -1979,6 +2384,14 @@ local TRANSLATIONS = {
         {"MARCADOS", "選択済み"},
         {"MODO RTX", "RTXモード"},
         {"P/ TROCA", "交換用"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"RECEBIDO", "受信"},
         {"SEGUNDOS", "秒"},
         {"SO FORCA", "筋力のみ"},
@@ -2019,6 +2432,14 @@ local TRANSLATIONS = {
         {"REJOIN", "再参加"},
         {"SESSÃO", "セッション"},
         {"STATUS", "状態"},
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
+do
+    local _translationChunk = {
         {"TESTAR", "テスト"},
         {"TREINO", "トレーニング"},
         {"ULTIMA", "前回"},
@@ -2032,8 +2453,12 @@ local TRANSLATIONS = {
         {"ALVO", "対象"},
         {"ERRO", "エラー"},
         {"PESO", "重量"},
-    },
-}
+    }
+    local _target = TRANSLATIONS.ja
+    for _, _entry in ipairs(_translationChunk) do
+        _target[#_target + 1] = _entry
+    end
+end
 local function normalizedLanguage(value)
     local base = tostring(value or "en"):lower():match("^[a-z]+") or "en"
     for _, lang in ipairs(LANGUAGE_ORDER) do
