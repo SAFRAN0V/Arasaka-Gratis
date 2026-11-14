@@ -7222,7 +7222,7 @@ local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
 if not chest then return holdBossTransition() end
 local prompt = chest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
 if not prompt then return holdBossTransition() end
-local pos = getPromptWorldPosition(prompt)
+local pos = getPromptPosition(prompt)
 if not pos then return holdBossTransition() end
 local char = player.Character
 local hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
@@ -7434,6 +7434,11 @@ local character = player.Character
 local hrp = character and character:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
 local humanoid = character and character:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 if hrp and humanoid and humanoid.Health > 0 then
+ 
+local targetPos, targetObject = getBossTargetForFarm()
+if targetPos then
+bossReturnDeadline = nil
+end
 if bossReturnDeadline then
 Core:SetBossInverted("\078\111\114\109\097\108", false)
 BossDamageHudState.BossAlive = false
@@ -7450,13 +7455,25 @@ end
 end
 holdBossTransition()
 setNoclip(false)
-RestoreFarmContext()
+RestoreFarmContext(function()
+return not isAlive() or not autoFarmActive or FarmQuestPaused
+or getBossTargetForFarm() ~= nil
+end)
 releaseBossChestHold()
+if isAlive() and autoFarmActive and not FarmQuestPaused
+and getBossTargetForFarm() ~= nil then
+ 
+ 
+bossReturnDeadline = nil
+bossChestCollected = false
+lastBossSeen = false
+lastBossObject = nil
+else
 resumeAllFarmsAfterBoss()
 resetBossCycleState()
 end
+end
 else
-local targetPos, targetObject = getBossTargetForFarm()
 BossDamageHudState.BossAlive = targetPos ~= nil
 if targetPos then
 if lastBossObject ~= targetObject then Core:SetBossInverted("\078\111\114\109\097\108", false) end
@@ -7535,6 +7552,18 @@ end
 task.wait(0.1)
 end
 end)
+if not Core:IsWorkerRunning("\070\097\114\109\115\046\066\111\115\115\083\117\112\101\114\118\105\115\111\114") then
+Core:StartWorker("\070\097\114\109\115\046\066\111\115\115\083\117\112\101\114\118\105\115\111\114", function(isAlive)
+while isAlive() and autoFarmActive do
+task.wait(0.5)
+if not isAlive() or not autoFarmActive then break end
+if not FarmQuestPaused and (not Core:IsWorkerRunning("\070\097\114\109\115\046\066\111\115\115\080\111\115\105\116\105\111\110")
+or not Core:IsWorkerRunning("\070\097\114\109\115\046\066\111\115\115\065\116\116\097\099\107")) then
+startBossFarmRuntime()
+end
+end
+end)
+end
 end
 local function refreshBossConfigButtonText()
 local count = 0
@@ -7751,6 +7780,7 @@ startBossFarmRuntime()
 else
 BossDamageHudState.BossAlive = false
 disconnectBossDamageChecks()
+Core:StopWorker("\070\097\114\109\115\046\066\111\115\115\083\117\112\101\114\118\105\115\111\114")
 Core:StopWorker("\070\097\114\109\115\046\066\111\115\115\080\111\115\105\116\105\111\110")
 Core:StopWorker("\070\097\114\109\115\046\066\111\115\115\065\116\116\097\099\107")
 setNoclip(false)
@@ -7890,11 +7920,25 @@ if ok then return true end
 end
 return pressEForFarm()
 end
-RestoreFarmContext = function()
+RestoreFarmContext = function(shouldAbort)
+local function cancelled()
+return shouldAbort ~= nil and shouldAbort()
+end
+local function waitForReturn(seconds)
+if not shouldAbort then task.wait(seconds); return true end
+local deadline = os.clock() + seconds
+repeat
+if cancelled() then return false end
+task.wait(math.min(0.05, math.max(0, deadline - os.clock())))
+until os.clock() >= deadline
+return not cancelled()
+end
+if cancelled() then return false end
 if not FarmResumeContext.Saved or not FarmResumeContext.CFrame then
 return false
 end
-local char = player.Character or player.CharacterAdded:Wait()
+local char = player.Character
+if not char and not shouldAbort then char = player.CharacterAdded:Wait() end
 local hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 local root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
 if not root or not hum or hum.Health <= 0 then return false end
@@ -7902,7 +7946,7 @@ root.CFrame = FarmResumeContext.CFrame
 root.AssemblyLinearVelocity = Vector3.zero
 root.AssemblyAngularVelocity = Vector3.zero
 
-task.wait(4)
+if not waitForReturn(4) then return false end
 char = player.Character or char
 hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
@@ -7923,11 +7967,12 @@ end
 FarmResumeContext.Prompt = findNearestFarmPrompt(FarmResumeContext.CFrame.Position, 28)
 local activated = false
 for attempt = 1, 4 do
+if cancelled() then return false end
 if reactivateFarmInteraction() then
 activated = true
 end
 if attempt < 4 then
-task.wait(0.6)
+if not waitForReturn(0.6) then return false end
 local currentChar = player.Character
 local currentRoot = currentChar and currentChar:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
 if currentRoot then
@@ -7974,7 +8019,7 @@ function Farms:Stop()
 for _, workerName in ipairs({
 "\070\097\114\109\115\046\067\111\110\102\105\103\065\117\116\111\115\097\118\101", "\070\097\114\109\115\046\084\097\114\103\101\116\082\101\098\105\114\116\104", "\070\097\114\109\115\046\067\117\115\116\111\109\082\101\098\105\114\116\104",
 "\070\097\114\109\115\046\065\117\116\111\082\101\112\115", "\070\097\114\109\115\046\065\117\116\111\085\110\105\102\105\101\100", "\070\097\114\109\115\046\084\114\097\105\110\105\110\103\087\097\116\099\104\100\111\103", "\070\097\114\109\115\046\079\118\101\114\108\111\114\100",
-"\070\097\114\109\115\046\070\097\114\109\079\112", "\070\097\114\109\115\046\077\097\105\110\083\116\114\101\110\103\116\104\079\112", "\070\097\114\109\115\046\066\111\115\115\068\097\109\097\103\101", "\070\097\114\109\115\046\066\111\115\115\080\111\115\105\116\105\111\110", "\070\097\114\109\115\046\066\111\115\115\065\116\116\097\099\107"
+"\070\097\114\109\115\046\070\097\114\109\079\112", "\070\097\114\109\115\046\077\097\105\110\083\116\114\101\110\103\116\104\079\112", "\070\097\114\109\115\046\066\111\115\115\068\097\109\097\103\101", "\070\097\114\109\115\046\066\111\115\115\080\111\115\105\116\105\111\110", "\070\097\114\109\115\046\066\111\115\115\065\116\116\097\099\107", "\070\097\114\109\115\046\066\111\115\115\083\117\112\101\114\118\105\115\111\114"
 }) do
 Core:StopWorker(workerName)
 end
