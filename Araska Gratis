@@ -2754,6 +2754,8 @@ end
 local humanoid = model:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 if not humanoid and model:IsA("\077\111\100\101\108") then humanoid = model:FindFirstChildWhichIsA("\072\117\109\097\110\111\105\100", true) end
 if humanoid then return -humanoid.Health, humanoid end
+local health = tonumber(model:GetAttribute("\072\101\097\108\116\104"))
+if health then return -health, model end
 return nil
 end
 function Core:ObserveBossHealth(owner, state, health)
@@ -4461,7 +4463,7 @@ contentCode.TextSize = 10
 contentCode.TextXAlignment = Enum.TextXAlignment.Left
 local tabIcons = {
 ["\073\110\195\173\099\105\111"] = "\240\159\143\160", ["\070\097\114\109\032\070\111\114\195\167\097"] = "\240\159\146\170", ["\070\097\114\109\032\082\101\098\105\114\116\104"] = "\240\159\148\132",
-["\070\097\114\109\032\066\111\115\115"] = "\240\159\145\145", ["\072\097\108\108\111\119\101\101\110"] = "\240\159\142\131", ["\084\101\108\101\112\111\114\116\101\115"] = "\240\159\147\141",
+["\070\097\114\109\032\066\111\115\115"] = "\240\159\145\145", ["\065\108\105\101\110\032\069\118\101\110\116\111\115"] = "\240\159\145\189", ["\072\097\108\108\111\119\101\101\110"] = "\240\159\142\131", ["\084\101\108\101\112\111\114\116\101\115"] = "\240\159\147\141",
 ["\080\101\116\115"] = "\240\159\144\190", ["\068\111\097\114"] = "\240\159\142\129", ["\086\105\115\117\097\108"] = "\240\159\142\168", ["\079\117\116\114\111\115"] = "\226\154\153\239\184\143",
 ["\075\105\108\108"] = "\226\154\148\239\184\143", ["\067\104\097\116"] = "\240\159\146\172", ["\067\097\108\099\117\108\097\100\111\114\097"] = "\240\159\167\174",
 ["\065\118\105\115\111\115"] = "\240\159\147\162", ["\084\101\115\116\101\032\066\111\115\115"] = "\240\159\167\170",
@@ -4549,6 +4551,7 @@ local tabInicio = CriarAba("\073\110\195\173\099\105\111", "\073\078\073\067\073
 local tabFarmForca = CriarAba("\070\097\114\109\032\070\111\114\195\167\097", "\070\065\082\077\032\070\079\082\067\065")
 local tabFarmRebirth = CriarAba("\070\097\114\109\032\082\101\098\105\114\116\104", "\070\065\082\077\032\082\069\066\073\082\084\072")
 local tabFarmBoss = CriarAba("\070\097\114\109\032\066\111\115\115", "\070\065\082\077\032\066\079\083\083")
+local tabAlienEventos = CriarAba("\065\108\105\101\110\032\069\118\101\110\116\111\115", "\065\076\073\069\078\032\069\086\069\078\084\079\083")
 local tabTeleports = CriarAba("\084\101\108\101\112\111\114\116\101\115", "\084\069\076\069\080\079\082\084\069\083")
 local tabPets = CriarAba("\080\101\116\115", "\080\069\084\083")
 local tabDoar = CriarAba("\068\111\097\114", "\068\079\065\082")
@@ -4984,7 +4987,7 @@ Connected = false,
 }
 function ArasakaOptionSizing:Apply(obj)
 if not obj or not obj.Parent or not obj:IsDescendantOf(self.Root) then return end
-if obj:GetAttribute("\065\114\097\115\097\107\097\068\111\110\097\116\105\111\110\085\073") == true then return end
+if obj:GetAttribute("\065\114\097\115\097\107\097\068\111\110\097\116\105\111\110\085\073") == true or obj:GetAttribute("\065\114\097\115\097\107\097\065\108\105\101\110\083\104\111\112\085\073") == true then return end
 if not (obj:IsA("\084\101\120\116\066\117\116\116\111\110") or obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\111\120")) then return end
 local original = self.Originals[obj]
 if not original then
@@ -5942,6 +5945,354 @@ end)
 return btn
 end
 local autoFarmActive, autoRepsActive, autoUnifiedFarmActive, travarLocalActive = false, false, false, false
+local bossEventMode = "\078\111\114\109\097\108"
+local alienChestClaimed, alienChestRequestedAt = false, -math.huge
+local alienApproachChest = nil
+local alienConfig = {}
+pcall(function() alienConfig = require(ReplicatedStorage.shared.config.AlienBossConfig) end)
+local alienScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabAlienEventos)
+alienScroll.Name = "\065\108\105\101\110\069\118\101\110\116\115\067\111\110\116\114\111\108\115"
+alienScroll.Position = UDim2.fromOffset(12, 10)
+alienScroll.Size = UDim2.new(1, -24, 1, -36)
+alienScroll.BackgroundTransparency = 1
+alienScroll.BorderSizePixel = 0
+alienScroll.ScrollBarThickness = 4
+alienScroll.CanvasSize = UDim2.new()
+alienScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+local alienLayout = Instance.new("\085\073\076\105\115\116\076\097\121\111\117\116", alienScroll)
+alienLayout.Padding = UDim.new(0, 10)
+alienLayout.SortOrder = Enum.SortOrder.LayoutOrder
+local function alienLabel(message, height, order, color)
+local label = Instance.new("\084\101\120\116\076\097\098\101\108", alienScroll)
+label.LayoutOrder = order
+label.Size = UDim2.new(1, -6, 0, height)
+label.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+label.BorderSizePixel = 0
+label.TextColor3 = color or Color3.fromRGB(240, 240, 245)
+label.Text = message
+label.TextSize = 15
+label.Font = Enum.Font.GothamBold
+label.TextWrapped = true
+Instance.new("\085\073\067\111\114\110\101\114", label).CornerRadius = UDim.new(0, 6)
+return label
+end
+alienLabel("\240\159\145\189\032\065\076\073\069\078\032\069\086\069\078\084\079\083\032\047\047\032\065\085\084\079\032\066\079\083\083", 42, 1, Color3.fromRGB(236, 64, 88))
+local alienStatus = alienLabel("\083\116\097\116\117\115\058\032\100\101\115\097\116\105\118\097\100\111", 60, 2)
+local btnAlienFarm = Instance.new("\084\101\120\116\066\117\116\116\111\110", alienScroll)
+btnAlienFarm.Name = "\065\117\116\111\065\108\105\101\110\066\111\115\115"
+btnAlienFarm.LayoutOrder = 3
+btnAlienFarm.Size = UDim2.new(1, -6, 0, 44)
+btnAlienFarm.Text = "\065\085\084\079\032\065\076\073\069\078\032\066\079\083\083\058\032\079\070\070\032\240\159\148\180"
+btnAlienFarm.Font = Enum.Font.GothamBold
+btnAlienFarm.TextSize = 15
+btnAlienFarm.TextColor3 = Color3.new(1, 1, 1)
+btnAlienFarm.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+btnAlienFarm.BorderSizePixel = 0
+Instance.new("\085\073\067\111\114\110\101\114", btnAlienFarm).CornerRadius = UDim.new(0, 6)
+alienLabel("\084\114\111\099\097\032\112\101\115\111\032\101\032\115\111\099\111\044\032\099\111\108\101\116\097\032\111\032\098\097\195\186\032\101\032\114\101\116\111\114\110\097\032\195\160\032\102\097\114\109\032\097\110\116\101\114\105\111\114\046\032\065\111\032\097\116\105\118\097\114\044\032\116\114\111\099\097\032\111\032\065\117\116\111\032\066\111\115\115\032\110\111\114\109\097\108\032\112\101\108\111\032\065\108\105\101\110\046", 76, 4, Color3.fromRGB(180, 180, 190))
+local function setAlienStatus(message)
+alienStatus.Text = "\083\116\097\116\117\115\058\032" .. message
+end
+;(function()
+ 
+local function StartAlienDiscordBridge(Core)
+local env = getgenv and getgenv() or _G
+if env.ArasakaAlienMonitor and env.ArasakaAlienMonitor.stop then env.ArasakaAlienMonitor.stop() end
+local Http = game:GetService("\072\116\116\112\083\101\114\118\105\099\101")
+local player = game:GetService("\080\108\097\121\101\114\115").LocalPlayer
+local requestFn = request or http_request or (syn and syn.request)
+if type(requestFn) ~= "\102\117\110\099\116\105\111\110" then warn("\091\065\082\065\083\065\075\065\032\065\076\073\069\078\093\032\072\084\084\080\032\105\110\100\105\115\112\111\110\195\173\118\101\108"); return end
+local endpoint = "\104\116\116\112\058\047\047\049\052\049\046\049\049\046\050\051\055\046\057\054\058\050\053\048\053\050"
+local key = "\054\055\048\056\099\051\098\054\056\101\052\052\051\050\101\098\054\051\054\097\056\057\097\097\054\050\100\048\054\101\055\051\055\102\057\049\097\054\100\100\048\098\100\048\101\100\057\102"
+local session = Http:GenerateGUID(false)
+local alive, lease, nextBeat, nextStock = true, nil, 0, 0
+local monitor = {status = "\067\111\110\101\099\116\097\110\100\111", sent = 0}
+env.ArasakaAlienMonitor = monitor
+local function post(path, payload)
+local ok, response = pcall(requestFn, {Url=endpoint..path, Method="\080\079\083\084",
+Headers={["\067\111\110\116\101\110\116\045\084\121\112\101"]="\097\112\112\108\105\099\097\116\105\111\110\047\106\115\111\110",["\088\045\065\114\097\115\097\107\097\045\075\101\121"]=key}, Body=Http:JSONEncode(payload)})
+if not ok or type(response) ~= "\116\097\098\108\101" then return nil end
+local code = tonumber(response.StatusCode or response.Status)
+if code ~= 200 then monitor.status = "\072\084\084\080\032"..tostring(code); return nil end
+local decoded, body = pcall(Http.JSONDecode, Http, response.Body or "")
+return decoded and body or nil
+end
+function monitor.stop()
+alive = false
+monitor.status = "\080\097\114\097\100\111"
+task.spawn(function() post("\047\109\111\110\105\116\111\114", {session_id=session,user_id=tostring(player.UserId),eligible=false}) end)
+end
+if Core then Core:AddCleanup("\065\108\105\101\110\068\105\115\099\111\114\100\066\114\105\100\103\101", monitor.stop) end
+task.spawn(function()
+local targets = {{"\076\117\110\097\114\083\108\117\103","\076\085\078\065\082\032\083\076\085\071"},{"\085\070\079\065\120\111\108\111\116\108","\085\070\079\032\065\088\079\076\079\084\076"},{"\065\108\105\101\110\083\101\114\117\109","\065\076\073\069\078\032\083\069\082\085\077"}}
+while alive do
+local now = os.clock()
+if now >= nextBeat then
+nextBeat = now + 10
+local result = post("\047\109\111\110\105\116\111\114",{session_id=session,user_id=tostring(player.UserId),eligible=true})
+if not alive then break end
+lease = result and result.active and result.lease_token or nil
+monitor.status = lease and "\077\111\110\105\116\111\114\032\097\116\105\118\111" or (result and "\082\101\115\101\114\118\097\058\032\116\114\195\170\115\032\099\111\110\116\097\115\032\097\116\105\118\097\115" or "\082\101\099\111\110\101\099\116\097\110\100\111")
+monitor.slot = result and result.monitor_slot
+end
+if lease and now >= nextStock then
+nextStock = now + 15
+local rs = game:GetService("\082\101\112\108\105\099\097\116\101\100\083\116\111\114\097\103\101")
+local shared = rs:FindFirstChild("\115\104\097\114\101\100")
+local state = shared and shared:FindFirstChild("\115\116\097\116\101")
+local shop = state and state:FindFirstChild("\065\108\105\101\110\083\104\111\112")
+local observed = workspace:GetServerTimeNow()
+local cycle = math.floor(observed/3600)*3600
+local rotation = shop and shop:GetAttribute("\082\111\116\097\116\105\111\110\075\101\121")
+local items, complete = {}, shop ~= nil and rotation == cycle and observed-cycle >= 3
+for _, target in ipairs(targets) do
+local value = shop and shop:GetAttribute("\073\110\083\116\111\099\107\095"..target[1])
+if type(value) ~= "\098\111\111\108\101\097\110" then complete = false end
+table.insert(items,{name=target[2],available=value==true})
+end
+if complete then
+local result = post("\047\115\116\111\099\107",{type="\115\116\111\099\107",items=items,session_id=session,lease_token=lease,observed_unix=observed})
+if result then
+monitor.sent += 1
+monitor.last = result
+if monitor.sent == 1 or (result.notified_channels or 0)>0 then
+print("\091\065\082\065\083\065\075\065\032\065\076\073\069\078\093\032\069\115\116\111\113\117\101\032\114\101\097\108\032\114\101\099\101\098\105\100\111\059\032\099\097\110\097\105\115\032\097\118\105\115\097\100\111\115\058\032"..tostring(result.notified_channels or 0))
+end
+end
+else monitor.status = "\065\103\117\097\114\100\097\110\100\111\032\101\115\116\111\113\117\101\032\099\111\109\112\108\101\116\111\032\100\097\032\108\111\106\097" end
+end
+task.wait(1)
+end
+end)
+print("\091\065\082\065\083\065\075\065\032\065\076\073\069\078\093\032\076\101\105\116\111\114\032\105\110\105\099\105\097\100\111\059\032\076\117\110\097\114\032\083\108\117\103\044\032\085\070\079\032\065\120\111\108\111\116\108\032\101\032\065\108\105\101\110\032\083\101\114\117\109")
+return monitor
+end
+
+local function MountAlienShop(parent, Core, player, ReplicatedStorage, targetGui, playClickSound)
+local config
+local ok = pcall(function() config = require(ReplicatedStorage.shared.config.AlienShopConfig) end)
+if not ok or type(config) ~= "\116\097\098\108\101" or type(config.OFFERS) ~= "\116\097\098\108\101" then
+warn("\091\065\082\065\083\065\075\065\093\091\076\079\074\065\032\065\076\073\069\078\093\032\099\111\110\102\105\103\117\114\097\195\167\195\163\111\032\105\110\100\105\115\112\111\110\195\173\118\101\108")
+return
+end
+local colors = {red = Color3.fromRGB(236, 64, 88), white = Color3.fromRGB(244, 244, 248),
+gray = Color3.fromRGB(163, 158, 174), green = Color3.fromRGB(113, 220, 177),
+bg = Color3.fromRGB(9, 9, 11), card = Color3.fromRGB(23, 22, 27), line = Color3.fromRGB(55, 36, 45)}
+local descriptions = {
+LunarSlug = "\080\101\116\032\101\118\111\108\117\195\173\100\111\058\032\043\053\048\037\032\100\101\032\100\097\110\111\032\099\111\110\116\114\097\032\098\111\115\115\101\115\032\101\110\113\117\097\110\116\111\032\101\113\117\105\112\097\100\111\046",
+UFOAxolotl = "\080\101\116\032\101\118\111\108\117\195\173\100\111\058\032\043\049\048\048\037\032\100\101\032\100\097\110\111\032\099\111\110\116\114\097\032\098\111\115\115\101\115\032\101\110\113\117\097\110\116\111\032\101\113\117\105\112\097\100\111\046",
+AlienSerum = "\070\111\114\195\167\097\032\195\151\050\032\112\111\114\032\051\048\032\109\105\110\117\116\111\115\046",
+PlasmaDumbbell = "\065\112\097\114\195\170\110\099\105\097\032\100\101\032\104\097\108\116\101\114\101\032\100\101\032\112\108\097\115\109\097\046", AlienBar = "\065\112\097\114\195\170\110\099\105\097\032\100\101\032\098\097\114\114\097\032\065\108\105\101\110\046",
+AlienPullups = "\065\112\097\114\195\170\110\099\105\097\032\100\101\032\098\097\114\114\097\032\102\105\120\097\032\065\108\105\101\110\046", AlienTreadmill = "\065\112\097\114\195\170\110\099\105\097\032\100\101\032\101\115\116\101\105\114\097\032\065\108\105\101\110\046",
+}
+local alive, popup, stateFolder = true, nil, nil
+local connections, stateConnections, popupConnections = {}, {}, {}
+local rows, noticeLabel, timerLabel = {}, nil, nil
+local watch = Core.AlienShopWatch or {}
+Core.AlienShopWatch = watch
+local notified = Core.AlienShopNotified or {}
+Core.AlienShopNotified = notified
+local order = config.ORDER or {}
+local function make(class, props, owner)
+local obj = Instance.new(class)
+obj:SetAttribute("\065\114\097\115\097\107\097\065\108\105\101\110\083\104\111\112\085\073", true)
+for key, value in pairs(props) do obj[key] = value end
+if obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\117\116\116\111\110") then obj.Font = Enum.Font.GothamBold; obj.TextSize = 15 end
+obj.Parent = owner
+return obj
+end
+local function corner(obj) make("\085\073\067\111\114\110\101\114", {CornerRadius = UDim.new(0, 6)}, obj) end
+local function label(owner, message, position, size, color)
+return make("\084\101\120\116\076\097\098\101\108", {Text = message, Position = position, Size = size, BackgroundTransparency = 1,
+TextColor3 = color or colors.white, TextXAlignment = Enum.TextXAlignment.Left,
+TextTruncate = Enum.TextTruncate.AtEnd}, owner)
+end
+local function button(owner, message, position, size)
+local obj = make("\084\101\120\116\066\117\116\116\111\110", {Text = message, Position = position, Size = size,
+BackgroundColor3 = colors.card, TextColor3 = colors.white, BorderSizePixel = 0}, owner)
+corner(obj)
+return obj
+end
+local function track(signal, callback, list)
+local connection = signal:Connect(callback)
+table.insert(list or connections, connection)
+return connection
+end
+local open = button(parent, "\240\159\155\184\032\065\066\082\073\082\032\076\079\074\065\032\065\076\073\069\078\032\047\047\032\069\083\084\079\081\085\069\032\069\032\065\086\073\083\079\083", UDim2.new(), UDim2.new(1, -6, 0, 48))
+open.LayoutOrder = 5
+local summary = label(parent, "\076\111\106\097\032\065\108\105\101\110\058\032\099\097\114\114\101\103\097\110\100\111\032\101\115\116\111\113\117\101\046\046\046", UDim2.new(), UDim2.new(1, -6, 0, 48), colors.gray)
+summary.LayoutOrder = 6
+summary.TextWrapped, summary.TextTruncate = true, Enum.TextTruncate.None
+local function snapshot()
+local result = {available = stateFolder ~= nil, items = {}}
+if stateFolder then
+result.rotation = stateFolder:GetAttribute(config.ROTATION_KEY_ATTRIBUTE or "\082\111\116\097\116\105\111\110\075\101\121")
+result.restockAt = stateFolder:GetAttribute(config.RESTOCK_AT_ATTRIBUTE or "\082\101\115\116\111\099\107\065\116")
+end
+for _, id in ipairs(order) do
+local offer = config.OFFERS[id]
+if offer then
+local raw = stateFolder and stateFolder:GetAttribute("\073\110\083\116\111\099\107\095" .. id)
+table.insert(result.items, {id = id, name = offer.Name or id, cost = offer.Cost,
+inStock = raw == true, known = type(raw) == "\098\111\111\108\101\097\110", watching = watch[id] == true})
+end
+end
+return result
+end
+ 
+Core.GetAlienShopSnapshot = snapshot
+local function refresh()
+if not alive then return end
+local current = snapshot()
+local available, selected = 0, 0
+for _, item in ipairs(current.items) do
+if item.inStock then available += 1 end
+if item.watching then selected += 1 end
+local row = rows[item.id]
+if row then
+row.stock.Text = not item.known and "\065\071\085\065\082\068\065\078\068\079\032\069\083\084\079\081\085\069" or (item.inStock and "\069\077\032\069\083\084\079\081\085\069" or "\083\069\077\032\069\083\084\079\081\085\069")
+row.stock.TextColor3 = item.inStock and colors.green or colors.gray
+row.watch.Text = item.watching and "\065\086\073\083\065\082\058\032\079\078" or "\065\086\073\083\065\082\058\032\079\070\070"
+row.watch.BackgroundColor3 = item.watching and Color3.fromRGB(36, 84, 64) or colors.card
+end
+if item.watching and item.inStock and current.rotation ~= nil then
+local key = tostring(current.rotation) .. "\058" .. item.id
+if not notified[key] then
+notified[key] = true
+Core:Notify("\076\079\074\065\032\065\076\073\069\078", item.name .. "\032\101\115\116\195\161\032\101\109\032\101\115\116\111\113\117\101\032\047\047\032" .. tostring(item.cost) .. "\032\102\105\099\104\097\115")
+end
+end
+end
+summary.Text = current.available and string.format("\076\079\074\065\032\065\076\073\069\078\032\047\047\032\037\100\032\105\116\101\110\115\032\101\109\032\101\115\116\111\113\117\101\032\047\047\032\037\100\032\097\118\105\115\111\115\032\115\101\108\101\099\105\111\110\097\100\111\115", available, selected)
+or "\076\111\106\097\032\065\108\105\101\110\058\032\097\103\117\097\114\100\097\110\100\111\032\100\097\100\111\115\032\100\111\032\106\111\103\111\046"
+if noticeLabel then noticeLabel.Text = "\083\101\108\101\099\105\111\110\101\032\111\115\032\097\118\105\115\111\115\032\108\111\099\097\105\115\032\110\111\032\112\097\105\110\101\108\046\032\068\105\115\099\111\114\100\032\097\117\116\111\109\195\161\116\105\099\111\058\032\076\117\110\097\114\032\083\108\117\103\044\032\085\070\079\032\065\120\111\108\111\116\108\032\101\032\065\108\105\101\110\032\083\101\114\117\109\046" end
+if timerLabel then
+local restockAt = tonumber(current.restockAt)
+local seconds = restockAt and math.max(0, math.ceil(restockAt - workspace:GetServerTimeNow()))
+timerLabel.Text = seconds and string.format("\082\069\080\079\083\073\195\135\195\131\079\058\032\037\048\050\100\058\037\048\050\100\058\037\048\050\100", math.floor(seconds / 3600), math.floor(seconds / 60) % 60, seconds % 60)
+or "\082\069\080\079\083\073\195\135\195\131\079\058\032\065\071\085\065\082\068\065\078\068\079"
+end
+ 
+local prefix = tostring(current.rotation) .. "\058"
+if current.rotation ~= nil then
+for key in pairs(notified) do if key:sub(1, #prefix) ~= prefix then notified[key] = nil end end
+end
+end
+local function bindState()
+local shared = ReplicatedStorage:FindFirstChild("\115\104\097\114\101\100")
+local state = shared and shared:FindFirstChild("\115\116\097\116\101")
+local folder = state and state:FindFirstChild(config.STATE_NAME or "\065\108\105\101\110\083\104\111\112")
+if folder == stateFolder then return end
+for _, connection in ipairs(stateConnections) do connection:Disconnect() end
+stateConnections, stateFolder = {}, folder
+ 
+ 
+end
+local function closePopup()
+for _, connection in ipairs(popupConnections) do connection:Disconnect() end
+popupConnections = {}
+rows, timerLabel, noticeLabel = {}, nil, nil
+if popup then popup:Destroy(); popup = nil end
+end
+local function openPopup()
+if popup then return end
+popup = make("\083\099\114\101\101\110\071\117\105", {Name = "\065\114\097\115\097\107\097\065\108\105\101\110\083\104\111\112", DisplayOrder = 8600,
+IgnoreGuiInset = true, ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling}, targetGui)
+local shade = make("\070\114\097\109\101", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0),
+BackgroundTransparency = 0.35, BorderSizePixel = 0}, popup)
+local panel = make("\070\114\097\109\101", {Name = "\065\108\105\101\110\083\104\111\112\080\097\110\101\108", AnchorPoint = Vector2.new(0.5, 0.5),
+Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(800, 590), BackgroundColor3 = colors.bg, BorderSizePixel = 0}, shade)
+corner(panel); make("\085\073\083\116\114\111\107\101", {Color = colors.red}, panel)
+local scale = make("\085\073\083\099\097\108\101", {}, panel)
+local function resize()
+local camera = workspace.CurrentCamera
+if camera then scale.Scale = math.max(0.25, math.min(1, (camera.ViewportSize.X - 24) / 800, (camera.ViewportSize.Y - 24) / 590)) end
+end
+resize()
+if workspace.CurrentCamera then track(workspace.CurrentCamera:GetPropertyChangedSignal("\086\105\101\119\112\111\114\116\083\105\122\101"), resize, popupConnections) end
+label(panel, "\240\159\155\184\032\076\079\074\065\032\065\076\073\069\078\032\047\047\032\065\082\065\083\065\075\065", UDim2.fromOffset(14, 12), UDim2.fromOffset(420, 25), colors.red)
+timerLabel = label(panel, "", UDim2.fromOffset(440, 13), UDim2.fromOffset(302, 23), colors.gray)
+local close = button(panel, "\195\151", UDim2.new(1, -44, 0, 10), UDim2.fromOffset(30, 30))
+track(close.MouseButton1Click, closePopup, popupConnections)
+local grid = make("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", {Name = "\065\108\105\101\110\083\104\111\112\079\102\102\101\114\115", Position = UDim2.fromOffset(12, 52),
+Size = UDim2.new(1, -24, 1, -106), BackgroundTransparency = 1, BorderSizePixel = 0,
+ScrollBarThickness = 4, ScrollBarImageColor3 = colors.red, CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y}, panel)
+make("\085\073\071\114\105\100\076\097\121\111\117\116", {CellSize = UDim2.fromOffset(374, 170), CellPadding = UDim2.fromOffset(12, 12),
+SortOrder = Enum.SortOrder.LayoutOrder}, grid)
+for index, id in ipairs(order) do
+local offer = config.OFFERS[id]
+if offer then
+local card = make("\070\114\097\109\101", {Name = "\079\102\102\101\114\095" .. id, LayoutOrder = index, BackgroundColor3 = colors.card, BorderSizePixel = 0}, grid)
+corner(card)
+make("\073\109\097\103\101\076\097\098\101\108", {Image = offer.Icon or "", Size = UDim2.fromOffset(66, 66), Position = UDim2.fromOffset(10, 9),
+BackgroundTransparency = 1, ScaleType = Enum.ScaleType.Fit}, card)
+label(card, offer.Name or id, UDim2.fromOffset(88, 8), UDim2.new(1, -98, 0, 24))
+label(card, tostring(offer.Cost or "\063") .. "\032\102\105\099\104\097\115\032\065\108\105\101\110", UDim2.fromOffset(88, 35), UDim2.new(1, -98, 0, 22), colors.gray)
+local stock = label(card, "", UDim2.fromOffset(88, 61), UDim2.new(1, -98, 0, 22))
+local description = label(card, descriptions[id] or offer.Description or "", UDim2.fromOffset(10, 88), UDim2.new(1, -20, 0, 38), colors.gray)
+description.TextWrapped, description.TextTruncate = true, Enum.TextTruncate.None
+local watchButton = button(card, "\065\086\073\083\065\082\058\032\079\070\070", UDim2.fromOffset(10, 132), UDim2.fromOffset(150, 29))
+rows[id] = {stock = stock, watch = watchButton}
+track(watchButton.MouseButton1Click, function()
+playClickSound(); watch[id] = not watch[id]; refresh()
+end, popupConnections)
+end
+end
+noticeLabel = label(panel, "", UDim2.new(0, 14, 1, -45), UDim2.new(1, -28, 0, 37), colors.gray)
+noticeLabel.TextWrapped, noticeLabel.TextTruncate = true, Enum.TextTruncate.None
+refresh()
+end
+track(open.MouseButton1Click, function() playClickSound(); openPopup() end)
+bindState(); refresh()
+Core:StartWorker("\085\073\046\065\108\105\101\110\083\104\111\112", function(isAlive)
+while alive and isAlive() do bindState(); refresh(); task.wait(1) end
+end)
+Core:AddCleanup("\065\108\105\101\110\083\104\111\112\085\073", function()
+alive = false
+Core:StopWorker("\085\073\046\065\108\105\101\110\083\104\111\112")
+closePopup()
+for _, connection in ipairs(connections) do connection:Disconnect() end
+for _, connection in ipairs(stateConnections) do connection:Disconnect() end
+if Core.GetAlienShopSnapshot == snapshot then Core.GetAlienShopSnapshot = nil end
+end)
+end
+
+MountAlienShop(alienScroll, Core, player, ReplicatedStorage, targetGui, playClickSound)
+StartAlienDiscordBridge(Core)
+end)()
+local function getActiveBossChestPrompt()
+if bossEventMode ~= "\065\108\105\101\110" then
+local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
+return chest and chest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
+end
+local promptName = alienConfig.PROMPT_NAME or "\097\108\105\101\110\066\111\115\115\067\104\101\115\116\080\114\111\109\112\116"
+local alienChest = workspace:FindFirstChild("\065\108\105\101\110\032\067\104\101\115\116")
+if alienChest then
+local prompt = alienChest:FindFirstChild(promptName, true)
+or alienChest:FindFirstChild("\065\108\105\101\110\032\066\111\115\115\032\067\104\101\115\116\032\080\114\111\109\112\116", true)
+or alienChest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
+if prompt and prompt:IsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116") and prompt.Enabled then return prompt end
+end
+for _, chest in ipairs(game:GetService("\067\111\108\108\101\099\116\105\111\110\083\101\114\118\105\099\101"):GetTagged(alienConfig.CHEST_TAG or "\065\108\105\101\110\066\111\115\115\067\104\101\115\116")) do
+if chest:IsDescendantOf(workspace) then
+local prompt = chest:IsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116") and chest or chest:FindFirstChild(promptName, true)
+or chest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
+if prompt and prompt:IsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116") and prompt.Enabled then return prompt end
+end
+end
+local prompt = workspace:FindFirstChild(promptName, true)
+if prompt and prompt:IsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116") and prompt.Enabled then return prompt end
+end
+local alienRewardEvent = ReplicatedStorage:FindFirstChild("\114\069\118\101\110\116\115")
+alienRewardEvent = alienRewardEvent and alienRewardEvent:FindFirstChild(alienConfig.CHEST_OPENED_EVENT_NAME or "\097\108\105\101\110\066\111\115\115\067\104\101\115\116\079\112\101\110\101\100")
+if alienRewardEvent and alienRewardEvent:IsA("\082\101\109\111\116\101\069\118\101\110\116") then
+Core:TrackConnection("\070\097\114\109\115\046\065\108\105\101\110\069\118\101\110\116", alienRewardEvent.OnClientEvent:Connect(function()
+if autoFarmActive and bossEventMode == "\065\108\105\101\110" then
+alienChestClaimed = true
+setAlienStatus("\098\097\195\186\032\099\111\108\101\116\097\100\111\032\047\047\032\114\101\116\111\114\110\097\110\100\111\032\195\160\032\102\097\114\109")
+end
+end))
+end
 local BossSelection = {
 Boss1 = true,
 Boss2 = true,
@@ -7157,11 +7508,7 @@ end
 return nil
 end
 local function findBossChestPrompt()
-local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
-if not chest then
-return nil
-end
-return chest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
+return getActiveBossChestPrompt()
 end
 local function getPromptPosition(prompt)
 if not prompt or not prompt.Parent then return nil end
@@ -7195,43 +7542,142 @@ task.wait(holdTime)
 vim:SendKeyEvent(false, Enum.KeyCode.E, false, game)
 end)
 end
+local holdNearBossChest
 local function collectBossChest()
-local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
-if not chest then return false end
-local prompt = chest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
-if prompt and fireproximityprompt then
-pcall(function()
-fireproximityprompt(prompt)
-end)
-return true
+if bossEventMode == "\065\108\105\101\110" and alienChestClaimed then return true end
+if bossEventMode == "\065\108\105\101\110" then
+local boss = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
+if boss and (tonumber(boss:GetAttribute("\072\101\097\108\116\104")) or 0) > 0 then return false end
 end
-return false
+local prompt = getActiveBossChestPrompt()
+if not prompt then return false end
+if bossEventMode == "\065\108\105\101\110" then
+ 
+if not holdNearBossChest() then return false end
+local character = player.Character
+local root = character and character:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
+local position = getPromptPosition(prompt)
+local range = tonumber(prompt.MaxActivationDistance) or tonumber(alienConfig.PROMPT_DISTANCE) or 40
+if not root or not position or (root.Position - position).Magnitude > range then return false end
+if os.clock() - alienChestRequestedAt < 0.5 then return false end
+alienChestRequestedAt = os.clock()
+ 
+task.wait(0.3)
+if not autoFarmActive or bossEventMode ~= "\065\108\105\101\110" or FarmQuestPaused or not Core:IsAlive()
+or player.Character ~= character or not prompt.Parent or not prompt.Enabled then return false end
+ 
+ 
+pressEChest(math.max(0.1, (tonumber(prompt.HoldDuration) or 0) + 0.1))
+if not alienChestClaimed and fireproximityprompt then
+pcall(function() fireproximityprompt(prompt) end)
+end
+ 
+return alienChestClaimed
+end
+if not fireproximityprompt then return false end
+local ok = pcall(function() fireproximityprompt(prompt) end)
+return ok
 end
 local function holdBossTransition()
 local char = player.Character
 local hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 local root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
 if not root or not hum or hum.Health <= 0 then return false end
+if bossEventMode == "\065\108\105\101\110" then
+root.Anchored = false
+hum.PlatformStand = false
+hum.AutoRotate = true
+hum.Sit = false
+return true
+end
 root.AssemblyLinearVelocity = Vector3.zero
 root.AssemblyAngularVelocity = Vector3.zero
 root.Anchored = true
 return true
 end
-local function holdNearBossChest()
-local chest = workspace:FindFirstChild("\066\111\115\115\067\104\101\115\116")
-if not chest then return holdBossTransition() end
-local prompt = chest:FindFirstChildWhichIsA("\080\114\111\120\105\109\105\116\121\080\114\111\109\112\116", true)
-if not prompt then return holdBossTransition() end
-local pos = getPromptPosition(prompt)
-if not pos then return holdBossTransition() end
+local function chooseAlienChestApproach(center, size, promptPos, currentPos, range)
+ 
+ 
+local radius = math.sqrt(size.X * size.X + size.Z * size.Z) * 0.5 + 3
+local best, bestDistance = nil, math.huge
+for index = 0, 7 do
+local angle = index * math.pi / 4
+local candidate = center + Vector3.new(math.cos(angle) * radius, 2.5, math.sin(angle) * radius)
+if (candidate - promptPos).Magnitude <= range then
+local distance = (candidate - currentPos).Magnitude
+if distance < bestDistance then best, bestDistance = candidate, distance end
+end
+end
+return best
+end
+holdNearBossChest = function()
+local prompt = getActiveBossChestPrompt()
+local promptPos = prompt and getPromptPosition(prompt)
 local char = player.Character
 local hum = char and char:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
 local root = char and char:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116")
 if not root or not hum or hum.Health <= 0 then return false end
+local standPos
+if bossEventMode == "\065\108\105\101\110" then
+local chest = workspace:FindFirstChild("\065\108\105\101\110\032\067\104\101\115\116")
+local centerPart = chest and (chest:FindFirstChild("\082\111\111\116\080\097\114\116", true)
+or chest:FindFirstChild("\082\111\111\116\032\080\097\114\116", true) or (chest:IsA("\077\111\100\101\108") and chest.PrimaryPart))
+local center, size
+if chest and chest:IsA("\077\111\100\101\108") then
+local ok, bounds, dimensions = pcall(function() return chest:GetBoundingBox() end)
+if ok then center, size = bounds.Position, dimensions end
+end
+if not center and centerPart and centerPart:IsA("\066\097\115\101\080\097\114\116") then center, size = centerPart.Position, centerPart.Size end
+if not center or not promptPos then return holdBossTransition() end
+standPos = chooseAlienChestApproach(center, size, promptPos, root.Position,
+tonumber(prompt.MaxActivationDistance) or tonumber(alienConfig.PROMPT_DISTANCE) or 40)
+if not standPos then
+setAlienStatus("\110\195\163\111\032\104\195\161\032\112\111\115\105\195\167\195\163\111\032\101\120\116\101\114\110\097\032\100\101\110\116\114\111\032\100\111\032\097\108\099\097\110\099\101\032\100\111\032\098\097\195\186")
+holdBossTransition()
+return false
+end
+elseif promptPos then
+standPos = promptPos + Vector3.new(0, 2.5, 0)
+end
+if not standPos then return holdBossTransition() end
+if bossEventMode == "\065\108\105\101\110" then
+ 
+ 
+root.Anchored = false
+hum.PlatformStand = false
+hum.AutoRotate = true
+hum.Sit = false
+local state = hum:GetState()
+if state == Enum.HumanoidStateType.PlatformStanding or state == Enum.HumanoidStateType.Physics then
+hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+end
+local chest = workspace:FindFirstChild("\065\108\105\101\110\032\067\104\101\115\116")
+local horizontal = Vector3.new(root.Position.X - standPos.X, 0, root.Position.Z - standPos.Z)
+if alienApproachChest ~= chest or horizontal.Magnitude > 1 then
+local params = RaycastParams.new()
+params.FilterType = Enum.RaycastFilterType.Exclude
+params.FilterDescendantsInstances = {char, chest}
+local ground = workspace:Raycast(standPos + Vector3.new(0, 30, 0), Vector3.new(0, -180, 0), params)
+if ground then
+standPos = Vector3.new(standPos.X, ground.Position.Y + hum.HipHeight + root.Size.Y * 0.5 + 0.1, standPos.Z)
+end
+root.CFrame = CFrame.lookAt(standPos, Vector3.new(promptPos.X, standPos.Y, promptPos.Z))
+root.AssemblyLinearVelocity = Vector3.zero
+alienApproachChest = chest
+end
+ 
+root.AssemblyAngularVelocity = Vector3.zero
+else
 root.Anchored = true
-root.CFrame = CFrame.new(pos + Vector3.new(0, 2.5, 0))
+if (root.Position - standPos).Magnitude > 0.25 then
+root.CFrame = CFrame.lookAt(standPos, Vector3.new(promptPos.X, standPos.Y, promptPos.Z))
+end
 root.AssemblyLinearVelocity = Vector3.zero
 root.AssemblyAngularVelocity = Vector3.zero
+end
+if bossEventMode == "\065\108\105\101\110" and not alienChestClaimed then
+setAlienStatus("\097\111\032\108\097\100\111\032\100\111\032\098\097\195\186\032\047\047\032\112\114\101\115\115\105\111\110\097\110\100\111\032\069\032\047\047\032\097\103\117\097\114\100\097\110\100\111\032\099\111\108\101\116\097")
+end
 return true
 end
 local function releaseBossChestHold()
@@ -7241,7 +7687,7 @@ if root then
 root.Anchored = false
 end
 end
-local function getBossTargetPosition()
+local function getNormalBossTargetPosition()
 local events = workspace:FindFirstChild("\069\118\101\110\116\115")
 if not events then return nil end
 local bossArena = events:FindFirstChild("\066\111\115\115\065\114\101\110\097")
@@ -7270,20 +7716,40 @@ end
 end
 return nil
 end
+local function getBossTargetPosition()
+if bossEventMode ~= "\065\108\105\101\110" then return getNormalBossTargetPosition() end
+local boss = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
+if not boss or not boss:IsA("\077\111\100\101\108") or boss:GetAttribute("\066\111\115\115\069\109\101\114\103\105\110\103") == true then return nil end
+local health = tonumber(boss:GetAttribute("\072\101\097\108\116\104"))
+local humanoid = boss:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
+if health ~= nil and health <= 0 then return nil end
+if humanoid and humanoid.Health <= 0 then return nil end
+if health == nil and not humanoid then return nil end
+local root = boss:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116") or boss.PrimaryPart
+or boss:FindFirstChild("\066\111\115\115\068\097\109\097\103\101\072\105\116\098\111\120") or boss:FindFirstChildWhichIsA("\066\097\115\101\080\097\114\116", true)
+if root then return root.Position, boss end
+end
+local bossCollisionStates = setmetatable({}, {__mode = "\107"})
 local function setNoclip(enabled)
 if enabled then
 if not noclipConnection then
 noclipConnection = RunService.Stepped:Connect(function()
 if player.Character then
 for _, part in pairs(player.Character:GetDescendants()) do
-if part:IsA("\066\097\115\101\080\097\114\116") and part.CanCollide then part.CanCollide = false end
+if part:IsA("\066\097\115\101\080\097\114\116") then
+if bossCollisionStates[part] == nil then bossCollisionStates[part] = part.CanCollide end
+if part.CanCollide then part.CanCollide = false end
+end
 end
 end
 end)
 end
-elseif noclipConnection then
-noclipConnection:Disconnect()
-noclipConnection = nil
+else
+if noclipConnection then noclipConnection:Disconnect(); noclipConnection = nil end
+for part, original in pairs(bossCollisionStates) do
+if part.Parent then part.CanCollide = original end
+bossCollisionStates[part] = nil
+end
 end
 end
 local damageCharacterConnection = nil
@@ -7322,7 +7788,7 @@ local bossFarmPauseSnapshot = nil
 local function getBossTargetForFarm()
 return getBossTargetPosition()
 end
-BossAutoEnabled = function() return autoFarmActive end
+BossAutoEnabled = function() return autoFarmActive and bossEventMode == "\078\111\114\109\097\108" end
 BossPriorityNow = function()
 if not autoFarmActive then return false end
 if bossCycleInArena or bossReturnDeadline then return true end
@@ -7442,11 +7908,21 @@ end
 if bossReturnDeadline then
 Core:SetBossInverted("\078\111\114\109\097\108", false)
 BossDamageHudState.BossAlive = false
+if bossEventMode == "\065\108\105\101\110" then setNoclip(false) end
 holdNearBossChest()
 if collectBossChest() then
 bossChestCollected = true
 end
+if bossEventMode == "\065\108\105\101\110" and not bossChestCollected
+and (workspace:FindFirstChild("\065\108\105\101\110\032\067\104\101\115\116") or getActiveBossChestPrompt()) then
+ 
+ 
+bossReturnDeadline = math.max(bossReturnDeadline, os.clock() + 2)
+end
 if bossChestCollected or os.clock() >= bossReturnDeadline then
+if bossEventMode == "\065\108\105\101\110" and not bossChestCollected then
+setAlienStatus("\098\097\195\186\032\105\110\100\105\115\112\111\110\195\173\118\101\108\032\111\117\032\101\120\112\105\114\097\100\111\032\047\047\032\114\101\116\111\114\110\097\110\100\111\032\195\160\032\102\097\114\109")
+end
 if not bossChestCollected then
 holdNearBossChest()
 if collectBossChest() then
@@ -7475,6 +7951,8 @@ end
 end
 else
 BossDamageHudState.BossAlive = targetPos ~= nil
+BossDamageHudState.Mode = bossEventMode
+BossDamageHudState.Target = targetObject
 if targetPos then
 if lastBossObject ~= targetObject then Core:SetBossInverted("\078\111\114\109\097\108", false) end
 lastBossObject = targetObject
@@ -7485,9 +7963,12 @@ end
 if not bossCycleInArena then
 bossCycleInArena = true
 bossChestCollected = false
+alienChestClaimed, alienChestRequestedAt = false, -math.huge
+alienApproachChest = nil
 pauseAllFarmsForBoss()
 jumpBeforeFarmReturn()
 end
+if bossEventMode == "\065\108\105\101\110" then setAlienStatus("\099\111\109\098\097\116\101\110\100\111\032\047\047\032\112\101\115\111\032\101\032\115\111\099\111") end
 releaseBossChestHold()
 setNoclip(true)
 currentOffsetY = Core:UpdateBossAltitude("\078\111\114\109\097\108", humanoid, targetObject, 45)
@@ -7500,13 +7981,19 @@ if lastBossSeen then
 
 lastBossSeen = false
 end
-bossReturnDeadline = os.clock() + 5
+bossReturnDeadline = os.clock() + (bossEventMode == "\065\108\105\101\110" and math.max(45, (tonumber(alienConfig.CHEST_LIFETIME) or 45) + 8) or 5)
+if bossEventMode == "\065\108\105\101\110" then
+Core:SetBossInverted("\078\111\114\109\097\108", false)
+setNoclip(false)
+setAlienStatus("\098\111\115\115\032\100\101\114\114\111\116\097\100\111\032\047\047\032\097\103\117\097\114\100\097\110\100\111\032\098\097\195\186")
+end
 holdNearBossChest()
 if collectBossChest() then
 bossChestCollected = true
 end
 else
 BossDamageHudState.BossAlive = false
+if bossEventMode == "\065\108\105\101\110" then setAlienStatus("\097\103\117\097\114\100\097\110\100\111\032\065\108\105\101\110\032\066\111\115\115") end
 setNoclip(false)
 end
 end
@@ -7759,9 +8246,9 @@ playClickSound()
 openBossSelectionMenu()
 end)
 refreshBossConfigButtonText()
-btnFarm.MouseButton1Click:Connect(function()
-playClickSound()
-autoFarmActive = not autoFarmActive
+local function setBossFarmEnabled(enabled, mode)
+autoFarmActive = enabled
+if enabled then bossEventMode = mode end
 BossDamageHudState.AutoBossEnabled = autoFarmActive
 if autoFarmActive then
 currentOffsetY = 45
@@ -7774,8 +8261,8 @@ task.wait(0.5)
 bindBossDamageCheck()
 end
 end)
-btnFarm.Text = "\065\085\084\079\032\070\065\082\077\032\066\079\083\083\058\032\079\078\032\240\159\159\162"
-btnFarm.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
+btnFarm.Text = bossEventMode == "\078\111\114\109\097\108" and "\065\085\084\079\032\070\065\082\077\032\066\079\083\083\058\032\079\078\032\240\159\159\162" or "\065\085\084\079\032\070\065\082\077\032\066\079\083\083\058\032\079\070\070\032\240\159\148\180"
+btnFarm.BackgroundColor3 = bossEventMode == "\078\111\114\109\097\108" and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
 startBossFarmRuntime()
 else
 BossDamageHudState.BossAlive = false
@@ -7794,7 +8281,23 @@ currentOffsetY = 45
 btnFarm.Text = "\065\085\084\079\032\070\065\082\077\032\066\079\083\083\058\032\079\070\070\032\240\159\148\180"
 btnFarm.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
 end
-end)
+if not enabled then bossEventMode = "\078\111\114\109\097\108" end
+local alienOn = autoFarmActive and bossEventMode == "\065\108\105\101\110"
+btnAlienFarm.Text = alienOn and "\065\085\084\079\032\065\076\073\069\078\032\066\079\083\083\058\032\079\078\032\240\159\159\162" or "\065\085\084\079\032\065\076\073\069\078\032\066\079\083\083\058\032\079\070\070\032\240\159\148\180"
+btnAlienFarm.BackgroundColor3 = alienOn and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
+setAlienStatus(alienOn and "\097\103\117\097\114\100\097\110\100\111\032\065\108\105\101\110\032\066\111\115\115" or "\100\101\115\097\116\105\118\097\100\111")
+end
+local function toggleBossMode(mode)
+playClickSound()
+if autoFarmActive then
+local previous = bossEventMode
+setBossFarmEnabled(false, previous)
+if previous == mode then return end
+end
+setBossFarmEnabled(true, mode)
+end
+btnFarm.MouseButton1Click:Connect(function() toggleBossMode("\078\111\114\109\097\108") end)
+btnAlienFarm.MouseButton1Click:Connect(function() toggleBossMode("\065\108\105\101\110") end)
 btnTravarLocal.MouseButton1Click:Connect(function()
 playClickSound()
 travarLocalActive = not travarLocalActive
@@ -8016,6 +8519,7 @@ end
 Utils.PerfEnd("\070\065\082\077\083\095\085\073")
 end
 function Farms:Stop()
+Core:CleanupOwner("\070\097\114\109\115\046\065\108\105\101\110\069\118\101\110\116")
 for _, workerName in ipairs({
 "\070\097\114\109\115\046\067\111\110\102\105\103\065\117\116\111\115\097\118\101", "\070\097\114\109\115\046\084\097\114\103\101\116\082\101\098\105\114\116\104", "\070\097\114\109\115\046\067\117\115\116\111\109\082\101\098\105\114\116\104",
 "\070\097\114\109\115\046\065\117\116\111\082\101\112\115", "\070\097\114\109\115\046\065\117\116\111\085\110\105\102\105\101\100", "\070\097\114\109\115\046\084\114\097\105\110\105\110\103\087\097\116\099\104\100\111\103", "\070\097\114\109\115\046\079\118\101\114\108\111\114\100",
@@ -9735,6 +10239,10 @@ end
 return formatted
 end
 local function getActiveBossDamageFolder()
+if BossDamageHudState.Mode == "\065\108\105\101\110" then
+local alien = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
+return alien, alien and alien:FindFirstChild("\100\097\109\097\103\101\086\097\108\117\101\115")
+end
 local events = workspace:FindFirstChild("\069\118\101\110\116\115")
 local arena = events and events:FindFirstChild("\066\111\115\115\065\114\101\110\097")
 if not arena then return nil, nil end
@@ -9751,9 +10259,25 @@ return nil, nil
 end
 local function readBossDamage()
 local boss, damageValues = getActiveBossDamageFolder()
-if not boss or not damageValues then
-return nil
+if not boss then return nil end
+if BossDamageHudState.Mode == "\065\108\105\101\110" then
+ 
+if damageValues then
+for _, key in ipairs({tostring(player.UserId), player.Name, player.DisplayName}) do
+local value = damageValues:FindFirstChild(key)
+if value and (value:IsA("\078\117\109\098\101\114\086\097\108\117\101") or value:IsA("\073\110\116\086\097\108\117\101")) then
+return math.max(0, tonumber(value.Value) or 0), "\083\069\085\032\068\065\078\079\032\065\076\073\069\078"
 end
+end
+end
+local health = tonumber(boss:GetAttribute("\072\101\097\108\116\104"))
+local maximum = tonumber(boss:GetAttribute("\077\097\120\072\101\097\108\116\104"))
+if health and maximum and maximum > 0 then
+return math.clamp(maximum - health, 0, maximum), "\068\065\078\079\032\084\079\084\065\076\032\065\076\073\069\078"
+end
+return nil, "\068\065\078\079\032\065\076\073\069\078"
+end
+if not damageValues then return nil end
 for _, key in ipairs({
 player.Name,
 player.DisplayName,
@@ -9790,11 +10314,12 @@ damageBadge.Visible = bossAliveForAutoFarm
 if not bossAliveForAutoFarm then
 return
 end
-local damage = readBossDamage()
+local damage, label = readBossDamage()
+label = label or "\068\065\078\079\032\066\079\083\083"
 if damage == nil then
-damageText.Text = "\068\065\078\079\032\066\079\083\083\058\032\045\045"
+damageText.Text = label .. "\058\032\045\045"
 else
-damageText.Text = "\068\065\078\079\032\066\079\083\083\058\032" .. formatBossDamage(damage)
+damageText.Text = label .. "\058\032" .. formatBossDamage(damage)
 end
 end
 Core:StartWorker("\085\073\046\076\105\099\101\110\115\101\066\097\100\103\101", function(isAlive)
@@ -9830,7 +10355,7 @@ function UI:Stop()
 for _, workerName in ipairs({
 "\085\073\046\068\097\115\104\098\111\097\114\100\083\116\097\116\115", "\085\073\046\067\097\108\099\117\108\097\116\111\114",
 "\085\073\046\070\111\114\116\117\110\101\087\104\101\101\108", "\085\073\046\067\111\110\115\117\109\097\098\108\101\115", "\085\073\046\076\105\099\101\110\115\101\066\097\100\103\101",
-"\085\073\046\068\111\110\097\116\105\111\110\115\046\082\101\102\114\101\115\104", "\085\073\046\068\111\110\097\116\105\111\110\115\046\083\101\110\100", "\080\101\116\115\046\065\117\116\111\069\118\111\108\118\101", "\080\101\116\115\046\065\117\116\111\084\114\097\100\101",
+"\085\073\046\068\111\110\097\116\105\111\110\115\046\082\101\102\114\101\115\104", "\085\073\046\068\111\110\097\116\105\111\110\115\046\083\101\110\100", "\085\073\046\065\108\105\101\110\083\104\111\112", "\080\101\116\115\046\065\117\116\111\069\118\111\108\118\101", "\080\101\116\115\046\065\117\116\111\084\114\097\100\101",
 }) do
 Core:StopWorker(workerName)
 end
@@ -9839,7 +10364,7 @@ if Core:IsRunning(moduleName) then
 Core:StopModule(moduleName)
 end
 end
-for _, owner in ipairs({"\067\104\097\116\076\111\097\100\101\114", "\078\111\116\105\102\105\099\097\099\111\101\115\085\110\105\118\101\114\115\097\105\115", "\070\097\114\109\115\046\067\111\110\116\101\120\116\067\097\112\116\117\114\101", "\068\111\110\097\116\105\111\110\115", "\085\073"}) do
+for _, owner in ipairs({"\067\104\097\116\076\111\097\100\101\114", "\078\111\116\105\102\105\099\097\099\111\101\115\085\110\105\118\101\114\115\097\105\115", "\070\097\114\109\115\046\067\111\110\116\101\120\116\067\097\112\116\117\114\101", "\068\111\110\097\116\105\111\110\115", "\065\108\105\101\110\083\104\111\112\085\073", "\065\108\105\101\110\068\105\115\099\111\114\100\066\114\105\100\103\101", "\085\073"}) do
 Core:CleanupOwner(owner)
 end
 if self.ScreenGui then
