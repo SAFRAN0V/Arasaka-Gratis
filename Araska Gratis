@@ -2526,6 +2526,7 @@ local Kill = { Name = "\075\105\108\108", State = { mode = nil, excludeFriends =
 local Visual = { Name = "\086\105\115\117\097\108" }
 local Chat = { Name = "\067\104\097\116", Initialized = false, Loading = false }
 local Teleports = { Name = "\084\101\108\101\112\111\114\116\115" }
+local Pets = { Name = "\080\101\116\115" }
 local Calculator = { Name = "\067\097\108\099\117\108\097\116\111\114" }
 local System = { Name = "\083\121\115\116\101\109" }
 local ProcessControlModule
@@ -3209,7 +3210,7 @@ end,
 
 Core.Manifest = {
 Core = { ModuleManager = true, WorkerManager = true, ConnectionManager = true, ProcessControl = true },
-Modules = { UI = true, Farms = true, Kill = true, Visual = true, Chat = true, Utils = true, SecurityGuard = false }
+Modules = { UI = true, Farms = true, Pets = true, Kill = true, Visual = true, Chat = true, Utils = true, SecurityGuard = false }
 }
 function Utils.PerfBegin(name)
 Utils.PerfMarks[name] = os.clock()
@@ -4461,7 +4462,7 @@ contentCode.TextXAlignment = Enum.TextXAlignment.Left
 local tabIcons = {
 ["\073\110\195\173\099\105\111"] = "\240\159\143\160", ["\070\097\114\109\032\070\111\114\195\167\097"] = "\240\159\146\170", ["\070\097\114\109\032\082\101\098\105\114\116\104"] = "\240\159\148\132",
 ["\070\097\114\109\032\066\111\115\115"] = "\240\159\145\145", ["\072\097\108\108\111\119\101\101\110"] = "\240\159\142\131", ["\084\101\108\101\112\111\114\116\101\115"] = "\240\159\147\141",
-["\086\105\115\117\097\108"] = "\240\159\142\168", ["\079\117\116\114\111\115"] = "\226\154\153\239\184\143",
+["\080\101\116\115"] = "\240\159\144\190", ["\068\111\097\114"] = "\240\159\142\129", ["\086\105\115\117\097\108"] = "\240\159\142\168", ["\079\117\116\114\111\115"] = "\226\154\153\239\184\143",
 ["\075\105\108\108"] = "\226\154\148\239\184\143", ["\067\104\097\116"] = "\240\159\146\172", ["\067\097\108\099\117\108\097\100\111\114\097"] = "\240\159\167\174",
 ["\065\118\105\115\111\115"] = "\240\159\147\162", ["\084\101\115\116\101\032\066\111\115\115"] = "\240\159\167\170",
 ["\077\101\100\097\108"] = "\240\159\143\133",
@@ -4549,6 +4550,429 @@ local tabFarmForca = CriarAba("\070\097\114\109\032\070\111\114\195\167\097", "\
 local tabFarmRebirth = CriarAba("\070\097\114\109\032\082\101\098\105\114\116\104", "\070\065\082\077\032\082\069\066\073\082\084\072")
 local tabFarmBoss = CriarAba("\070\097\114\109\032\066\111\115\115", "\070\065\082\077\032\066\079\083\083")
 local tabTeleports = CriarAba("\084\101\108\101\112\111\114\116\101\115", "\084\069\076\069\080\079\082\084\069\083")
+local tabPets = CriarAba("\080\101\116\115", "\080\069\084\083")
+local tabDoar = CriarAba("\068\111\097\114", "\068\079\065\082")
+;(function()
+ 
+local DonationTransport = {}
+function DonationTransport.count(folder, name)
+local count = 0
+if folder then
+for _, item in ipairs(folder:GetChildren()) do
+if item:IsA("\083\116\114\105\110\103\086\097\108\117\101") and item.Name == name then count += 1 end
+end
+end
+return count
+end
+function DonationTransport.find(folder, name)
+if folder then
+for _, item in ipairs(folder:GetChildren()) do
+if item:IsA("\083\116\114\105\110\103\086\097\108\117\101") and item.Name == name then return item end
+end
+end
+end
+function DonationTransport.validate(quantityText, intervalText, stock)
+local quantity, interval = tonumber(quantityText), tonumber(intervalText)
+local function finite(n) return n ~= nil and n == n and math.abs(n) < math.huge end
+if not finite(quantity) or quantity < 1 or quantity % 1 ~= 0 then
+return nil, "\073\110\102\111\114\109\101\032\117\109\097\032\113\117\097\110\116\105\100\097\100\101\032\105\110\116\101\105\114\097\032\109\097\105\111\114\032\113\117\101\032\122\101\114\111\046"
+end
+if not finite(interval) or interval < 100 then
+return nil, "\079\032\105\110\116\101\114\118\097\108\111\032\109\195\173\110\105\109\111\032\195\169\032\100\101\032\049\048\048\032\109\115\046"
+end
+if quantity > stock then return nil, "\069\115\116\111\113\117\101\032\105\110\115\117\102\105\099\105\101\110\116\101\058\032" .. tostring(stock) .. "\032\100\105\115\112\111\110\195\173\118\101\108\040\105\115\041\046" end
+return {quantity = quantity, interval = interval / 1000}
+end
+function DonationTransport.transfer(context, target, name, isAlive)
+if context.pending then return false, "\065\103\117\097\114\100\101\032\097\032\099\111\110\102\105\114\109\097\195\167\195\163\111\032\100\111\032\101\110\118\105\111\032\097\110\116\101\114\105\111\114\046" end
+if not isAlive() or target.Parent ~= context.players then return false, "\068\101\115\116\105\110\097\116\195\161\114\105\111\032\105\110\100\105\115\112\111\110\195\173\118\101\108\046" end
+local source = context.source()
+local destination = target:FindFirstChild("\099\111\110\115\117\109\097\098\108\101\115\070\111\108\100\101\114")
+if not source or not destination then return false, "\073\110\118\101\110\116\195\161\114\105\111\032\100\111\032\100\101\115\116\105\110\097\116\195\161\114\105\111\032\105\110\100\105\115\112\111\110\195\173\118\101\108\046" end
+local item = DonationTransport.find(source, name)
+if not item then return false, "\079\032\101\115\116\111\113\117\101\032\100\101\115\116\101\032\105\116\101\109\032\097\099\097\098\111\117\046" end
+local sourceBefore = DonationTransport.count(source, name)
+local targetBefore = DonationTransport.count(destination, name)
+local job = {finished = false, startedAt = context.clock()}
+context.pending = job
+context.spawn(function()
+job.ok, job.result = pcall(context.invoke, target, item)
+job.finishedAt = context.clock()
+job.finished = true
+end)
+local slowShown = false
+while isAlive() do
+local removed = item.Parent ~= source
+and DonationTransport.count(source, name) < sourceBefore
+local received = DonationTransport.count(destination, name) > targetBefore
+if job.finished then
+if removed and received then
+context.pending = nil
+return true, "\069\110\116\114\101\103\097\032\099\111\110\102\105\114\109\097\100\097\032\110\111\115\032\100\111\105\115\032\105\110\118\101\110\116\195\161\114\105\111\115\046"
+end
+if not job.ok or job.result == false then
+context.pending = nil
+return false, "\079\032\106\111\103\111\032\114\101\099\117\115\111\117\032\111\032\101\110\118\105\111\046\032\078\101\110\104\117\109\032\110\111\118\111\032\105\116\101\109\032\102\111\105\032\101\110\118\105\097\100\111\046"
+end
+if context.clock() - job.finishedAt >= 8 then
+context.pending = nil
+return false, "\069\110\116\114\101\103\097\032\115\101\109\032\099\111\110\102\105\114\109\097\195\167\195\163\111\032\099\111\109\112\108\101\116\097\046\032\079\032\108\111\116\101\032\102\111\105\032\105\110\116\101\114\114\111\109\112\105\100\111\046"
+end
+elseif context.clock() - job.startedAt >= 8 and not slowShown then
+slowShown = true
+context.slow()
+end
+ 
+ 
+context.wait(0.05)
+end
+return false, "\069\110\118\105\111\032\105\110\116\101\114\114\111\109\112\105\100\111\046\032\086\101\114\105\102\105\113\117\101\032\111\115\032\105\110\118\101\110\116\195\161\114\105\111\115\032\097\110\116\101\115\032\100\101\032\105\110\105\099\105\097\114\032\111\117\116\114\111\032\108\111\116\101\046"
+end
+
+local function MountDonationTab(parent, Core, Players, player, ReplicatedStorage, playClickSound)
+local C = {
+bg = Color3.fromRGB(9, 9, 11), panel = Color3.fromRGB(17, 17, 20),
+card = Color3.fromRGB(24, 23, 27), line = Color3.fromRGB(45, 36, 40),
+red = Color3.fromRGB(236, 64, 88), selected = Color3.fromRGB(49, 21, 28),
+white = Color3.fromRGB(244, 244, 248), gray = Color3.fromRGB(155, 150, 164),
+green = Color3.fromRGB(111, 219, 174), amber = Color3.fromRGB(237, 192, 112),
+}
+local ITEMS = {"\080\114\111\116\101\105\110\032\069\103\103", "\084\114\111\112\105\099\097\108\032\083\104\097\107\101", "\083\112\111\111\107\121\032\088\080\032\069\108\105\120\105\114\032\073", "\083\112\111\111\107\121\032\088\080\032\069\108\105\120\105\114\032\073\073",
+"\083\112\111\111\107\121\032\088\080\032\069\108\105\120\105\114\032\073\073\073", "\077\111\109\101\110\116\117\109\032\066\111\111\115\116\032\073", "\077\111\109\101\110\116\117\109\032\066\111\111\115\116\032\073\073", "\077\111\109\101\110\116\117\109\032\066\111\111\115\116\032\073\073\073"}
+local ICONS = {
+["\080\114\111\116\101\105\110\032\069\103\103"] = "\114\098\120\097\115\115\101\116\105\100\058\047\047\049\054\056\052\050\055\057\052\054\049\049",
+["\084\114\111\112\105\099\097\108\032\083\104\097\107\101"] = "\114\098\120\097\115\115\101\116\105\100\058\047\047\055\054\052\056\056\050\049\056\054\052\057\049\048\049",
+["\083\112\111\111\107\121\032\088\080\032\069\108\105\120\105\114\032\073"] = "\114\098\120\097\115\115\101\116\105\100\058\047\047\057\049\050\049\050\049\049\057\052\054\049\057\053\049",
+["\083\112\111\111\107\121\032\088\080\032\069\108\105\120\105\114\032\073\073"] = "\114\098\120\097\115\115\101\116\105\100\058\047\047\057\052\050\049\052\050\048\056\051\052\055\055\049\048",
+["\083\112\111\111\107\121\032\088\080\032\069\108\105\120\105\114\032\073\073\073"] = "\114\098\120\097\115\115\101\116\105\100\058\047\047\057\050\054\053\051\049\054\052\055\052\050\053\052\050",
+["\077\111\109\101\110\116\117\109\032\066\111\111\115\116\032\073"] = "\114\098\120\097\115\115\101\116\105\100\058\047\047\057\053\054\049\052\055\053\054\052\051\055\052\050\056",
+}
+local mounted, busy, stopRequested = true, false, false
+local selectedPlayer, selectedItem = nil, nil
+local dirtyPlayers, dirtyItems = true, true
+local connections, playerRows, itemRows = {}, {}, {}
+local function new(class, props, owner)
+local object = Instance.new(class)
+object:SetAttribute("\065\114\097\115\097\107\097\068\111\110\097\116\105\111\110\085\073", true)
+for property, value in pairs(props or {}) do object[property] = value end
+ 
+if object:IsA("\084\101\120\116\076\097\098\101\108") or object:IsA("\084\101\120\116\066\117\116\116\111\110") or object:IsA("\084\101\120\116\066\111\120") then
+object.Font = Enum.Font.GothamBold
+object.TextSize = 15
+end
+object.Parent = owner
+return object
+end
+local function connect(signal, callback)
+local connection = signal:Connect(callback)
+table.insert(connections, connection)
+return connection
+end
+local function corner(object, radius) new("\085\073\067\111\114\110\101\114", {CornerRadius = UDim.new(0, radius or 5)}, object) end
+local function stroke(object, color) return new("\085\073\083\116\114\111\107\101", {Color = color or C.line, Thickness = 1}, object) end
+local function label(owner, text, position, size, color, textSize)
+return new("\084\101\120\116\076\097\098\101\108", {Position = position, Size = size, BackgroundTransparency = 1,
+Text = text, TextColor3 = color or C.white, TextSize = textSize or 11,
+Font = Enum.Font.GothamMedium, TextXAlignment = Enum.TextXAlignment.Left,
+TextTruncate = Enum.TextTruncate.AtEnd}, owner)
+end
+local function button(owner, text, position, size, color)
+local object = new("\084\101\120\116\066\117\116\116\111\110", {Position = position, Size = size, BackgroundColor3 = color or C.card,
+BorderSizePixel = 0, Text = text, TextColor3 = C.white, TextSize = 11,
+Font = Enum.Font.GothamBold, AutoButtonColor = true}, owner)
+corner(object)
+return object
+end
+local function inventory() return player:FindFirstChild("\099\111\110\115\117\109\097\098\108\101\115\070\111\108\100\101\114") end
+local root = new("\070\114\097\109\101", {Name = "\065\114\097\115\097\107\097\068\111\110\097\116\105\111\110\082\111\111\116", Position = UDim2.fromOffset(12, 10),
+Size = UDim2.new(1, -24, 1, -38), BackgroundTransparency = 1}, parent)
+local columns = new("\070\114\097\109\101", {Name = "\071\105\102\116\067\111\108\117\109\110\115", Position = UDim2.fromOffset(0, 0),
+Size = UDim2.new(1, 0, 1, -198), BackgroundTransparency = 1}, root)
+local recipients = new("\070\114\097\109\101", {Name = "\082\101\099\105\112\105\101\110\116\115", Size = UDim2.new(0.34, -5, 1, 0),
+BackgroundColor3 = C.panel, BorderSizePixel = 0}, columns)
+local items = new("\070\114\097\109\101", {Name = "\073\116\101\109\115", Position = UDim2.new(0.34, 5, 0, 0),
+Size = UDim2.new(0.66, -5, 1, 0), BackgroundColor3 = C.panel, BorderSizePixel = 0}, columns)
+corner(recipients); corner(items); stroke(recipients); stroke(items)
+local recipientCount = label(recipients, "\048\049\032\032\068\069\083\084\073\078\065\084\195\129\082\073\079", UDim2.fromOffset(10, 8), UDim2.new(1, -20, 0, 18), C.red, 10)
+label(items, "\048\050\032\032\073\084\069\078\083\032\068\073\083\080\079\078\195\141\086\069\073\083", UDim2.fromOffset(10, 8), UDim2.new(1, -20, 0, 18), C.red, 10)
+local function search(owner, placeholder)
+local box = new("\084\101\120\116\066\111\120", {Position = UDim2.fromOffset(10, 32), Size = UDim2.new(1, -20, 0, 28),
+BackgroundColor3 = C.bg, BorderSizePixel = 0, Text = "", PlaceholderText = placeholder,
+PlaceholderColor3 = C.gray, TextColor3 = C.white, Font = Enum.Font.Gotham,
+TextSize = 10, ClearTextOnFocus = false}, owner)
+corner(box)
+return box
+end
+local playerSearch, itemSearch = search(recipients, "\066\117\115\099\097\114\032\106\111\103\097\100\111\114\046\046\046"), search(items, "\066\117\115\099\097\114\032\105\116\101\109\046\046\046")
+local function list(owner)
+local scroll = new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", {Position = UDim2.fromOffset(8, 68), Size = UDim2.new(1, -16, 1, -76),
+BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
+ScrollBarImageColor3 = C.red, CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y,
+ScrollingDirection = Enum.ScrollingDirection.Y}, owner)
+new("\085\073\076\105\115\116\076\097\121\111\117\116", {Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder}, scroll)
+new("\085\073\080\097\100\100\105\110\103", {PaddingTop = UDim.new(0, 2), PaddingBottom = UDim.new(0, 4),
+PaddingLeft = UDim.new(0, 2), PaddingRight = UDim.new(0, 5)}, scroll)
+return scroll
+end
+local playerList, itemList = list(recipients), list(items)
+local emptyPlayers = label(playerList, "\078\101\110\104\117\109\032\106\111\103\097\100\111\114\032\101\110\099\111\110\116\114\097\100\111\046", UDim2.new(), UDim2.new(1, -8, 0, 38), C.gray, 10)
+emptyPlayers.TextWrapped = true
+emptyPlayers.TextTruncate = Enum.TextTruncate.None
+local emptyItems = label(itemList, "\078\101\110\104\117\109\032\105\116\101\109\032\101\110\099\111\110\116\114\097\100\111\046", UDim2.new(), UDim2.new(1, -8, 0, 32), C.gray, 10)
+local footer = new("\070\114\097\109\101", {Name = "\071\105\102\116\067\111\110\116\114\111\108\115", Position = UDim2.new(0, 0, 1, -188),
+Size = UDim2.new(1, 0, 0, 188), BackgroundColor3 = C.panel, BorderSizePixel = 0}, root)
+corner(footer); stroke(footer)
+local selection = label(footer, "\048\051\032\032\067\079\078\070\073\071\085\082\065\082\032\069\078\086\073\079", UDim2.fromOffset(12, 7), UDim2.new(1, -24, 0, 34), C.red, 10)
+selection.TextWrapped, selection.TextTruncate = true, Enum.TextTruncate.None
+local function field(title, x, default)
+label(footer, title, UDim2.fromOffset(x, 43), UDim2.fromOffset(94, 20), C.gray, 9)
+local input = new("\084\101\120\116\066\111\120", {Position = UDim2.fromOffset(x, 66), Size = UDim2.fromOffset(88, 30),
+BackgroundColor3 = C.bg, BorderSizePixel = 0, Text = tostring(default), TextColor3 = C.white,
+Font = Enum.Font.GothamBold, TextSize = 12, ClearTextOnFocus = false}, footer)
+corner(input)
+return input
+end
+local quantityBox, intervalBox = field("\081\085\065\078\084\073\068\065\068\069", 12, 1), field("\080\065\085\083\065\032\040\109\115\041", 110, 100)
+local allButton = button(footer, "\077\195\129\088\046", UDim2.fromOffset(206, 66), UDim2.fromOffset(48, 30))
+local sendButton = button(footer, "\068\079\065\082\032\073\084\069\078\083\032\032\226\134\146", UDim2.new(0.5, 0, 0, 58), UDim2.new(0.5, -88, 0, 38), C.red)
+local stopButton = button(footer, "\080\065\082\065\082", UDim2.new(1, -78, 0, 58), UDim2.fromOffset(66, 38), C.selected)
+local progress = label(footer, "\048\032\047\032\048", UDim2.fromOffset(12, 105), UDim2.new(1, -24, 0, 16), C.gray, 10)
+local rail = new("\070\114\097\109\101", {Position = UDim2.fromOffset(12, 126), Size = UDim2.new(1, -24, 0, 4),
+BackgroundColor3 = C.card, BorderSizePixel = 0}, footer)
+corner(rail, 2)
+local fill = new("\070\114\097\109\101", {Name = "\071\105\102\116\080\114\111\103\114\101\115\115", Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = C.red, BorderSizePixel = 0}, rail)
+corner(fill, 2)
+local status = label(footer, "\083\101\108\101\099\105\111\110\101\032\117\109\032\100\101\115\116\105\110\097\116\195\161\114\105\111\032\101\032\117\109\032\105\116\101\109\032\112\097\114\097\032\099\111\109\101\195\167\097\114\046", UDim2.fromOffset(12, 136), UDim2.new(1, -24, 0, 42), C.gray, 10)
+status.TextWrapped, status.TextTruncate = true, Enum.TextTruncate.None
+local function setStatus(text, color)
+if mounted then status.Text = text; status.TextColor3 = color or C.gray end
+end
+local function setProgress(done, total)
+if not mounted then return end
+local ratio = total > 0 and math.clamp(done / total, 0, 1) or 0
+fill.Size = UDim2.new(ratio, 0, 1, 0)
+progress.Text = string.format("\037\100\032\047\032\037\100\032\073\084\069\078\083\032\069\078\084\082\069\071\085\069\083\032\032\047\047\032\032\037\100\037\037", done, total, math.floor(ratio * 100))
+end
+local function paintSelection()
+selection.Text = string.format("\048\051\032\032\037\115\032\032\047\047\032\032\037\115", selectedPlayer and ("\064" .. selectedPlayer.Name) or "\083\069\077\032\068\069\083\084\073\078\065\084\195\129\082\073\079", selectedItem or "\083\069\077\032\073\084\069\077")
+for target, row in pairs(playerRows) do
+row.button.BackgroundColor3 = selectedPlayer == target and C.selected or C.card
+row.outline.Color = selectedPlayer == target and C.red or C.line
+end
+for name, row in pairs(itemRows) do
+row.button.BackgroundColor3 = selectedItem == name and C.selected or C.card
+row.outline.Color = selectedItem == name and C.red or C.line
+end
+end
+local function renderPlayers()
+local online = Players:GetPlayers()
+table.sort(online, function(a, b) return a.Name:lower() < b.Name:lower() end)
+local seen, visible = {}, 0
+local filter = playerSearch.Text:lower()
+for i, target in ipairs(online) do
+if target ~= player then
+seen[target] = true
+local row = playerRows[target]
+if not row then
+local control = button(playerList, "", UDim2.new(), UDim2.new(1, -2, 0, 60))
+control.Name = "\071\105\102\116\082\101\099\105\112\105\101\110\116\095" .. target.UserId
+local outline = stroke(control)
+local avatar = new("\073\109\097\103\101\076\097\098\101\108", {Position = UDim2.fromOffset(5, 7), Size = UDim2.fromOffset(38, 38),
+BackgroundColor3 = C.bg, Image = "\114\098\120\116\104\117\109\098\058\047\047\116\121\112\101\061\065\118\097\116\097\114\072\101\097\100\083\104\111\116\038\105\100\061" .. target.UserId .. "\038\119\061\049\053\048\038\104\061\049\053\048"}, control)
+corner(avatar, 6)
+label(control, target.DisplayName, UDim2.fromOffset(49, 7), UDim2.new(1, -55, 0, 21), C.white, 10)
+label(control, "\064" .. target.Name, UDim2.fromOffset(49, 32), UDim2.new(1, -55, 0, 21), C.gray, 9)
+local click = control.MouseButton1Click:Connect(function()
+if busy then return end
+playClickSound(); selectedPlayer = target; paintSelection()
+end)
+row = {button = control, outline = outline, click = click}
+playerRows[target] = row
+end
+row.button.LayoutOrder = i
+local matches = target.Name:lower():find(filter, 1, true) ~= nil or target.DisplayName:lower():find(filter, 1, true) ~= nil
+row.button.Visible = matches
+if matches then visible += 1 end
+end
+end
+for target, row in pairs(playerRows) do
+if not seen[target] then row.click:Disconnect(); row.button:Destroy(); playerRows[target] = nil end
+end
+emptyPlayers.Visible = visible == 0
+recipientCount.Text = "\048\049\032\032\068\069\083\084\073\078\065\084\195\129\082\073\079\032\047\032" .. tostring(math.max(0, #online - 1))
+paintSelection()
+end
+local function itemImage(name)
+local item = DonationTransport.find(inventory(), name)
+if item and type(item.Value) == "\115\116\114\105\110\103" and item.Value:find("\037\100") then return item.Value end
+local backpack = player:FindFirstChild("\066\097\099\107\112\097\099\107")
+local tool = backpack and backpack:FindFirstChild(name)
+if tool and tool:IsA("\084\111\111\108") and tool.TextureId ~= "" then return tool.TextureId end
+return ICONS[name] or ""
+end
+local function renderItems()
+local filter, visible = itemSearch.Text:lower(), 0
+for i, name in ipairs(ITEMS) do
+local row = itemRows[name]
+if not row then
+local control = button(itemList, "", UDim2.new(), UDim2.new(1, -2, 0, 79))
+control.Name = "\071\105\102\116\073\116\101\109\095" .. tostring(i)
+control.LayoutOrder = i
+local outline = stroke(control)
+local image = new("\073\109\097\103\101\076\097\098\101\108", {Position = UDim2.fromOffset(7, 7), Size = UDim2.fromOffset(52, 52),
+BackgroundColor3 = C.bg, ScaleType = Enum.ScaleType.Fit, Image = ""}, control)
+corner(image)
+local fallback = label(image, "\226\156\166", UDim2.new(), UDim2.fromScale(1, 1), C.red, 22)
+fallback.TextXAlignment = Enum.TextXAlignment.Center
+local title = label(control, name, UDim2.fromOffset(66, 7), UDim2.new(1, -124, 0, 38), C.white, 11)
+title.TextWrapped, title.TextTruncate = true, Enum.TextTruncate.None
+local count = label(control, "", UDim2.fromOffset(66, 52), UDim2.new(1, -76, 0, 20), C.gray, 9)
+local badge = label(control, "", UDim2.new(1, -60, 0, 11), UDim2.fromOffset(50, 22), C.gray, 10)
+badge.TextXAlignment = Enum.TextXAlignment.Right
+local click = control.MouseButton1Click:Connect(function()
+if busy then return end
+playClickSound(); selectedItem = name; paintSelection()
+end)
+row = {button = control, outline = outline, image = image, fallback = fallback, count = count, badge = badge, click = click}
+itemRows[name] = row
+end
+local stock, image = DonationTransport.count(inventory(), name), itemImage(name)
+row.count.Text = stock > 0 and "\068\073\083\080\079\078\195\141\086\069\076\032\080\065\082\065\032\068\079\065\082" or "\083\069\077\032\069\083\084\079\081\085\069"
+row.count.TextColor3 = stock > 0 and C.green or C.gray
+row.badge.Text = "\195\151" .. tostring(stock)
+row.badge.TextColor3 = stock > 0 and C.white or C.gray
+if row.image.Image ~= image then row.image.Image = image end
+row.fallback.Visible = image == ""
+row.button.Visible = name:lower():find(filter, 1, true) ~= nil
+if row.button.Visible then visible += 1 end
+end
+emptyItems.Visible = visible == 0
+paintSelection()
+end
+local function setBusy(value)
+busy = value
+if not mounted then return end
+sendButton.Text = value and "\069\078\086\073\065\078\068\079\046\046\046" or "\068\079\065\082\032\073\084\069\078\083\032\032\226\134\146"
+sendButton.BackgroundColor3 = value and C.selected or C.red
+for _, input in ipairs({playerSearch, itemSearch, quantityBox, intervalBox}) do input.TextEditable = not value end
+allButton.Active = not value
+dirtyItems = true
+end
+local context = {
+players = Players, source = inventory, clock = os.clock, spawn = task.spawn, wait = task.wait,
+slow = function() setStatus("\079\032\106\111\103\111\032\101\115\116\195\161\032\100\101\109\111\114\097\110\100\111\032\097\032\114\101\115\112\111\110\100\101\114\046\032\065\103\117\097\114\100\097\110\100\111\032\111\032\101\110\118\105\111\032\097\116\117\097\108\046\046\046", C.amber) end,
+invoke = function(target, item)
+local events = ReplicatedStorage:FindFirstChild("\114\069\118\101\110\116\115")
+local remote = events and events:FindFirstChild("\103\105\102\116\082\101\109\111\116\101")
+if not remote or not remote:IsA("\082\101\109\111\116\101\070\117\110\099\116\105\111\110") then error("\103\105\102\116\082\101\109\111\116\101\032\105\110\100\105\115\112\111\110\195\173\118\101\108") end
+return remote:InvokeServer("\103\105\102\116\082\101\113\117\101\115\116", target, item)
+end,
+}
+local function startDonation()
+if busy then return end
+if context.pending then
+if context.pending.finished then context.pending = nil
+else setStatus("\065\103\117\097\114\100\101\032\111\032\106\111\103\111\032\114\101\115\112\111\110\100\101\114\032\097\111\032\101\110\118\105\111\032\097\110\116\101\114\105\111\114\046", C.amber); return end
+end
+local target, name = selectedPlayer, selectedItem
+if not target or target == player or target.Parent ~= Players then setStatus("\083\101\108\101\099\105\111\110\101\032\117\109\032\106\111\103\097\100\111\114\032\111\110\108\105\110\101\046", C.red); return end
+if not name then setStatus("\083\101\108\101\099\105\111\110\101\032\111\032\105\116\101\109\032\113\117\101\032\100\101\115\101\106\097\032\100\111\097\114\046", C.red); return end
+local settings, reason = DonationTransport.validate(quantityBox.Text, intervalBox.Text, DonationTransport.count(inventory(), name))
+if not settings then setStatus(reason, C.red); return end
+stopRequested = false
+setBusy(true); setProgress(0, settings.quantity)
+local started = Core:StartWorker("\085\073\046\068\111\110\097\116\105\111\110\115\046\083\101\110\100", function(isAlive)
+local done, failure = 0, nil
+local function alive() return mounted and Core:IsAlive() and isAlive() end
+local ok, err = pcall(function()
+for _ = 1, settings.quantity do
+if not alive() or stopRequested then break end
+if target.Parent ~= Players then failure = "\079\032\100\101\115\116\105\110\097\116\195\161\114\105\111\032\115\097\105\117\032\100\097\032\112\097\114\116\105\100\097\046"; break end
+setStatus(string.format("\069\110\118\105\097\110\100\111\032\037\100\047\037\100\058\032\037\115\032\112\097\114\097\032\064\037\115", done + 1, settings.quantity, name, target.Name), C.amber)
+local delivered, message = DonationTransport.transfer(context, target, name, alive)
+dirtyItems = true
+if not delivered then failure = message; break end
+done += 1
+setProgress(done, settings.quantity)
+if done < settings.quantity then
+local deadline = os.clock() + settings.interval
+while alive() and not stopRequested and os.clock() < deadline do task.wait(0.05) end
+end
+end
+end)
+if not ok then failure = "\070\097\108\104\097\032\097\111\032\101\110\118\105\097\114\032\111\032\108\111\116\101\046\032\067\111\110\102\105\114\097\032\111\032\105\110\118\101\110\116\195\161\114\105\111\032\097\110\116\101\115\032\100\101\032\099\111\110\116\105\110\117\097\114\046"; warn("\091\065\082\065\083\065\075\065\093\091\068\079\065\082\093", err) end
+setBusy(false)
+if not mounted then return end
+if done == settings.quantity then setStatus(string.format("\067\111\110\099\108\117\195\173\100\111\058\032\037\100\120\032\037\115\032\101\110\116\114\101\103\117\101\115\032\112\097\114\097\032\064\037\115\046", done, name, target.Name), C.green)
+elseif stopRequested then setStatus(string.format("\076\111\116\101\032\112\097\114\097\100\111\058\032\037\100\047\037\100\032\101\110\116\114\101\103\097\040\115\041\032\099\111\110\102\105\114\109\097\100\097\040\115\041\046", done, settings.quantity), C.amber)
+else setStatus(failure or "\076\111\116\101\032\105\110\116\101\114\114\111\109\112\105\100\111\046", C.red) end
+end)
+if not started then setBusy(false); setStatus("\079\032\112\097\105\110\101\108\032\101\115\116\195\161\032\101\110\099\101\114\114\097\110\100\111\046\032\082\101\097\098\114\097\032\111\032\115\099\114\105\112\116\032\112\097\114\097\032\100\111\097\114\046", C.red) end
+end
+connect(sendButton.MouseButton1Click, function() playClickSound(); startDonation() end)
+connect(stopButton.MouseButton1Click, function()
+playClickSound()
+if busy then stopRequested = true; setStatus("\080\097\114\097\100\097\032\115\111\108\105\099\105\116\097\100\097\046\032\070\105\110\097\108\105\122\097\110\100\111\032\097\112\101\110\097\115\032\111\032\101\110\118\105\111\032\097\116\117\097\108\046\046\046", C.amber)
+else setStatus("\078\101\110\104\117\109\097\032\100\111\097\195\167\195\163\111\032\101\109\032\097\110\100\097\109\101\110\116\111\046") end
+end)
+connect(allButton.MouseButton1Click, function()
+if not busy and selectedItem then quantityBox.Text = tostring(DonationTransport.count(inventory(), selectedItem)) end
+end)
+connect(playerSearch:GetPropertyChangedSignal("\084\101\120\116"), function() dirtyPlayers = true end)
+connect(itemSearch:GetPropertyChangedSignal("\084\101\120\116"), function() dirtyItems = true end)
+connect(Players.PlayerAdded, function() dirtyPlayers = true end)
+connect(Players.PlayerRemoving, function(target)
+if selectedPlayer == target then
+selectedPlayer = nil
+if busy then stopRequested = true end
+setStatus("\079\032\100\101\115\116\105\110\097\116\195\161\114\105\111\032\115\097\105\117\032\100\097\032\112\097\114\116\105\100\097\046", C.amber)
+end
+dirtyPlayers = true
+end)
+local boundInventory, inventoryConnections = nil, {}
+local function bindInventory()
+local folder = inventory()
+if folder == boundInventory then return end
+for _, connection in ipairs(inventoryConnections) do connection:Disconnect() end
+inventoryConnections = {}
+boundInventory = folder
+if folder then
+for _, signal in ipairs({folder.ChildAdded, folder.ChildRemoved}) do
+table.insert(inventoryConnections, signal:Connect(function() dirtyItems = true end))
+end
+end
+dirtyItems = true
+end
+local stopped = false
+local function cleanup()
+if stopped then return end
+stopped, mounted, stopRequested = true, false, true
+Core:StopWorker("\085\073\046\068\111\110\097\116\105\111\110\115\046\082\101\102\114\101\115\104")
+Core:StopWorker("\085\073\046\068\111\110\097\116\105\111\110\115\046\083\101\110\100")
+for _, connection in ipairs(connections) do connection:Disconnect() end
+for _, connection in ipairs(inventoryConnections) do connection:Disconnect() end
+for _, row in pairs(playerRows) do row.click:Disconnect() end
+for _, row in pairs(itemRows) do row.click:Disconnect() end
+end
+Core:AddCleanup("\068\111\110\097\116\105\111\110\115", cleanup)
+connect(root.Destroying, cleanup)
+bindInventory(); renderPlayers(); renderItems(); setProgress(0, 0)
+dirtyPlayers, dirtyItems = false, false
+Core:StartWorker("\085\073\046\068\111\110\097\116\105\111\110\115\046\082\101\102\114\101\115\104", function(isAlive)
+while mounted and isAlive() do
+bindInventory()
+if parent.Visible then
+if dirtyPlayers then dirtyPlayers = false; renderPlayers() end
+if dirtyItems then dirtyItems = false; renderItems() end
+end
+task.wait(0.15)
+end
+end)
+return {root = root, cleanup = cleanup}
+end
+
+MountDonationTab(tabDoar, Core, Players, player, ReplicatedStorage, playClickSound)
+end)()
 local tabVisual = CriarAba("\086\105\115\117\097\108", "\086\073\083\085\065\076")
 UI:BuildArasakaStyles(tabVisual)
 local tabOutros = CriarAba("\079\117\116\114\111\115", "\079\085\084\082\079\083")
@@ -4560,6 +4984,7 @@ Connected = false,
 }
 function ArasakaOptionSizing:Apply(obj)
 if not obj or not obj.Parent or not obj:IsDescendantOf(self.Root) then return end
+if obj:GetAttribute("\065\114\097\115\097\107\097\068\111\110\097\116\105\111\110\085\073") == true then return end
 if not (obj:IsA("\084\101\120\116\066\117\116\116\111\110") or obj:IsA("\084\101\120\116\076\097\098\101\108") or obj:IsA("\084\101\120\116\066\111\120")) then return end
 local original = self.Originals[obj]
 if not original then
@@ -6692,6 +7117,32 @@ btnMainStrengthOp.Text = "\077\065\073\078\032\070\079\082\195\135\065\058\032\0
 btnMainStrengthOp.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
 end
 end)
+local bossWeightPulseId = 0
+local function queueBossWeight(stillFighting)
+bossWeightPulseId += 1
+local pulseId = bossWeightPulseId
+local character = player.Character
+task.delay(0.025, function()
+if pulseId ~= bossWeightPulseId or player.Character ~= character
+or not Core:IsAlive() or not stillFighting() then return end
+local humanoid = character and character:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
+local backpack = player:FindFirstChild("\066\097\099\107\112\097\099\107")
+if not humanoid or humanoid.Health <= 0 or not backpack then return end
+local tool = backpack:FindFirstChild("\087\101\105\103\104\116")
+if not tool then
+for _, candidate in ipairs(backpack:GetChildren()) do
+local name = candidate.Name:lower()
+if candidate:IsA("\084\111\111\108") and (name:find("\119\101\105\103\104\116", 1, true) or name:find("\112\101\115\111", 1, true)) then
+tool = candidate
+break
+end
+end
+end
+if tool and tool:IsA("\084\111\111\108") then
+pcall(function() humanoid:EquipTool(tool) end)
+end
+end)
+end
 local function equipPunch()
 local character = player.Character
 if not character then return nil end
@@ -7073,6 +7524,11 @@ event:FireServer("\112\117\110\099\104", hand)
 end)
 useLeftHand = not useLeftHand
 end
+queueBossWeight(function()
+return isAlive() and autoFarmActive and not FarmQuestPaused
+and bossCycleInArena and not bossReturnDeadline
+and getBossTargetForFarm() ~= nil
+end)
 end
 end
 end
@@ -7571,6 +8027,237 @@ end
 Core:RegisterModule("\084\101\108\101\112\111\114\116\115", Teleports)
 local teleOk, teleErr = Core:StartModule("\084\101\108\101\112\111\114\116\115")
 if not teleOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\084\101\108\101\112\111\114\116\115\093\032\070\097\108\104\097\058", teleErr) end
+function Pets:Init()
+Utils.PerfBegin("\080\069\084\083\095\085\073")
+local petScroll = Instance.new("\083\099\114\111\108\108\105\110\103\070\114\097\109\101", tabPets)
+petScroll.Size = UDim2.new(1, -20, 1, -30)
+petScroll.Position = UDim2.new(0, 10, 0, 10)
+petScroll.BackgroundTransparency = 1
+petScroll.ScrollBarThickness = UserInputService.TouchEnabled and 7 or 4
+petScroll.ScrollingEnabled = true
+petScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+petScroll.ElasticBehavior = Enum.ElasticBehavior.Never
+petScroll.Active = true
+local petLayout = Instance.new("\085\073\076\105\115\116\076\097\121\111\117\116", petScroll)
+petLayout.Padding = UDim.new(0, 5)
+petLayout.SortOrder = Enum.SortOrder.LayoutOrder
+petLayout:GetPropertyChangedSignal("\065\098\115\111\108\117\116\101\067\111\110\116\101\110\116\083\105\122\101"):Connect(function()
+petScroll.CanvasSize = UDim2.new(0, 0, 0, petLayout.AbsoluteContentSize.Y + 20)
+end)
+local function CriarSecaoTitulo(txt, order)
+local lbl = Instance.new("\084\101\120\116\076\097\098\101\108", petScroll)
+lbl.LayoutOrder = order
+lbl.Size = UDim2.new(1, 0, 0, 24)
+lbl.BackgroundTransparency = 1
+lbl.Text = txt
+lbl.TextColor3 = Color3.fromRGB(236, 64, 88)
+lbl.Font = Enum.Font.GothamBold
+lbl.TextSize = 15
+lbl.TextXAlignment = Enum.TextXAlignment.Left
+end
+local TradeData = {SelectedPlayer = nil, SelectedPet = nil}
+local function GetUserPetsList()
+local petsFolder = player:FindFirstChild("\112\101\116\115\070\111\108\100\101\114")
+local seen = {}
+local petNames = {}
+if petsFolder then
+for _, folder in ipairs(petsFolder:GetChildren()) do
+if folder:IsA("\070\111\108\100\101\114") then
+for _, pet in ipairs(folder:GetChildren()) do
+local petName = tostring(pet.Name)
+if petName ~= "" and not seen[petName] then
+seen[petName] = true
+table.insert(petNames, petName)
+end
+end
+end
+end
+end
+table.sort(petNames)
+return petNames
+end
+CriarSecaoTitulo("\240\159\167\172\032\069\118\111\108\117\195\167\195\163\111\032\065\117\116\111\109\195\161\116\105\099\097\058", 1)
+local SelectedEvolvePet = nil
+local btnSelectEvolve = Instance.new("\084\101\120\116\066\117\116\116\111\110", petScroll)
+btnSelectEvolve.LayoutOrder = 2
+btnSelectEvolve.Size = UDim2.new(1, -6, 0, 38)
+btnSelectEvolve.BackgroundColor3 = Color3.fromRGB(33, 44, 59)
+btnSelectEvolve.Text = "\069\115\099\111\108\104\101\114\032\080\101\116\032\112\047\032\069\118\111\108\117\105\114\058\032\078\101\110\104\117\109"
+btnSelectEvolve.TextColor3 = Color3.fromRGB(220, 220, 220)
+btnSelectEvolve.Font = Enum.Font.GothamBold
+btnSelectEvolve.TextSize = 15
+Instance.new("\085\073\067\111\114\110\101\114", btnSelectEvolve).CornerRadius = UDim.new(0, 4)
+btnSelectEvolve.MouseButton1Click:Connect(function()
+playClickSound()
+local userPets = GetUserPetsList()
+if #userPets > 0 then
+AbrirMenuSelecao("\083\101\108\101\099\105\111\110\101\032\111\032\080\101\116\032\112\097\114\097\032\069\118\111\108\117\105\114", userPets, function(val, text)
+SelectedEvolvePet = tostring(val)
+btnSelectEvolve.Text = "\080\101\116\032\112\047\032\069\118\111\108\117\105\114\058\032" .. tostring(val)
+end)
+else
+btnSelectEvolve.Text = "\078\101\110\104\117\109\032\080\101\116\032\101\110\099\111\110\116\114\097\100\111\032\110\111\032\105\110\118\101\110\116\195\161\114\105\111\033"
+end
+end)
+local autoEvolveActive = false
+local btnEvolvePet = Instance.new("\084\101\120\116\066\117\116\116\111\110", petScroll)
+btnEvolvePet.LayoutOrder = 3
+btnEvolvePet.Size = UDim2.new(1, -6, 0, 38)
+btnEvolvePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+btnEvolvePet.Text = "\065\117\116\111\032\069\118\111\108\117\105\114\058\032\079\070\070\032\240\159\148\180"
+btnEvolvePet.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnEvolvePet.Font = Enum.Font.GothamBold
+btnEvolvePet.TextSize = 15
+Instance.new("\085\073\067\111\114\110\101\114", btnEvolvePet).CornerRadius = UDim.new(0, 4)
+btnEvolvePet.MouseButton1Click:Connect(function()
+playClickSound()
+autoEvolveActive = not autoEvolveActive
+if not autoEvolveActive then Core:StopWorker("\080\101\116\115\046\065\117\116\111\069\118\111\108\118\101") end
+btnEvolvePet.Text = "\065\117\116\111\032\069\118\111\108\117\105\114\058\032" .. (autoEvolveActive and "\079\078\032\240\159\159\162" or "\079\070\070\032\240\159\148\180")
+btnEvolvePet.BackgroundColor3 = autoEvolveActive
+and Color3.fromRGB(40, 160, 40)
+or Color3.fromRGB(180, 30, 30)
+if autoEvolveActive then
+Core:StartWorker("\080\101\116\115\046\065\117\116\111\069\118\111\108\118\101", function(isAlive)
+local rEvents = ReplicatedStorage:FindFirstChild("\114\069\118\101\110\116\115")
+local evolveEvent = rEvents and rEvents:FindFirstChild("\112\101\116\069\118\111\108\118\101\069\118\101\110\116")
+if not evolveEvent then
+warn("\091\065\082\065\083\065\075\065\093\091\069\086\079\076\086\069\093\032\112\101\116\069\118\111\108\118\101\069\118\101\110\116\032\110\097\111\032\101\110\099\111\110\116\114\097\100\111")
+autoEvolveActive = false
+btnEvolvePet.Text = "\065\117\116\111\032\069\118\111\108\117\105\114\058\032\079\070\070\032\240\159\148\180"
+btnEvolvePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+return
+end
+while isAlive() and autoEvolveActive and Core:IsAlive() do
+local petName = SelectedEvolvePet
+if petName and petName ~= "" then
+
+local ok, err = pcall(function()
+evolveEvent:FireServer("\101\118\111\108\118\101\080\101\116", petName)
+end)
+if not ok then
+warn("\091\065\082\065\083\065\075\065\093\091\069\086\079\076\086\069\093\032\069\114\114\111\058", err)
+end
+else
+warn("\091\065\082\065\083\065\075\065\093\091\069\086\079\076\086\069\093\032\078\101\110\104\117\109\032\112\101\116\032\115\101\108\101\099\105\111\110\097\100\111")
+end
+task.wait(0.5)
+end
+end)
+end
+end)
+CriarSecaoTitulo("\240\159\164\157\032\084\114\111\099\097\115\032\065\117\116\111\109\195\161\116\105\099\097\115\058", 4)
+local btnSelectPlayer = Instance.new("\084\101\120\116\066\117\116\116\111\110", petScroll)
+btnSelectPlayer.LayoutOrder = 5
+btnSelectPlayer.Size = UDim2.new(1, -6, 0, 38)
+btnSelectPlayer.BackgroundColor3 = Color3.fromRGB(33, 44, 59)
+btnSelectPlayer.Text = "\069\115\099\111\108\104\101\114\032\074\111\103\097\100\111\114\058\032\078\101\110\104\117\109"
+btnSelectPlayer.TextColor3 = Color3.fromRGB(220, 220, 220)
+btnSelectPlayer.Font = Enum.Font.GothamBold
+btnSelectPlayer.TextSize = 15
+Instance.new("\085\073\067\111\114\110\101\114", btnSelectPlayer).CornerRadius = UDim.new(0, 4)
+btnSelectPlayer.MouseButton1Click:Connect(function()
+playClickSound()
+local plist = {}
+for _, p in ipairs(Players:GetPlayers()) do
+if p ~= player then table.insert(plist, {Text = p.DisplayName .. "\032\040\064" .. p.Name .. "\041", Value = p}) end
+end
+if #plist > 0 then
+AbrirMenuSelecao("\083\101\108\101\099\105\111\110\101\032\111\032\074\111\103\097\100\111\114", plist, function(val, text)
+TradeData.SelectedPlayer = val
+btnSelectPlayer.Text = "\074\111\103\097\100\111\114\058\032" .. text
+end)
+else
+btnSelectPlayer.Text = "\083\101\109\032\106\111\103\097\100\111\114\101\115\032\100\105\115\112\111\110\195\173\118\101\105\115\033"
+end
+end)
+local btnSelectTradePet = Instance.new("\084\101\120\116\066\117\116\116\111\110", petScroll)
+btnSelectTradePet.LayoutOrder = 6
+btnSelectTradePet.Size = UDim2.new(1, -6, 0, 38)
+btnSelectTradePet.BackgroundColor3 = Color3.fromRGB(33, 44, 59)
+btnSelectTradePet.Text = "\069\115\099\111\108\104\101\114\032\080\101\116\032\112\047\032\084\114\111\099\097\058\032\078\101\110\104\117\109"
+btnSelectTradePet.TextColor3 = Color3.fromRGB(220, 220, 220)
+btnSelectTradePet.Font = Enum.Font.GothamBold
+btnSelectTradePet.TextSize = 15
+Instance.new("\085\073\067\111\114\110\101\114", btnSelectTradePet).CornerRadius = UDim.new(0, 4)
+btnSelectTradePet.MouseButton1Click:Connect(function()
+playClickSound()
+local userPets = GetUserPetsList()
+if #userPets > 0 then
+AbrirMenuSelecao("\083\101\108\101\099\105\111\110\101\032\111\032\080\101\116\032\112\097\114\097\032\084\114\111\099\097", userPets, function(val, text)
+TradeData.SelectedPet = val
+btnSelectTradePet.Text = "\080\101\116\032\112\047\032\084\114\111\099\097\058\032" .. val
+end)
+else
+btnSelectTradePet.Text = "\078\101\110\104\117\109\032\080\101\116\032\101\110\099\111\110\116\114\097\100\111\033"
+end
+end)
+local autoTradeActive = false
+local btnTradePet = Instance.new("\084\101\120\116\066\117\116\116\111\110", petScroll)
+btnTradePet.LayoutOrder = 7
+btnTradePet.Size = UDim2.new(1, -6, 0, 38)
+btnTradePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+btnTradePet.Text = "\065\117\116\111\032\084\114\111\099\097\058\032\079\070\070\032\240\159\148\180"
+btnTradePet.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnTradePet.Font = Enum.Font.GothamBold
+btnTradePet.TextSize = 15
+Instance.new("\085\073\067\111\114\110\101\114", btnTradePet).CornerRadius = UDim.new(0, 4)
+btnTradePet.MouseButton1Click:Connect(function()
+playClickSound()
+autoTradeActive = not autoTradeActive
+if not autoTradeActive then Core:StopWorker("\080\101\116\115\046\065\117\116\111\084\114\097\100\101") end
+btnTradePet.Text = "\065\117\116\111\032\084\114\111\099\097\058\032" .. (autoTradeActive and "\079\078\032\240\159\159\162" or "\079\070\070\032\240\159\148\180")
+btnTradePet.BackgroundColor3 = autoTradeActive and Color3.fromRGB(40, 160, 40) or Color3.fromRGB(180, 30, 30)
+if autoTradeActive then
+Core:StartWorker("\080\101\116\115\046\065\117\116\111\084\114\097\100\101", function(isAlive)
+while isAlive() and autoTradeActive and Core:IsAlive() do
+if TradeData.SelectedPlayer and TradeData.SelectedPet then
+local tradingEvent = ReplicatedStorage:FindFirstChild("\114\069\118\101\110\116\115") and ReplicatedStorage.rEvents:FindFirstChild("\116\114\097\100\105\110\103\069\118\101\110\116")
+local petsFolder = player:FindFirstChild("\112\101\116\115\070\111\108\100\101\114")
+if tradingEvent and petsFolder then
+pcall(function() tradingEvent:FireServer("\115\101\110\100\084\114\097\100\101\082\101\113\117\101\115\116", TradeData.SelectedPlayer) end)
+task.wait(0.01)
+local offered = 0
+for _, folder in ipairs(petsFolder:GetChildren()) do
+if folder:IsA("\070\111\108\100\101\114") then
+for _, petObj in ipairs(folder:GetChildren()) do
+if not isAlive() or not autoTradeActive or not Core:IsAlive() then break end
+if petObj.Name == TradeData.SelectedPet then
+pcall(function() tradingEvent:FireServer("\111\102\102\101\114\073\116\101\109", petObj) end)
+offered += 1
+task.wait(0.01)
+if offered >= 10 then break end
+end
+end
+end
+if offered >= 10 then break end
+end
+task.wait(0.01)
+if isAlive() and autoTradeActive and Core:IsAlive() then pcall(function() tradingEvent:FireServer("\097\099\099\101\112\116\084\114\097\100\101") end) end
+end
+end
+task.wait(1)
+end
+end)
+end
+end)
+self.StopRuntime = function()
+autoEvolveActive, autoTradeActive = false, false
+Core:StopWorker("\080\101\116\115\046\065\117\116\111\069\118\111\108\118\101")
+Core:StopWorker("\080\101\116\115\046\065\117\116\111\084\114\097\100\101")
+btnEvolvePet.Text = "\065\117\116\111\032\069\118\111\108\117\105\114\058\032\079\070\070\032\240\159\148\180"
+btnTradePet.Text = "\065\117\116\111\032\084\114\111\099\097\058\032\079\070\070\032\240\159\148\180"
+btnEvolvePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+btnTradePet.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+end
+Utils.PerfEnd("\080\069\084\083\095\085\073")
+end
+function Pets:Stop()
+if self.StopRuntime then self.StopRuntime() end
+end
+Core:RegisterModule("\080\101\116\115", Pets)
+local petsOk, petsErr = Core:StartModule("\080\101\116\115")
+if not petsOk then warn("\091\065\082\065\083\065\075\065\093\091\077\079\068\085\076\069\058\080\101\116\115\093\032\070\097\108\104\097\058", petsErr) end
 function Visual:Init()
 Utils.PerfBegin("\086\073\083\085\065\076\095\085\073")
 local rtxActive, vibeActive, antiLagActive, terrorActive, fotorealistaActive, blackScreenActive = false, false, false, false, false, false
@@ -9098,15 +9785,16 @@ function UI:Stop()
 for _, workerName in ipairs({
 "\085\073\046\068\097\115\104\098\111\097\114\100\083\116\097\116\115", "\085\073\046\067\097\108\099\117\108\097\116\111\114",
 "\085\073\046\070\111\114\116\117\110\101\087\104\101\101\108", "\085\073\046\067\111\110\115\117\109\097\098\108\101\115", "\085\073\046\076\105\099\101\110\115\101\066\097\100\103\101",
+"\085\073\046\068\111\110\097\116\105\111\110\115\046\082\101\102\114\101\115\104", "\085\073\046\068\111\110\097\116\105\111\110\115\046\083\101\110\100", "\080\101\116\115\046\065\117\116\111\069\118\111\108\118\101", "\080\101\116\115\046\065\117\116\111\084\114\097\100\101",
 }) do
 Core:StopWorker(workerName)
 end
-for _, moduleName in ipairs({"\080\114\111\099\101\115\115\080\097\110\101\108", "\068\097\115\104\098\111\097\114\100", "\083\121\115\116\101\109\085\073"}) do
+for _, moduleName in ipairs({"\080\114\111\099\101\115\115\080\097\110\101\108", "\068\097\115\104\098\111\097\114\100", "\083\121\115\116\101\109\085\073", "\080\101\116\115"}) do
 if Core:IsRunning(moduleName) then
 Core:StopModule(moduleName)
 end
 end
-for _, owner in ipairs({"\067\104\097\116\076\111\097\100\101\114", "\078\111\116\105\102\105\099\097\099\111\101\115\085\110\105\118\101\114\115\097\105\115", "\070\097\114\109\115\046\067\111\110\116\101\120\116\067\097\112\116\117\114\101", "\085\073"}) do
+for _, owner in ipairs({"\067\104\097\116\076\111\097\100\101\114", "\078\111\116\105\102\105\099\097\099\111\101\115\085\110\105\118\101\114\115\097\105\115", "\070\097\114\109\115\046\067\111\110\116\101\120\116\067\097\112\116\117\114\101", "\068\111\110\097\116\105\111\110\115", "\085\073"}) do
 Core:CleanupOwner(owner)
 end
 if self.ScreenGui then
