@@ -2613,6 +2613,23 @@ if worker then worker.running = false end
 self.Workers[name] = nil
 return true
 end
+function Core:FindAliveAlienBoss()
+local chosen, chosenRoot, chosenId = nil, nil, -math.huge
+for _, boss in ipairs(workspace:GetChildren()) do
+if boss.Name == "\065\108\105\101\110\032\066\111\115\115" and boss:IsA("\077\111\100\101\108") and boss:GetAttribute("\066\111\115\115\069\109\101\114\103\105\110\103") ~= true then
+local health = tonumber(boss:GetAttribute("\072\101\097\108\116\104"))
+local humanoid = boss:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
+local alive = health ~= nil and health > 0 or (health == nil and humanoid ~= nil and humanoid.Health > 0)
+local root = boss:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116") or boss.PrimaryPart
+or boss:FindFirstChild("\066\111\115\115\068\097\109\097\103\101\072\105\116\098\111\120") or boss:FindFirstChildWhichIsA("\066\097\115\101\080\097\114\116", true)
+local id = tonumber(boss:GetAttribute("\073\068")) or 0
+if alive and root and root:IsA("\066\097\115\101\080\097\114\116") and (not chosen or id >= chosenId) then
+chosen, chosenRoot, chosenId = boss, root, id
+end
+end
+end
+return chosen, chosenRoot
+end
 function Core:IsWorkerRunning(name)
 local worker = self.Workers[name]
 return worker ~= nil and worker.running == true
@@ -7754,7 +7771,7 @@ local function collectBossChest(shouldAbort)
 if shouldAbort and shouldAbort() then return false end
 if bossEventMode == "\065\108\105\101\110" and alienChestClaimed then return true end
 if bossEventMode == "\065\108\105\101\110" then
-local boss = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
+local boss = Core:FindAliveAlienBoss()
 if boss and (tonumber(boss:GetAttribute("\072\101\097\108\116\104")) or 0) > 0 then return false end
 end
 local prompt = getActiveBossChestPrompt()
@@ -7927,15 +7944,8 @@ return nil
 end
 local function getBossTargetPosition()
 if bossEventMode ~= "\065\108\105\101\110" then return getNormalBossTargetPosition() end
-local boss = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
-if not boss or not boss:IsA("\077\111\100\101\108") or boss:GetAttribute("\066\111\115\115\069\109\101\114\103\105\110\103") == true then return nil end
-local health = tonumber(boss:GetAttribute("\072\101\097\108\116\104"))
-local humanoid = boss:FindFirstChildOfClass("\072\117\109\097\110\111\105\100")
-if health ~= nil and health <= 0 then return nil end
-if health == nil and (not humanoid or humanoid.Health <= 0) then return nil end
-local root = boss:FindFirstChild("\072\117\109\097\110\111\105\100\082\111\111\116\080\097\114\116") or boss.PrimaryPart
-or boss:FindFirstChild("\066\111\115\115\068\097\109\097\103\101\072\105\116\098\111\120") or boss:FindFirstChildWhichIsA("\066\097\115\101\080\097\114\116", true)
-if root then return root.Position, boss end
+local boss, root = Core:FindAliveAlienBoss()
+if boss and root then return root.Position, boss end
 end
 local bossCollisionStates = setmetatable({}, {__mode = "\107"})
 local function setNoclip(enabled)
@@ -8211,7 +8221,7 @@ end
 else
 BossDamageHudState.BossAlive = false
 if bossEventMode == "\065\108\105\101\110" then
-local boss = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
+local boss = Core:FindAliveAlienBoss() or workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
 if not boss then setAlienStatus("\097\103\117\097\114\100\097\110\100\111\032\065\108\105\101\110\032\066\111\115\115\032\047\047\032\109\111\100\101\108\111\032\097\105\110\100\097\032\110\195\163\111\032\114\101\112\108\105\099\097\100\111")
 elseif boss:GetAttribute("\066\111\115\115\069\109\101\114\103\105\110\103") == true then setAlienStatus("\065\108\105\101\110\032\066\111\115\115\032\097\112\097\114\101\099\101\110\100\111\032\047\047\032\097\103\117\097\114\100\097\110\100\111\032\102\105\099\097\114\032\118\117\108\110\101\114\195\161\118\101\108")
 else setAlienStatus("\065\108\105\101\110\032\100\101\116\101\099\116\097\100\111\032\047\047\032\097\103\117\097\114\100\097\110\100\111\032\118\105\100\097\032\111\117\032\112\111\115\105\195\167\195\163\111\032\118\195\161\108\105\100\097") end
@@ -10492,7 +10502,7 @@ return formatted
 end
 local function getActiveBossDamageFolder()
 if BossDamageHudState.Mode == "\065\108\105\101\110" then
-local alien = workspace:FindFirstChild("\065\108\105\101\110\032\066\111\115\115")
+local alien = Core:FindAliveAlienBoss()
 return alien, alien and alien:FindFirstChild("\100\097\109\097\103\101\086\097\108\117\101\115")
 end
 local events = workspace:FindFirstChild("\069\118\101\110\116\115")
