@@ -3993,6 +3993,58 @@ local edition = "\071\114\195\161\116\105\115"
 local alive, connected, socket, connecting = true, false, nil, false
 local epoch, retryAt, backoff, lastSend = 0, 0, 2, -math.huge
 local allConnections, socketConnections, messages, seen, seenOrder = {}, {}, {}, {}, {}
+local HISTORY_LIMIT = 75
+local cacheEnv = (getgenv and getgenv()) or _G
+cacheEnv.ArasakaChatHistoryV1 = cacheEnv.ArasakaChatHistoryV1 or {}
+local cacheKey = endpoint .. "\058" .. tostring(player.UserId)
+local cacheFile = "\065\114\097\115\097\107\097\095\067\104\097\116\095\072\105\115\116\111\114\105\099\111\095" .. tostring(player.UserId) .. "\046\106\115\111\110"
+local history, historyById = {}, {}
+local function remember(data)
+if type(data) ~= "\116\097\098\108\101" or type(data.id) ~= "\115\116\114\105\110\103" or #data.id > 160
+or type(data.text) ~= "\115\116\114\105\110\103" or #data.text > 3200 or historyById[data.id] then return false end
+local stamp = tonumber(data.at) or 0
+if stamp ~= stamp or math.abs(stamp) == math.huge then stamp = 0 end
+local entry = {id=data.id, text=data.text, at=stamp,
+userId=tostring(data.userId or ""):sub(1,32), name=tostring(data.name or "\074\111\103\097\100\111\114"):sub(1,64),
+displayName=tostring(data.displayName or data.name or "\074\111\103\097\100\111\114"):sub(1,200),
+edition=tostring(data.edition or "\071\114\195\161\116\105\115"):sub(1,32)}
+historyById[entry.id] = entry
+local index = #history + 1
+while index > 1 and history[index-1].at > stamp do index -= 1 end
+table.insert(history, index, entry)
+while #history > HISTORY_LIMIT do historyById[table.remove(history,1).id] = nil end
+return historyById[entry.id] ~= nil
+end
+local function restore(entries)
+if type(entries) ~= "\116\097\098\108\101" then return end
+for _, entry in ipairs(entries) do remember(entry) end
+end
+pcall(function()
+if type(isfile)=="\102\117\110\099\116\105\111\110" and type(readfile)=="\102\117\110\099\116\105\111\110" and isfile(cacheFile) then
+local raw=readfile(cacheFile)
+if #raw <= 400000 then
+local saved=Http:JSONDecode(raw)
+if type(saved)=="\116\097\098\108\101" and saved.endpoint==endpoint then restore(saved.messages) end
+end
+end
+end)
+restore(cacheEnv.ArasakaChatHistoryV1[cacheKey])
+cacheEnv.ArasakaChatHistoryV1[cacheKey] = history
+local function flushHistory()
+if type(writefile)=="\102\117\110\099\116\105\111\110" then
+pcall(function() writefile(cacheFile,Http:JSONEncode({endpoint=endpoint,messages=history})) end)
+end
+end
+local savePending = false
+local function saveHistory()
+if savePending then return end
+savePending=true
+task.delay(0.4,function()
+savePending=false
+if alive then flushHistory() end
+end)
+end
+
 local function make(class, props, parent)
 local obj = Instance.new(class)
 for k,v in pairs(props) do obj[k]=v end
@@ -4028,8 +4080,12 @@ local function setStatus(text)
 if alive and status.Parent then status.Text=text end
 end
 local sequence=0
+local cardsById = {}
 local function addMessage(data)
 if not alive or type(data)~="\116\097\098\108\101" or type(data.id)~="\115\116\114\105\110\103" or seen[data.id] or type(data.text)~="\115\116\114\105\110\103" then return end
+if not historyById[data.id] and not remember(data) then return end
+saveHistory()
+local wasAtBottom = #messages == 0 or list.CanvasPosition.Y >= math.max(0,list.AbsoluteCanvasSize.Y-list.AbsoluteWindowSize.Y)-32
 seen[data.id]=true;table.insert(seenOrder,data.id)
 if #seenOrder>160 then seen[table.remove(seenOrder,1)]=nil end
 sequence+=1
@@ -4051,11 +4107,20 @@ TextColor3=Color3.fromRGB(230,85,85),TextXAlignment=Enum.TextXAlignment.Left},co
 make("\084\101\120\116\076\097\098\101\108",{Name="\067\104\097\116\077\101\115\115\097\103\101\066\111\100\121",Text=data.text,LayoutOrder=2,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,TextWrapped=true,
 BackgroundTransparency=1,TextColor3=Color3.fromRGB(235,235,235),TextXAlignment=Enum.TextXAlignment.Left},content)
 table.insert(messages,card)
-if #messages>60 then table.remove(messages,1):Destroy() end
+cardsById[data.id]=card
+for id, oldCard in pairs(cardsById) do
+if not historyById[id] then oldCard:Destroy();cardsById[id]=nil end
+end
+messages={}
+for order, entry in ipairs(history) do
+local existing=cardsById[entry.id]
+if existing then existing.LayoutOrder=order;table.insert(messages,existing) end
+end
 task.defer(function()
-if alive and list.Parent then list.CanvasPosition=Vector2.new(0,math.max(0,list.AbsoluteCanvasSize.Y-list.AbsoluteWindowSize.Y)) end
+if alive and list.Parent and wasAtBottom then list.CanvasPosition=Vector2.new(0,math.max(0,list.AbsoluteCanvasSize.Y-list.AbsoluteWindowSize.Y)) end
 end)
 end
+for _, entry in ipairs(history) do addMessage(entry) end
 local function closeSocket()
 for _,c in ipairs(socketConnections) do c:Disconnect() end
 socketConnections={}
@@ -4117,6 +4182,7 @@ connect(send.MouseButton1Click,sendMessage)
 connect(input.FocusLost,function(enter)if enter then sendMessage()end end)
 Core:AddCleanup("\067\104\097\116",function()
 if not alive then return end
+flushHistory()
 alive=false;epoch+=1;closeSocket()
 Core:StopWorker("\067\104\097\116\046\067\111\110\110\101\099\116\105\111\110\071\117\097\114\100")
 for _,c in ipairs(allConnections)do c:Disconnect()end
